@@ -7,6 +7,7 @@ import dev.tehin.tlib.api.command.annotation.CommandProperties;
 import dev.tehin.tlib.api.command.manager.CommandManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.api.command.CommandBase;
+import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -43,7 +44,7 @@ public class CraftCommandManager implements CommandManager {
         }
     }
 
-    public Optional<CommandWrapper> getCommand(String main) {
+    private Optional<CommandWrapper> getCommand(String main) {
         String alias = aliasesResolver.get(main);
 
         CommandWrapper wrapper;
@@ -57,18 +58,19 @@ public class CraftCommandManager implements CommandManager {
         return Optional.ofNullable(wrapper);
     }
 
+    @Override
     public void register(CommandBase command) {
         CommandProperties properties = command.getClass().getAnnotation(CommandProperties.class);
         CommandAliases aliases = command.getClass().getAnnotation(CommandAliases.class);
         CommandDescription description = command.getClass().getAnnotation(CommandDescription.class);
         CommandArgsStructure args = command.getClass().getAnnotation(CommandArgsStructure.class);
 
-        CommandWrapper wrapper = new CommandWrapper(command, properties.executors(), properties.path());
+        CommandWrapper wrapper = new CommandWrapper(command, properties.executors(), new CommandPath(properties.path()));
 
         if (aliases != null) {
             wrapper.setAlias(aliases.value());
 
-            Arrays.stream(aliases.value()).forEach(alias -> aliasesResolver.put(alias, wrapper.getPath()));
+            Arrays.stream(aliases.value()).forEach(alias -> aliasesResolver.put(alias, wrapper.getPath().getAsString()));
         }
 
         if (description != null) wrapper.setDescription(description.value());
@@ -77,16 +79,11 @@ public class CraftCommandManager implements CommandManager {
         create(wrapper);
     }
 
-    // TODO: Create path as a class that handles this?
-    private String[] parsePath(CommandWrapper wrapper) {
-        return wrapper.getPath().split("\\.");
-    }
-
     // TODO: Move to a provider
     private void create(CommandWrapper wrapper) {
-        commands.put(wrapper.getPath(), wrapper);
+        commands.put(wrapper.getPath().getAsString(), wrapper);
 
-        String main = parsePath(wrapper)[0];
+        String main = wrapper.getPath().getParentCommand();
 
         // If the command has a main that is already registered, add the sub-command to it
         if (getCommand(main).isPresent()) {

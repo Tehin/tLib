@@ -2,6 +2,7 @@ package dev.tehin.tlib.core.command.wrapper;
 
 import dev.tehin.tlib.api.command.CommandBase;
 import dev.tehin.tlib.core.command.args.CommandArgs;
+import dev.tehin.tlib.core.command.args.CommandPath;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -14,7 +15,7 @@ public class CommandWrapper {
 
     private final CommandBase command;
     private final Class<? extends CommandSender>[] executors;
-    private final String path;
+    private final CommandPath path;
 
     private String description, permission;
     private String[] alias;
