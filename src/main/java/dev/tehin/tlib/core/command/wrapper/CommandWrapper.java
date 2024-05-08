@@ -18,6 +18,7 @@ public class CommandWrapper {
 
     private String description, permission;
     private String[] alias;
+    private Class<?>[] hardArgs;
 
 
     public boolean execute(CommandSender sender, String alias, String[] args) {

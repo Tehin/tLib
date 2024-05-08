@@ -1,6 +1,7 @@
 package dev.tehin.tlib.core.command.manager;
 
 import dev.tehin.tlib.api.command.annotation.CommandAliases;
+import dev.tehin.tlib.api.command.annotation.CommandArgsStructure;
 import dev.tehin.tlib.api.command.annotation.CommandDescription;
 import dev.tehin.tlib.api.command.annotation.CommandProperties;
 import dev.tehin.tlib.api.command.manager.CommandManager;
@@ -60,6 +61,7 @@ public class CraftCommandManager implements CommandManager {
         CommandProperties properties = command.getClass().getAnnotation(CommandProperties.class);
         CommandAliases aliases = command.getClass().getAnnotation(CommandAliases.class);
         CommandDescription description = command.getClass().getAnnotation(CommandDescription.class);
+        CommandArgsStructure args = command.getClass().getAnnotation(CommandArgsStructure.class);
 
         CommandWrapper wrapper = new CommandWrapper(command, properties.executors(), properties.path());
 
@@ -70,6 +72,7 @@ public class CraftCommandManager implements CommandManager {
         }
 
         if (description != null) wrapper.setDescription(description.value());
+        if (args != null) wrapper.setHardArgs(args.value());
 
         create(wrapper);
     }
