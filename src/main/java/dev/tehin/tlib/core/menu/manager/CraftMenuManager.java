@@ -1,9 +1,11 @@
 package dev.tehin.tlib.core.menu.manager;
 
+import dev.tehin.tlib.core.exceptions.MenuNotRegisteredException;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.listener.MenuListener;
+import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -34,9 +36,13 @@ public class CraftMenuManager implements MenuManager {
         return Optional.of((Menu) holder);
     }
 
+    @SneakyThrows
     @Override
-    public Menu getMenu(Class<? extends Menu>  type) {
-        return guis.get(type);
+    public Menu getMenu(Class<? extends Menu> type) {
+        Menu menu = guis.get(type);
+        if (menu == null) throw new MenuNotRegisteredException(type);
+
+        return menu;
     }
 
     @Override
