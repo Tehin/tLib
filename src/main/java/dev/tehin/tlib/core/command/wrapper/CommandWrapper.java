@@ -17,14 +17,19 @@ public class CommandWrapper {
     private final Class<? extends CommandSender>[] executors;
     private final CommandPath path;
 
-    private String description, permission;
-    private String[] alias;
+    private String description = "", permission;
+    private String[] alias = new String[0];
     private Class<?>[] hardArgs;
 
+    private boolean loaded = false;
 
     public boolean execute(CommandSender sender, String alias, String[] args) {
         command.execute(new CommandArgs(sender, alias, args));
 
         return true;
+    }
+
+    public boolean isSubCommand() {
+        return path.isSubCommand();
     }
 }
