@@ -1,9 +1,11 @@
 package dev.tehin.tlib.core.command;
 
-import org.bukkit.command.CommandSender;
+import dev.tehin.tlib.core.command.args.CommandArgs;
+
+import java.util.List;
 
 public abstract class CommandBase {
 
-    public abstract void execute(CommandSender sender, String alias, String args);
+    public abstract void execute(CommandArgs args);
 
 }
