@@ -1,5 +1,6 @@
 package dev.tehin.tlib.api;
 
+import dev.tehin.tlib.api.command.manager.CommandManager;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.core.CraftLib;
 import org.bukkit.plugin.Plugin;
@@ -17,4 +18,5 @@ public interface tLib {
     Plugin getOwner();
 
     MenuManager getMenu();
+    CommandManager getCommand();
 }
