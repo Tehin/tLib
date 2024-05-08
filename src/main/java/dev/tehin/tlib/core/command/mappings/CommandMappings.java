@@ -3,7 +3,9 @@ package dev.tehin.tlib.core.command.mappings;
 import dev.tehin.tlib.core.command.references.NormalCommandReference;
 import dev.tehin.tlib.core.command.references.NodeCommandReference;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
+import dev.tehin.tlib.core.exceptions.SubCommandWithAliasException;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
 
@@ -14,21 +16,6 @@ public class CommandMappings {
 
     private final CommandMap bukkit;
     private final HashMap<String, CommandWrapper> commands = new HashMap<>();
-    private final HashMap<String, String> aliasesResolver = new HashMap<>();
-
-    public Optional<CommandWrapper> get(String main) {
-        String alias = aliasesResolver.get(main);
-
-        CommandWrapper wrapper;
-
-        if (alias != null) {
-            wrapper = commands.get(alias);
-        } else {
-            wrapper = commands.get(main);
-        }
-
-        return Optional.ofNullable(wrapper);
-    }
 
     public void register(CommandWrapper wrapper) {
         commands.put(wrapper.getPath().getAsString(), wrapper);
@@ -41,14 +28,14 @@ public class CommandMappings {
      * This removes the need for a specific map containing every sub-command
      * since they are loaded inside the Bukkit command
      */
+    @SneakyThrows
     public void load() {
         for (CommandWrapper wrapper : commands.values()) {
             String[] aliases = wrapper.getAlias();
 
-            // TODO: Throw an error if a sub command has an alias
-
-            if (aliases != null && aliases.length != 0) {
-                Arrays.stream(aliases).forEach(alias -> aliasesResolver.put(alias, wrapper.getPath().getAsString()));
+            // Prevent sub commands from having aliases
+            if (aliases != null && aliases.length > 0 && wrapper.isSubCommand()) {
+                throw new SubCommandWithAliasException(wrapper);
             }
 
             load(wrapper);
