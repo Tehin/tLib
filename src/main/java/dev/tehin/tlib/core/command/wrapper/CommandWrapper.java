@@ -1,11 +1,10 @@
 package dev.tehin.tlib.core.command.wrapper;
 
-import dev.tehin.tlib.core.command.CommandBase;
+import dev.tehin.tlib.api.command.CommandBase;
 import dev.tehin.tlib.core.command.args.CommandArgs;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
 @RequiredArgsConstructor
