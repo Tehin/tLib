@@ -8,6 +8,7 @@ import dev.tehin.tlib.api.command.manager.CommandManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.api.command.CommandBase;
 import dev.tehin.tlib.core.command.args.CommandPath;
+import dev.tehin.tlib.core.command.mappings.CommandMappings;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -22,8 +23,7 @@ import java.util.Optional;
 
 public class CraftCommandManager implements CommandManager {
 
-    private final HashMap<String, CommandWrapper> commands = new HashMap<>();
-    private final HashMap<String, String> aliasesResolver = new HashMap<>();
+    private final CommandMappings commands = new CommandMappings();
     private CommandMap bukkitMap;
 
     public CraftCommandManager() {
@@ -44,20 +44,6 @@ public class CraftCommandManager implements CommandManager {
         }
     }
 
-    private Optional<CommandWrapper> getCommand(String main) {
-        String alias = aliasesResolver.get(main);
-
-        CommandWrapper wrapper;
-
-        if (alias != null) {
-            wrapper = commands.get(alias);
-        } else {
-            wrapper = commands.get(main);
-        }
-
-        return Optional.ofNullable(wrapper);
-    }
-
     @Override
     public void register(CommandBase command) {
         CommandProperties properties = command.getClass().getAnnotation(CommandProperties.class);
@@ -67,12 +53,7 @@ public class CraftCommandManager implements CommandManager {
 
         CommandWrapper wrapper = new CommandWrapper(command, properties.executors(), new CommandPath(properties.path()));
 
-        if (aliases != null) {
-            wrapper.setAlias(aliases.value());
-
-            Arrays.stream(aliases.value()).forEach(alias -> aliasesResolver.put(alias, wrapper.getPath().getAsString()));
-        }
-
+        if (aliases != null) wrapper.setAlias(aliases.value());
         if (description != null) wrapper.setDescription(description.value());
         if (args != null) wrapper.setHardArgs(args.value());
 
@@ -81,12 +62,12 @@ public class CraftCommandManager implements CommandManager {
 
     // TODO: Move to a provider
     private void create(CommandWrapper wrapper) {
-        commands.put(wrapper.getPath().getAsString(), wrapper);
+        commands.register(wrapper);
 
         String main = wrapper.getPath().getParentCommand();
 
         // If the command has a main that is already registered, add the sub-command to it
-        if (getCommand(main).isPresent()) {
+        if (commands.get(main).isPresent()) {
             // TODO: Register sub-command to the wrapper
             return;
         }
@@ -95,11 +76,11 @@ public class CraftCommandManager implements CommandManager {
         //      if a command has no children, register that instead
         Command bukkit = new Command(main) {
             @Override
-            public boolean execute(CommandSender commandSender, String s, String[] strings) {
+            public boolean execute(CommandSender sender, String label, String[] args) {
                 // TODO: Logic for executing subcommands:
                 //      create a map somewhere that maps the subcommands
                 //      so they can be get and executed from here?
-                return wrapper.execute(commandSender, s, strings);
+                return wrapper.execute(sender, label, args);
             }
         };
 
