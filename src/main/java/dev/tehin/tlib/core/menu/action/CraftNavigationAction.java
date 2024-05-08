@@ -1,9 +1,9 @@
 package dev.tehin.tlib.core.menu.action;
 
-import dev.tehin.tlib.api.menu.MenuType;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.NavigationAction;
 import dev.tehin.tlib.api.tLib;
+import dev.tehin.tlib.core.menu.Menu;
 import lombok.Getter;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -11,9 +11,9 @@ import org.bukkit.event.inventory.ClickType;
 @Getter
 public class CraftNavigationAction extends CraftMenuAction implements NavigationAction {
 
-    private final MenuType navigation;
+    private final Class<? extends Menu> navigation;
 
-    public CraftNavigationAction(ClickType type, MenuType navigation) {
+    public CraftNavigationAction(ClickType type, Class<? extends Menu> navigation) {
         super(type, null);
 
         this.navigation = navigation;

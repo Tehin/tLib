@@ -1,7 +1,6 @@
 package dev.tehin.tlib.core.menu.manager;
 
 import dev.tehin.tlib.core.menu.Menu;
-import dev.tehin.tlib.api.menu.MenuType;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.listener.MenuListener;
@@ -15,7 +14,7 @@ import java.util.Optional;
 
 public class CraftMenuManager implements MenuManager {
 
-    private final HashMap<MenuType, Menu> guis;
+    private final HashMap<Class<? extends Menu>, Menu> guis;
 
     public CraftMenuManager() {
         guis = new HashMap<>();
@@ -36,16 +35,16 @@ public class CraftMenuManager implements MenuManager {
     }
 
     @Override
-    public Menu getMenu(MenuType type) {
+    public Menu getMenu(Class<? extends Menu>  type) {
         return guis.get(type);
     }
 
     @Override
     public void register(Menu menu) {
-        guis.put(menu.getType(), menu);
+        guis.put(menu.getClass(), menu);
     }
 
-    public void open(Player player, MenuType type) {
+    public void open(Player player, Class<? extends Menu>  type) {
         guis.get(type).open(player);
     }
 

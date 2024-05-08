@@ -1,7 +1,6 @@
 package dev.tehin.tlib.core.menu.craft;
 
 import dev.tehin.tlib.core.menu.Menu;
-import dev.tehin.tlib.api.menu.MenuType;
 import dev.tehin.tlib.api.menu.action.data.ActionData;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.craft.ItemProvider;
@@ -73,7 +72,7 @@ public class CraftItemProvider implements ItemProvider {
         return generate(builder, action);
     }
 
-    public ItemStack asNavigable(ItemBuilder builder, MenuType navigate) {
+    public ItemStack asNavigable(ItemBuilder builder, Class<? extends Menu>  navigate) {
         return asClickable(builder, new CraftNavigationAction(ClickType.LEFT, navigate));
     }
 }
