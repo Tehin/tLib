@@ -22,7 +22,7 @@ public abstract class Menu implements InventoryHolder {
 
     // Display and permission is set based on the annotation when registered
     private @Setter String display;
-    private @Setter @Getter String permission = "";
+    private @Setter @Getter String permission;
 
     public void open(Player player) {
         player.openInventory(get(player));

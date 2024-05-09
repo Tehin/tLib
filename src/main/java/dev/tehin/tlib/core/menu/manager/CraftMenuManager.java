@@ -7,7 +7,6 @@ import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.listener.MenuListener;
-import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
@@ -20,10 +19,10 @@ import java.util.Optional;
 
 public class CraftMenuManager implements MenuManager {
 
-    private final HashMap<Class<? extends Menu>, Menu> guis;
+    private final HashMap<Class<? extends Menu>, Menu> menus;
 
     public CraftMenuManager() {
-        guis = new HashMap<>();
+        menus = new HashMap<>();
 
         Bukkit.getPluginManager().registerEvents(new MenuListener(this), tLib.get().getOwner());
     }
@@ -43,7 +42,7 @@ public class CraftMenuManager implements MenuManager {
     @SneakyThrows
     @Override
     public Menu getMenu(Class<? extends Menu> type) {
-        Menu menu = guis.get(type);
+        Menu menu = menus.get(type);
         if (menu == null) throw new MenuNotRegisteredException(type);
 
         return menu;
@@ -59,12 +58,14 @@ public class CraftMenuManager implements MenuManager {
             if (properties == null) throw new NoPropertiesFoundException(Menu.class);
 
             menu.setDisplay(properties.display());
-            guis.put(clazz, menu);
+            menu.setPermission(properties.permission());
+
+            this.menus.put(clazz, menu);
         }
     }
 
-    public void open(Player player, Class<? extends Menu>  type) {
-        Menu menu = guis.get(type);
+    public void open(Player player, Class<? extends Menu> type) {
+        Menu menu = menus.get(type);
 
         if (!PermissionUtil.has(player, menu.getPermission())) {
             PermissionUtil.sendMessage(player);
