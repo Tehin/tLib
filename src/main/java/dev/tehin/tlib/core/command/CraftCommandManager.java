@@ -72,7 +72,11 @@ public class CraftCommandManager implements CommandManager {
 
         if (aliases != null) wrapper.setAlias(aliases.value());
         if (description != null) wrapper.setDescription(description.value());
-        if (args != null) wrapper.setHardArgs(args.value());
+        if (args != null) {
+            wrapper.setHardArgs(args.structure());
+            wrapper.setFixedLength(args.fixedLength());
+            wrapper.setUsage(args.usage());
+        }
 
         commands.register(wrapper);
     }

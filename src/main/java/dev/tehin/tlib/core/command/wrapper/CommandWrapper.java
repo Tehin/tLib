@@ -24,7 +24,11 @@ public class CommandWrapper {
 
     private String description = "";
     private String[] alias = new String[0];
+
+    // TODO: Move to an args holder?
     private Class<?>[] hardArgs;
+    private int fixedLength = -1;
+    private String usage;
 
     private boolean loaded = false;
 
@@ -36,6 +40,11 @@ public class CommandWrapper {
 
         if (!PermissionUtil.has(sender, permission)) {
             PermissionUtil.sendMessage(sender);
+            return false;
+        }
+
+        if (fixedLength != -1 && args.length != fixedLength) {
+            MessageUtil.send(sender, "&cUsage: /" + getUsage());
             return false;
         }
 
