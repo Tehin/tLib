@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.command.CommandSender;
 
+import java.util.Arrays;
+
 @RequiredArgsConstructor
 @Getter
 @Setter
@@ -27,9 +29,14 @@ public class CommandWrapper {
     private boolean loaded = false;
 
     public boolean execute(CommandSender sender, String alias, String[] args) {
+        if (isExecutorSupported(sender)) {
+            MessageUtil.send(sender, "&cYou can't execute this command.");
+            return false;
+        }
+
         if (!PermissionUtil.has(sender, permission)) {
             PermissionUtil.sendMessage(sender);
-            return true;
+            return false;
         }
 
         command.execute(new CommandArgs(sender, alias, args));
@@ -39,5 +46,10 @@ public class CommandWrapper {
 
     public boolean isSubCommand() {
         return path.isSubCommand();
+    }
+
+    private boolean isExecutorSupported(CommandSender sender) {
+       return Arrays.stream(executors)
+               .anyMatch(executor -> sender.getClass().isInstance(executor));
     }
 }

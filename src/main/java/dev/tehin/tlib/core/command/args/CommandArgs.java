@@ -11,4 +11,13 @@ public class CommandArgs {
     private final CommandSender sender;
     private final String alias;
     private final String[] args;
+
+    public String getArg(int index) {
+        return args[index];
+    }
+
+    public int getArgsLength() {
+        return args.length;
+    }
+
 }
