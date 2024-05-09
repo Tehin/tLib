@@ -1,6 +1,8 @@
 package dev.tehin.tlib.core.menu.manager;
 
+import dev.tehin.tlib.api.menu.annotations.MenuProperties;
 import dev.tehin.tlib.core.exceptions.MenuNotRegisteredException;
+import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
@@ -45,10 +47,17 @@ public class CraftMenuManager implements MenuManager {
         return menu;
     }
 
+    @SneakyThrows
     @Override
     public void register(Menu... menus) {
         for (Menu menu : menus) {
-            guis.put(menu.getClass(), menu);
+            Class<? extends Menu> clazz = menu.getClass();
+            MenuProperties properties = clazz.getAnnotation(MenuProperties.class);
+
+            if (properties == null) throw new NoPropertiesFoundException(Menu.class);
+
+            menu.setDisplay(properties.display());
+            guis.put(clazz, menu);
         }
     }
 

@@ -24,6 +24,7 @@ public class CommandWrapper {
     private boolean loaded = false;
 
     public boolean execute(CommandSender sender, String alias, String[] args) {
+        // TODO: CHECK PERMISSION
         command.execute(new CommandArgs(sender, alias, args));
 
         return true;

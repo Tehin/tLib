@@ -4,6 +4,8 @@ import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.craft.ItemProvider;
 import dev.tehin.tlib.core.menu.craft.CraftItemProvider;
 import dev.tehin.tlib.utilities.MessageUtil;
+import lombok.Getter;
+import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -15,17 +17,12 @@ import java.util.Optional;
 
 public abstract class Menu implements InventoryHolder {
 
-    private final HashMap<Integer, MenuAction> actions;
-    private final String display;
+    private final HashMap<Integer, MenuAction> actions = new HashMap<>();
+    protected final ItemProvider craft = new CraftItemProvider(this);
 
-    protected final ItemProvider craft;
-
-    public Menu(String display) {
-        this.actions = new HashMap<>();
-        this.craft = new CraftItemProvider(this);
-
-        this.display = display;
-    }
+    // Display is set based on the annotation when registered
+    @Setter
+    private String display;
 
     public void open(Player player) {
         player.openInventory(get(player));
