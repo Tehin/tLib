@@ -3,6 +3,8 @@ package dev.tehin.tlib.core.command.wrapper;
 import dev.tehin.tlib.api.command.CommandBase;
 import dev.tehin.tlib.core.command.args.CommandArgs;
 import dev.tehin.tlib.core.command.args.CommandPath;
+import dev.tehin.tlib.utilities.MessageUtil;
+import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -15,16 +17,21 @@ public class CommandWrapper {
 
     private final CommandBase command;
     private final Class<? extends CommandSender>[] executors;
+    private final String permission;
     private final CommandPath path;
 
-    private String description = "", permission;
+    private String description = "";
     private String[] alias = new String[0];
     private Class<?>[] hardArgs;
 
     private boolean loaded = false;
 
     public boolean execute(CommandSender sender, String alias, String[] args) {
-        // TODO: CHECK PERMISSION
+        if (!PermissionUtil.has(sender, permission)) {
+            MessageUtil.sendNoPermission(sender);
+            return true;
+        }
+
         command.execute(new CommandArgs(sender, alias, args));
 
         return true;

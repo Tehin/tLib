@@ -11,6 +11,7 @@ import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.core.command.mappings.CommandMappings;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import dev.tehin.tlib.core.exceptions.CommandsAlreadyRegisteredException;
+import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import lombok.SneakyThrows;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -57,13 +58,17 @@ public class CraftCommandManager implements CommandManager {
         this.commands.load();
     }
 
+    @SneakyThrows
     private void register(CommandBase command) {
         CommandProperties properties = command.getClass().getAnnotation(CommandProperties.class);
+        if (properties == null) throw new NoPropertiesFoundException(CommandBase.class);
+
+        // These are not required
         CommandAliases aliases = command.getClass().getAnnotation(CommandAliases.class);
         CommandDescription description = command.getClass().getAnnotation(CommandDescription.class);
         CommandArgsStructure args = command.getClass().getAnnotation(CommandArgsStructure.class);
 
-        CommandWrapper wrapper = new CommandWrapper(command, properties.executors(), new CommandPath(properties.path()));
+        CommandWrapper wrapper = new CommandWrapper(command, properties.executors(), properties.permission(), new CommandPath(properties.path()));
 
         if (aliases != null) wrapper.setAlias(aliases.value());
         if (description != null) wrapper.setDescription(description.value());
