@@ -46,8 +46,10 @@ public class CraftMenuManager implements MenuManager {
     }
 
     @Override
-    public void register(Menu menu) {
-        guis.put(menu.getClass(), menu);
+    public void register(Menu... menus) {
+        for (Menu menu : menus) {
+            guis.put(menu.getClass(), menu);
+        }
     }
 
     public void open(Player player, Class<? extends Menu>  type) {

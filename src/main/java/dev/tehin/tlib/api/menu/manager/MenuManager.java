@@ -8,9 +8,9 @@ public interface MenuManager {
 
     /**
      * Registers the {@link Menu} for later use
-     * @param menu Menu to be registered
+     * @param menus Array of {@link Menu} to be registered
      */
-    void register(Menu menu);
+    void register(Menu... menus);
 
     /**
      * Gets the {@link Menu} based on its class

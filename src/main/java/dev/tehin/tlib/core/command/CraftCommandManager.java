@@ -48,7 +48,7 @@ public class CraftCommandManager implements CommandManager {
 
     @SneakyThrows
     @Override
-    public void register(CommandBase[] commands) {
+    public void register(CommandBase... commands) {
         if (this.registered) throw new CommandsAlreadyRegisteredException();
 
         this.registered = true;

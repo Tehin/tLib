@@ -6,7 +6,7 @@ public interface CommandManager {
 
     /**
      * Registers and loads the commands
-     * @param command Commands to be registered
+     * @param commands Commands to be registered
      */
-    void register(CommandBase[] command);
+    void register(CommandBase... commands);
 }
