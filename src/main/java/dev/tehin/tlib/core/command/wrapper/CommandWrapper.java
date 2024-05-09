@@ -5,6 +5,7 @@ import dev.tehin.tlib.core.command.args.CommandArgs;
 import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
+import dev.tehin.tlib.utilities.ReflectionUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -33,7 +34,7 @@ public class CommandWrapper {
     private boolean loaded = false;
 
     public boolean execute(CommandSender sender, String alias, String[] args) {
-        if (isExecutorSupported(sender)) {
+        if (!isExecutorSupported(sender)) {
             MessageUtil.send(sender, "&cYou can't execute this command.");
             return false;
         }
@@ -59,6 +60,6 @@ public class CommandWrapper {
 
     private boolean isExecutorSupported(CommandSender sender) {
        return Arrays.stream(executors)
-               .anyMatch(executor -> sender.getClass().isInstance(executor));
+               .anyMatch(executor -> ReflectionUtil.isChild(executor, sender.getClass()));
     }
 }
