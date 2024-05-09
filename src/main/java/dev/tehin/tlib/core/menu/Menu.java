@@ -60,6 +60,12 @@ public abstract class Menu implements InventoryHolder {
         return this.actions.size();
     }
 
+    @Override
+    public Inventory getInventory() {
+        // TODO: Check to prevent unwanted inventories creation
+        return Bukkit.createInventory(this, 9);
+    }
+
     protected abstract ItemStack[] create(Player player);
 
 }
