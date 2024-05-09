@@ -28,7 +28,7 @@ public class CommandWrapper {
 
     public boolean execute(CommandSender sender, String alias, String[] args) {
         if (!PermissionUtil.has(sender, permission)) {
-            MessageUtil.sendNoPermission(sender);
+            PermissionUtil.sendMessage(sender);
             return true;
         }
 

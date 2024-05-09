@@ -5,6 +5,6 @@ import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MenuProperties {
-    String display() default "&7&lDefault tLib Display";
+    String display();
     String permission() default "";
 }

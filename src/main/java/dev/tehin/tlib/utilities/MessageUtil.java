@@ -14,7 +14,4 @@ public class MessageUtil {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
 
-    public static void sendNoPermission(CommandSender player) {
-        send(player, "&cYou don't have enough permissions to do this.");
-    }
 }

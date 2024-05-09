@@ -7,6 +7,8 @@ import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.listener.MenuListener;
+import dev.tehin.tlib.utilities.MessageUtil;
+import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -62,7 +64,14 @@ public class CraftMenuManager implements MenuManager {
     }
 
     public void open(Player player, Class<? extends Menu>  type) {
-        guis.get(type).open(player);
+        Menu menu = guis.get(type);
+
+        if (PermissionUtil.has(player, menu.getPermission())) {
+            PermissionUtil.sendMessage(player);
+            return;
+        }
+
+        menu.open(player);
     }
 
 

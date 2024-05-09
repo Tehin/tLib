@@ -20,9 +20,9 @@ public abstract class Menu implements InventoryHolder {
     private final HashMap<Integer, MenuAction> actions = new HashMap<>();
     protected final ItemProvider craft = new CraftItemProvider(this);
 
-    // Display is set based on the annotation when registered
-    @Setter
-    private String display;
+    // Display and permission is set based on the annotation when registered
+    private @Setter String display;
+    private @Setter @Getter String permission = "";
 
     public void open(Player player) {
         player.openInventory(get(player));
