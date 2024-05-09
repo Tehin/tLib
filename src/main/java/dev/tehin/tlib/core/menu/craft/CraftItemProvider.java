@@ -52,10 +52,12 @@ public class CraftItemProvider implements ItemProvider {
         return item;
     }
 
+    @Override
     public ItemStack asEmpty(ItemBuilder builder) {
         return generate(builder, null);
     }
 
+    @Override
     public ItemStack asCommand(ItemBuilder builder, String command) {
         Consumer<Player> executor = (player) -> {
             TaskUtil.ensureMain(() -> {
@@ -68,10 +70,12 @@ public class CraftItemProvider implements ItemProvider {
         return generate(builder, action);
     }
 
+    @Override
     public ItemStack asClickable(ItemBuilder builder, MenuAction action) {
         return generate(builder, action);
     }
 
+    @Override
     public ItemStack asNavigable(ItemBuilder builder, Class<? extends Menu>  navigate) {
         return asClickable(builder, new CraftNavigationAction(ClickType.LEFT, navigate));
     }

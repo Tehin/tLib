@@ -26,7 +26,7 @@ public class CraftMenuAction implements MenuAction {
     public void execute(Player player) {
         if (this.getData() == null) throw new RuntimeException("Tried to execute an inventory action that has no identifier, you MUST set the name with InventoryAction.setData(ActionData)");
 
-        action.accept(player);
+        getAction().accept(player);
     }
 
     @Override
