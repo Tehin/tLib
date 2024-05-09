@@ -6,7 +6,7 @@
 
     <groupId>dev.tehin</groupId>
     <artifactId>tLib</artifactId>
-    <version>1.0</version>
+    <version>latest</version>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
