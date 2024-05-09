@@ -66,7 +66,7 @@ public class CraftMenuManager implements MenuManager {
     public void open(Player player, Class<? extends Menu>  type) {
         Menu menu = guis.get(type);
 
-        if (PermissionUtil.has(player, menu.getPermission())) {
+        if (!PermissionUtil.has(player, menu.getPermission())) {
             PermissionUtil.sendMessage(player);
             return;
         }
