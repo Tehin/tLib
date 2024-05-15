@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemUtils {
+public class ItemUtil {
 
     public static boolean isArmor(Material material) {
         String[] pieces = {"chestplate", "leggings", "helmet", "boots"};

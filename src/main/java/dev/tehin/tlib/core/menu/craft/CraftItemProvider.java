@@ -7,7 +7,7 @@ import dev.tehin.tlib.api.menu.craft.ItemProvider;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.action.CraftMenuAction;
 import dev.tehin.tlib.core.menu.action.CraftNavigationAction;
-import dev.tehin.tlib.utilities.item.ItemUtils;
+import dev.tehin.tlib.utilities.item.ItemUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.AllArgsConstructor;
 import org.bukkit.entity.Player;
@@ -46,7 +46,7 @@ public class CraftItemProvider implements ItemProvider {
                 owner.addAction(id, action);
             } else id = cache.get();
 
-            item = ItemUtils.addTag(item, "action", String.valueOf(id));
+            item = ItemUtil.addTag(item, "action", String.valueOf(id));
         }
 
         return item;
@@ -71,7 +71,11 @@ public class CraftItemProvider implements ItemProvider {
     }
 
     @Override
-    public ItemStack asClickable(ItemBuilder builder, MenuAction action) {
+    public ItemStack asClickable(ItemBuilder builder, Consumer<Player> action) {
+        return asClickable(builder, new CraftMenuAction(ClickType.LEFT, action));
+    }
+
+    private ItemStack asClickable(ItemBuilder builder, MenuAction action) {
         return generate(builder, action);
     }
 

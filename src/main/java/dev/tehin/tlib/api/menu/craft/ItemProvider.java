@@ -3,7 +3,10 @@ package dev.tehin.tlib.api.menu.craft;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.Menu;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.function.Consumer;
 
 public interface ItemProvider {
 
@@ -32,7 +35,7 @@ public interface ItemProvider {
      * @param action The action instance to be executed
      * @return {@link ItemStack} that has been created and registered
      */
-    ItemStack asClickable(ItemBuilder builder, MenuAction action);
+    ItemStack asClickable(ItemBuilder builder, Consumer<Player> action);
 
     /**
      * Creates an item that will navigate through menus when

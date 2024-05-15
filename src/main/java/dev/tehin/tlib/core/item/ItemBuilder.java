@@ -1,7 +1,7 @@
 package dev.tehin.tlib.core.item;
 
 import dev.tehin.tlib.utilities.MessageUtil;
-import dev.tehin.tlib.utilities.item.ItemUtils;
+import dev.tehin.tlib.utilities.item.ItemUtil;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.bukkit.DyeColor;
@@ -46,7 +46,7 @@ public class ItemBuilder {
         }
 
         if (glow) {
-            base = ItemUtils.addGlow(base);
+            base = ItemUtil.addGlow(base);
         }
 
         base.setItemMeta(meta);

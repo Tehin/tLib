@@ -3,7 +3,7 @@ package dev.tehin.tlib.core.menu.listener;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
-import dev.tehin.tlib.utilities.item.ItemUtils;
+import dev.tehin.tlib.utilities.item.ItemUtil;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -27,7 +27,7 @@ public class MenuListener implements Listener {
         e.setCancelled(true);
 
         Menu menu = type.get();
-        Optional<String> id = ItemUtils.getTag(e.getCurrentItem(), "action");
+        Optional<String> id = ItemUtil.getTag(e.getCurrentItem(), "action");
 
         if (!id.isPresent()) return;
 
