@@ -25,7 +25,7 @@ public class NodeCommandReference extends Command {
 
         // Send to the sub-command only its arguments, ignoring the sub-command path
         int length = match.getPath().getSubCommands().length;
-        String[] parsedArgs = Arrays.copyOfRange(args, length + 1, args.length);
+        String[] parsedArgs = Arrays.copyOfRange(args, length, args.length);
 
         match.execute(sender, label, parsedArgs);
         return false;
