@@ -46,7 +46,7 @@ public class NodeCommandReference extends Command {
          * are NOT included in the sub-command path
          */
         for (String key : nodes.keySet()) {
-            if (!path.getAsString().contains(key)) continue;
+            if (!key.contains(path.getAsString())) continue;
 
             if (best == null) {
                 best = key;

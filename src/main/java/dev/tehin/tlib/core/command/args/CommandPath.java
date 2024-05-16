@@ -21,7 +21,6 @@ public class CommandPath {
 
     public CommandPath(String path) {
         this.args = path.split("\\.");
-
         this.setSubCommand(args.length > 0);
 
         this.asString = path.toLowerCase(Locale.ROOT);
