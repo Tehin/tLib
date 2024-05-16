@@ -2,6 +2,7 @@ package dev.tehin.tlib.core.command.references;
 
 import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
+import dev.tehin.tlib.utilities.MessageUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -23,12 +24,20 @@ public class NodeCommandReference extends Command {
     public boolean execute(CommandSender sender, String label, String[] args) {
         CommandWrapper match = match(CommandPath.parse(args));
 
+        // Prevent NPEs from giving error messages if sub-command not found
+        // TODO: Replace with parent command help message
+        if (match == null) {
+            MessageUtil.send(sender, "&cSpecified sub-command was not found, please use '/help'");
+            return false;
+        }
+
         // Send to the sub-command only its arguments, ignoring the sub-command path
         int length = match.getPath().getSubCommands().length;
+
         String[] parsedArgs = Arrays.copyOfRange(args, length, args.length);
 
         match.execute(sender, label, parsedArgs);
-        return false;
+        return true;
     }
 
     // TODO: Improve performance if really needed?
