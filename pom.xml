@@ -15,11 +15,15 @@
     </properties>
 
     <distributionManagement>
+        <!-- ... Some other Distribution repository definitions -->
+
         <repository>
-            <id>github</id>
-            <name>GitHub Tehin Packages</name>
-            <url>https://maven.pkg.github.com/Tehin/tLib</url>
+            <id>repsy</id>
+            <name>tLib Repository</name>
+            <url>https://repo.repsy.io/mvn/tehin/tlib</url>
         </repository>
+
+        <!-- ... Some other Distribution repository definitions -->
     </distributionManagement>
 
     <build>

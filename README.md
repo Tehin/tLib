@@ -8,18 +8,20 @@ Currently, the library has been tested on **Spigot 1.8**, but it should work for
 In order to use the project, you must add it as a maven compile dependency
 
 ```xml
+<!--Add the tLib repository-->
 <repositories>
   <repository>
-    <id>tlib-repo</id>
-    <url>https://raw.github.com/Tehin/tLib/repository/</url>
+    <id>repsy</id>
+    <url>https://repo.repsy.io/mvn/tehin/tlib</url>
   </repository>
 </repositories>
 
+<!--Add dependency of the latest library version-->
 <dependencies>
   <dependency>
     <groupId>dev.tehin</groupId>
     <artifactId>tlib</artifactId>
-    <version>1.0</version>
+    <version>1.1.0</version>
   </dependency>
 </dependencies>
 ```
