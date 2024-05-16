@@ -6,7 +6,7 @@
 
     <groupId>dev.tehin</groupId>
     <artifactId>tLib</artifactId>
-    <version>latest</version>
+    <version>1.1</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -57,8 +57,14 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot</artifactId>
+            <artifactId>spigot-api</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.azbh111</groupId>
+            <artifactId>craftbukkit-1.8.8</artifactId>
+            <version>R</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
