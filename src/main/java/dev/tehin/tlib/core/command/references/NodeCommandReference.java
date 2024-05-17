@@ -32,7 +32,7 @@ public class NodeCommandReference extends Command {
             return false;
         }
 
-        // TODO -- FIX: When the command is empty (no sub-commands) this throws an NPE
+
         // Send to the sub-command only its arguments, ignoring the sub-command path
         int length = match.get().getPath().getSubCommands().length;
 
@@ -43,7 +43,9 @@ public class NodeCommandReference extends Command {
     }
 
     // TODO: Improve performance if really needed?
-    private Optional<CommandWrapper> match(CommandPath path) {
+    private Optional<CommandWrapper> match(CommandPath arg) {
+        if (arg.getSubCommands() == null) return Optional.empty();
+
         /*
          * We traverse all the nodes, in order to find the best match
          *
@@ -53,7 +55,7 @@ public class NodeCommandReference extends Command {
          * This is done due to the fact that sub-commands have arguments, which
          * are NOT included in the sub-command path
          */
-        String bestMatch = AlgorithmicUtil.getBestMatch(nodes.keySet(), "\\.", path.getSubCommands());
+        String bestMatch = AlgorithmicUtil.getBestMatch(nodes.keySet(), "\\.", arg.getSubCommands());
 
         return Optional.ofNullable(nodes.get(bestMatch));
     }

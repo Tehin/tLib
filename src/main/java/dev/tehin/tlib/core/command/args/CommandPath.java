@@ -21,10 +21,9 @@ public class CommandPath {
 
     public CommandPath(String path) {
         this.args = path.split("\\.");
-        this.setSubCommand(args.length > 0);
-
         this.asString = path.toLowerCase(Locale.ROOT);
 
+        this.setSubCommand(!path.isEmpty() && args.length > 0);
         if (isSubCommand()) subCommands = Arrays.copyOfRange(args, 1, args.length);
     }
 
