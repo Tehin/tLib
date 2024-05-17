@@ -2,6 +2,7 @@ package dev.tehin.tlib.core.command.references;
 
 import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
+import dev.tehin.tlib.utilities.AlgorithmicUtil;
 import dev.tehin.tlib.utilities.MessageUtil;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -22,51 +23,38 @@ public class NodeCommandReference extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String label, String[] args) {
-        CommandWrapper match = match(CommandPath.parse(args));
+        Optional<CommandWrapper> match = match(CommandPath.parse(args));
 
         // Prevent NPEs from giving error messages if sub-command not found
         // TODO: Replace with parent command help message
-        if (match == null) {
+        if (!match.isPresent()) {
             MessageUtil.send(sender, "&cSpecified sub-command was not found, please use '/help'");
             return false;
         }
 
+        // TODO -- FIX: When the command is empty (no sub-commands) this throws an NPE
         // Send to the sub-command only its arguments, ignoring the sub-command path
-        int length = match.getPath().getSubCommands().length;
+        int length = match.get().getPath().getSubCommands().length;
 
         String[] parsedArgs = Arrays.copyOfRange(args, length, args.length);
 
-        match.execute(sender, label, parsedArgs);
+        match.get().execute(sender, label, parsedArgs);
         return true;
     }
 
     // TODO: Improve performance if really needed?
-    private CommandWrapper match(CommandPath path) {
-        String best = null;
-
+    private Optional<CommandWrapper> match(CommandPath path) {
         /*
-         * We traverse all the nodes, checking if the key contains a part
-         * of the required path
+         * We traverse all the nodes, in order to find the best match
          *
-         * We return the longest key found since it will always
-         * be the correct one
+         * If there are more than one option with the match rate, the first
+         * one found will be returned
          *
          * This is done due to the fact that sub-commands have arguments, which
          * are NOT included in the sub-command path
          */
-        for (String key : nodes.keySet()) {
-            if (!key.contains(path.getAsString())) continue;
+        String bestMatch = AlgorithmicUtil.getBestMatch(nodes.keySet(), "\\.", path.getSubCommands());
 
-            if (best == null) {
-                best = key;
-                continue;
-            }
-
-            if (best.length() >= key.length()) continue;
-
-            best = key;
-        }
-
-        return nodes.get(best);
+        return Optional.ofNullable(nodes.get(bestMatch));
     }
 }

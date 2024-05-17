@@ -37,4 +37,9 @@ public class CommandPath {
     public String getParentCommand() {
         return args[0];
     }
+
+    @Override
+    public String toString() {
+        return getAsString();
+    }
 }
