@@ -1,0 +1,21 @@
+package dev.tehin.tlib.utilities;
+
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.TextComponent;
+
+public class MessageUtil {
+
+    public static TextComponent format(String msg) {
+        return new TextComponent(color(msg));
+    }
+
+    public static void send(CommandSender sender, String msg) {
+        sender.sendMessage(format(msg));
+    }
+
+    public static String color(String msg) {
+        return ChatColor.translateAlternateColorCodes('&', msg);
+    }
+
+}
