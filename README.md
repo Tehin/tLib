@@ -5,7 +5,7 @@ consumed on the basic plugin functions, such as **Commands** or **Menus**.
 Currently, the library has been tested on **Spigot 1.8**, but it should work for every version.
 
 # Usage
-In order to use the project, you must add it as a maven compile dependency
+In order to use the project, you must add it as a maven compile dependency:
 
 ```xml
 <!--Add the tLib repository-->
@@ -16,12 +16,31 @@ In order to use the project, you must add it as a maven compile dependency
   </repository>
 </repositories>
 
-<!--Add dependency of the latest library version-->
+<!--Add dependency of the latest Spigot library version-->
 <dependencies>
   <dependency>
     <groupId>dev.tehin</groupId>
-    <artifactId>tlib</artifactId>
-    <version>1.1.0</version>
+    <artifactId>tlib-spigot</artifactId>
+    <version>1.2.0</version>
+  </dependency>
+</dependencies>
+```
+Or, if you prefer to use our library in BungeeCord:
+```xml
+<!--Add the tLib repository-->
+<repositories>
+  <repository>
+    <id>repsy</id>
+    <url>https://repo.repsy.io/mvn/tehin/tlib</url>
+  </repository>
+</repositories>
+
+<!--Add dependency of the latest BungeeCord library version-->
+<dependencies>
+  <dependency>
+    <groupId>dev.tehin</groupId>
+    <artifactId>tlib-bungee</artifactId>
+    <version>1.0.0</version>
   </dependency>
 </dependencies>
 ```

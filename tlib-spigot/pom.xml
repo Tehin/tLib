@@ -7,7 +7,7 @@
     <groupId>dev.tehin</groupId>
     <artifactId>tlib-spigot</artifactId>
     <name>tlib-spigot</name>
-    <version>1.2</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <properties>
