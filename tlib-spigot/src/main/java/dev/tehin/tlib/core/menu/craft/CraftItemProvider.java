@@ -60,7 +60,7 @@ public class CraftItemProvider implements ItemProvider {
     @Override
     public ItemStack asCommand(ItemBuilder builder, String command) {
         Consumer<Player> executor = (player) -> {
-            TaskUtil.ensureMain(() -> {
+            TaskUtil.runSync(() -> {
                 player.chat("/" + command);
                 player.closeInventory();
             });
