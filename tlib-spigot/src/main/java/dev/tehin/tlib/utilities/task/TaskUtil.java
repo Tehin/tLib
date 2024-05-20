@@ -1,5 +1,6 @@
 package dev.tehin.tlib.utilities.task;
 
+import dev.tehin.tlib.api.configuration.holders.TasksConfig;
 import dev.tehin.tlib.api.tLib;
 import org.bukkit.Bukkit;
 
@@ -7,15 +8,18 @@ import java.util.concurrent.*;
 
 public class TaskUtil {
 
-    // TODO: Add as TaskConfig
-    private final static int CORE_POOL_SIZE = 1, MAXIMUM_POOL_SIZE = 3,  THREAD_KEEPALIVE = 60000;
 
     // TODO: Add dependency, compile and change to own ParallelThreads system
-    private static final ThreadPoolExecutor pool =
-            new ThreadPoolExecutor(CORE_POOL_SIZE,
-                    MAXIMUM_POOL_SIZE,
-                    THREAD_KEEPALIVE, TimeUnit.MILLISECONDS,
-                    new LinkedBlockingQueue<>());
+    private static ThreadPoolExecutor POOL = null;
+
+    private static void loadPool() {
+        TasksConfig config = tLib.get().getConfig().tasks();
+
+        POOL = new ThreadPoolExecutor(config.getCorePoolSize(),
+                config.getMaximumPoolSize(),
+                config.getThreadKeepAliveInMs(), TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>());
+    }
 
     /**
      * Runs the task inside the main thread.
@@ -42,7 +46,9 @@ public class TaskUtil {
      * @param task The task to be executed
      */
     public static void runAsync(Runnable task) {
-        pool.execute(task);
+        if (POOL == null) loadPool();
+
+        POOL.execute(task);
     }
 
     /**
@@ -63,7 +69,9 @@ public class TaskUtil {
      * @return Future got by our {@link ThreadPoolExecutor}
      */
     public static Future<?> runAsyncLater(Runnable task, int delayInTicks) {
-        return pool.submit(() -> {
+        if (POOL == null) loadPool();
+
+        return POOL.submit(() -> {
             try {
                 TimeUnit.MILLISECONDS.sleep(delayInTicks * 50L);
                 task.run();

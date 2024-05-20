@@ -42,6 +42,7 @@ public interface tLib {
 
     Plugin getOwner();
 
+    LibConfiguration getConfig();
     MenuManager getMenu();
     CommandManager getCommand();
 }
