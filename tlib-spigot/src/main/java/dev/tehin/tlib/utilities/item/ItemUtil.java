@@ -1,13 +1,14 @@
 package dev.tehin.tlib.utilities.item;
 
 import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagList;
 import net.minecraft.server.v1_8_R3.NBTTagString;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.Arrays;
@@ -22,18 +23,12 @@ public class ItemUtil {
         return Arrays.stream(pieces).anyMatch(piece -> material.name().toLowerCase().contains(piece));
     }
 
-    public static ItemStack addGlow(ItemStack item){
-        net.minecraft.server.v1_8_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
-        NBTTagCompound tag = null;
-        if (!nmsStack.hasTag()) {
-            tag = new NBTTagCompound();
-            nmsStack.setTag(tag);
-        }
-        if (tag == null) tag = nmsStack.getTag();
-        NBTTagList ench = new NBTTagList();
-        tag.set("ench", ench);
-        nmsStack.setTag(tag);
-        return CraftItemStack.asCraftMirror(nmsStack);
+    public static void addGlow(ItemStack item){
+        ItemMeta meta = item.getItemMeta();
+        meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
+        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+
+        item.setItemMeta(meta);
     }
 
     public static ItemStack addTag(ItemStack item, String tag, String content) {
