@@ -29,7 +29,7 @@ public class ItemUtil {
     }
 
     public static ItemStack addTag(ItemStack item, String tag, String content) {
-        return NBTEditor.set(item, tag, content);
+        return NBTEditor.set(item, content, tag);
     }
 
     public static Optional<String> getTag(ItemStack item, String tag) {
