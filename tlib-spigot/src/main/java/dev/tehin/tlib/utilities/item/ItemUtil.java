@@ -32,25 +32,11 @@ public class ItemUtil {
     }
 
     public static ItemStack addTag(ItemStack item, String tag, String content) {
-        net.minecraft.server.v1_8_R3.ItemStack nms = CraftItemStack.asNMSCopy(item);
-
-        NBTTagCompound nbt = (nms.hasTag()) ? nms.getTag() : new NBTTagCompound();
-
-        nbt.set(tag, new NBTTagString(content));
-
-        nms.setTag(nbt);
-        return CraftItemStack.asBukkitCopy(nms);
+        return NBTEditor.set(item, tag, content);
     }
 
     public static Optional<String> getTag(ItemStack item, String tag) {
-        net.minecraft.server.v1_8_R3.ItemStack nms = CraftItemStack.asNMSCopy(item);
-
-        if (nms == null || !nms.hasTag()) return Optional.empty();
-        String result = nms.getTag().getString(tag);
-
-        if (result.length() == 0) return Optional.empty();
-
-        return Optional.of(result);
+        return NBTEditor.getString(item, tag);
     }
 
     public static void addColor(DyeColor color, ItemStack... leatherArmors) {
