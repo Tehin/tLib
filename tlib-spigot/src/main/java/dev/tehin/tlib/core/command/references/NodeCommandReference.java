@@ -4,6 +4,7 @@ import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import dev.tehin.tlib.utilities.AlgorithmicUtil;
 import dev.tehin.tlib.utilities.MessageUtil;
+import org.apache.commons.lang3.ArrayUtils;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -17,21 +18,54 @@ public class NodeCommandReference extends Command {
         super(name);
 
         for (CommandWrapper subCommand : subCommands) {
-            nodes.put(subCommand.getPath().getAsString(), subCommand);
+            /*
+             * Replace the parent command from our nodes
+             * since we base our search in the sub-commands provided.
+             *
+             * We need to ignore the parent command on search to
+             * prevent unwanted results (nodes comparing to parent, etc.)
+             */
+            String asString = subCommand.getPath()
+                    .getAsString()
+                    .replaceFirst(name + ".", "");
+
+            nodes.put(asString, subCommand);
         }
     }
 
-    @Override
-    public boolean execute(CommandSender sender, String label, String[] args) {
-        Optional<CommandWrapper> match = match(CommandPath.parse(args));
+    // TODO: Replace with parent command help message
+    private void sendHelp(CommandSender sender) {
+        MessageUtil.send(sender, "&cSpecified sub-command was not found, please use '/help'");
+    }
 
-        // Prevent NPEs from giving error messages if sub-command not found
-        // TODO: Replace with parent command help message
-        if (!match.isPresent()) {
-            MessageUtil.send(sender, "&cSpecified sub-command was not found, please use '/help'");
+    @Override
+    public boolean execute(CommandSender sender, String label, String[] bukkitArgs) {
+        // Require at least a sub-command for executing, if not, send help message
+        if (bukkitArgs.length == 0) {
+            sendHelp(sender);
             return false;
         }
 
+        /*
+         * Add the parent command to the path
+         *
+         * This is done so the CommandPath always contains the whole
+         * path, not only arguments of the sub-command
+         *
+         * Even if we only use the sub-commands for searching, the
+         * parent command needs to be inside the CommandPath for
+         * structure purposes
+         */
+        String[] args = {label};
+        args = ArrayUtils.addAll(args, bukkitArgs);
+
+        Optional<CommandWrapper> match = match(CommandPath.parse(args));
+
+        // Prevent NPEs from giving error messages if sub-command not found
+        if (!match.isPresent()) {
+            sendHelp(sender);
+            return false;
+        }
 
         // Send to the sub-command only its arguments, ignoring the sub-command path
         int length = match.get().getPath().getSubCommands().length;
@@ -55,8 +89,7 @@ public class NodeCommandReference extends Command {
          * This is done due to the fact that sub-commands have arguments, which
          * are NOT included in the sub-command path
          */
-        String bestMatch = AlgorithmicUtil.getBestMatch(nodes.keySet(), "\\.", arg.getSubCommands());
-
-        return Optional.ofNullable(nodes.get(bestMatch));
+        Optional<String> best = AlgorithmicUtil.getBestMatch(nodes.keySet(), "\\.", arg.getSubCommands());
+        return best.map(nodes::get);
     }
 }

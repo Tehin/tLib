@@ -3,6 +3,7 @@ package dev.tehin.tlib.core.command.args;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -30,14 +31,26 @@ public class CommandPath {
         if (isSubCommand()) subCommands = Arrays.copyOfRange(args, 1, args.length);
     }
 
+    @SneakyThrows
     public static CommandPath parse(String[] args) {
+        if (args.length == 0) throw new IllegalArgumentException("No arguments on CommandPath parsing were found");
+
         String join = String.join(".", args);
+
+        if (args.length == 1) join = args[0];
 
         return new CommandPath(join);
     }
 
     public String getParentCommand() {
         return args[0];
+    }
+
+    /**
+     * @return The complete path, including parent command if sub-command
+     */
+    public String[] getCompletePath() {
+        return args;
     }
 
     @Override

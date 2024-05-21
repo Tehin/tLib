@@ -2,10 +2,11 @@ package dev.tehin.tlib.utilities;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Optional;
 
 public class AlgorithmicUtil {
 
-    public static <T> String getBestMatch(Collection<T> collection, String regex, String[] target) {
+    public static <T> Optional<String> getBestMatch(Collection<T> collection, String regex, String[] target) {
         String bestMatch = null;
         int bestMatchLength = 0;
 
@@ -13,13 +14,14 @@ public class AlgorithmicUtil {
             String asString = object.toString();
             String[] asArray = asString.split(regex);
 
-            int matches = getMatchesCountInOrder(asArray, target);
-
             /*
              * NOTE: We can't skip the matches count even if it's the first one,
              * since we need to check for better options
              */
-            if (bestMatch == null) {
+            int matches = getMatchesCountInOrder(asArray, target);
+
+            // Only get the first best match if any argument matches
+            if (bestMatch == null && matches > 1) {
                 bestMatch = asString;
                 bestMatchLength = matches;
                 continue;
@@ -33,7 +35,7 @@ public class AlgorithmicUtil {
             bestMatchLength = matches;
         }
 
-        return bestMatch;
+        return Optional.ofNullable(bestMatch);
     }
 
     /**
@@ -54,7 +56,13 @@ public class AlgorithmicUtil {
             String firstMatch = first[i];
             String secondMatch = second[i];
 
-            if (firstMatch.equalsIgnoreCase(secondMatch)) matches++;
+            if (firstMatch.equalsIgnoreCase(secondMatch)) {
+                matches++;
+                continue;
+            }
+
+            // Do not count matches after the first mismatch
+            break;
         }
 
         return matches;
