@@ -23,7 +23,10 @@ public class CommandPath {
         this.args = path.split("\\.");
         this.asString = path.toLowerCase(Locale.ROOT);
 
-        this.setSubCommand(!path.isEmpty() && args.length > 0);
+        // First 'path' argument is the parent command, the args should be
+        // greater than one to be taken as a sub-command
+        this.setSubCommand(!path.isEmpty() && args.length > 1);
+
         if (isSubCommand()) subCommands = Arrays.copyOfRange(args, 1, args.length);
     }
 
