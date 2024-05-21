@@ -19,11 +19,9 @@ import java.util.Optional;
 
 public class CraftMenuManager implements MenuManager {
 
-    private final HashMap<Class<? extends Menu>, Menu> menus;
+    private final HashMap<Class<? extends Menu>, Menu> menus = new HashMap<>();
 
     public CraftMenuManager() {
-        menus = new HashMap<>();
-
         Bukkit.getPluginManager().registerEvents(new MenuListener(this), tLib.get().getOwner());
     }
 
@@ -55,7 +53,7 @@ public class CraftMenuManager implements MenuManager {
             Class<? extends Menu> clazz = menu.getClass();
             MenuProperties properties = clazz.getAnnotation(MenuProperties.class);
 
-            if (properties == null) throw new NoPropertiesFoundException(Menu.class);
+            if (properties == null) throw new NoPropertiesFoundException(menu.getClass());
 
             menu.setDisplay(properties.display());
             menu.setPermission(properties.permission());
@@ -65,7 +63,7 @@ public class CraftMenuManager implements MenuManager {
     }
 
     public void open(Player player, Class<? extends Menu> type) {
-        Menu menu = menus.get(type);
+        Menu menu = getMenu(type);
 
         if (!PermissionUtil.has(player, menu.getPermission())) {
             PermissionUtil.sendMessage(player);
