@@ -21,7 +21,7 @@ In order to use the project, you must add it as a maven compile dependency:
   <dependency>
     <groupId>dev.tehin</groupId>
     <artifactId>tlib-spigot</artifactId>
-    <version>1.2.4</version>
+    <version>1.2.5</version>
   </dependency>
 </dependencies>
 ```
