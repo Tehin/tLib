@@ -17,10 +17,9 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 public abstract class Menu implements InventoryHolder {
 
-    private @Getter final CraftLib lib;
+    private @Getter @Setter CraftLib lib;
 
     private final HashMap<Integer, MenuAction> actions = new HashMap<>();
     protected final ItemProvider craft = new CraftItemProvider(this);

@@ -61,6 +61,7 @@ public class CraftMenuManager implements MenuManager {
 
             menu.setDisplay(properties.display());
             menu.setPermission(properties.permission());
+            menu.setLib(lib);
 
             this.menus.put(clazz, menu);
         }
