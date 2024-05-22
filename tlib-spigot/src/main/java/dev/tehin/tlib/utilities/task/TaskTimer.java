@@ -73,13 +73,11 @@ public class TaskTimer {
      * Be aware of tick overloads, if that is the case, increase the ticks so
      * the job takes less tick time.
      */
-    public void runSync() {
+    public void runSync(Plugin plugin) {
         sync = true;
 
-        Plugin owner = tLib.get().getOwner();
-
-        bukkitReference = owner.getServer().getScheduler()
-                .runTaskTimer(owner, this::play, 0, delay / 50);
+        bukkitReference = plugin.getServer().getScheduler()
+                .runTaskTimer(plugin, this::play, 0, delay / 50);
     }
 
     private void play() {

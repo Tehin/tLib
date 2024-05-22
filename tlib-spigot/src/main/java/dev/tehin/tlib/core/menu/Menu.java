@@ -2,9 +2,11 @@ package dev.tehin.tlib.core.menu;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.craft.ItemProvider;
+import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.menu.craft.CraftItemProvider;
 import dev.tehin.tlib.utilities.MessageUtil;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,7 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import java.util.HashMap;
 import java.util.Optional;
 
+@RequiredArgsConstructor
 public abstract class Menu implements InventoryHolder {
+
+    private @Getter final CraftLib lib;
 
     private final HashMap<Integer, MenuAction> actions = new HashMap<>();
     protected final ItemProvider craft = new CraftItemProvider(this);

@@ -4,7 +4,6 @@ import dev.tehin.tlib.api.command.manager.CommandManager;
 import dev.tehin.tlib.api.configuration.LibConfiguration;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.core.CraftLib;
-import dev.tehin.tlib.core.menu.Menu;
 import org.bukkit.plugin.Plugin;
 
 public interface tLib {
@@ -20,7 +19,7 @@ public interface tLib {
      * @return The {@link tLib} instance to be used with the base configuration
      */
     static tLib build(Plugin owner, LibConfiguration configuration) {
-        return new CraftLib(owner, configuration);
+        return CraftLib.build(owner, configuration);
     }
 
     /**
@@ -29,15 +28,7 @@ public interface tLib {
      * @return The {@link tLib} instance to be used
      */
     static tLib build(Plugin owner) {
-        return new CraftLib(owner, null);
-    }
-
-    /**
-     * Get the {@link tLib} instance to be used
-     * @return The previously created instance, or null if not created
-     */
-    static tLib get() {
-        return CraftLib.INSTANCE;
+        return build(owner, null);
     }
 
     Plugin getOwner();

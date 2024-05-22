@@ -1,6 +1,7 @@
 package dev.tehin.tlib.core.menu.manager;
 
 import dev.tehin.tlib.api.menu.annotations.MenuProperties;
+import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.exceptions.MenuNotRegisteredException;
 import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import dev.tehin.tlib.core.menu.Menu;
@@ -20,9 +21,12 @@ import java.util.Optional;
 public class CraftMenuManager implements MenuManager {
 
     private final HashMap<Class<? extends Menu>, Menu> menus = new HashMap<>();
+    private final CraftLib lib;
 
-    public CraftMenuManager() {
-        Bukkit.getPluginManager().registerEvents(new MenuListener(this), tLib.get().getOwner());
+    public CraftMenuManager(CraftLib lib) {
+        this.lib = lib;
+
+        Bukkit.getPluginManager().registerEvents(new MenuListener(this), lib.getOwner());
     }
 
     /**

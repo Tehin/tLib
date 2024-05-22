@@ -63,7 +63,7 @@ public class CraftItemProvider implements ItemProvider {
             TaskUtil.runSync(() -> {
                 player.chat("/" + command);
                 player.closeInventory();
-            });
+            }, owner.getLib().getOwner());
         };
 
         CraftMenuAction action = new CraftMenuAction(ClickType.LEFT, executor);
@@ -81,6 +81,6 @@ public class CraftItemProvider implements ItemProvider {
 
     @Override
     public ItemStack asNavigable(ItemBuilder builder, Class<? extends Menu>  navigate) {
-        return asClickable(builder, new CraftNavigationAction(ClickType.LEFT, navigate));
+        return asClickable(builder, new CraftNavigationAction(ClickType.LEFT, navigate, owner.getLib()));
     }
 }
