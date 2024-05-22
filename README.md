@@ -65,7 +65,14 @@ public class MainPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Load the library
+        /* 
+         * Build and set the library as a static method for later usage
+         * (It is not required to be static)
+         * 
+         * In this example, later usage would look like:
+         * 
+         * MainPlugin.getLib().getMenu().open(Player, Menu)
+         */
         lib = loadLib();
 
         // After building the library, you must register your commands and menus.
@@ -74,6 +81,16 @@ public class MainPlugin extends JavaPlugin {
     }
     
     private tLib loadLib() {
+        /*
+         * If you don't need to use any specific configuration
+         * you can use the default ones (do not specify the second argument)
+         * 
+         * Example of an instnace without any configuration:
+         * 
+         * return tLib.build(this);
+         */
+        
+        // Create and modify the instance of task configurations (all values are optional)
         TasksConfig tasks = new TasksConfig()
                 .corePoolSize(2)
                 .maximumPoolSize(4);
@@ -81,8 +98,8 @@ public class MainPlugin extends JavaPlugin {
         // Create the desired configuration (optional)
         LibConfiguration config = new LibConfiguration()
                 .tasks(tasks);
-  
-        // Builds the library for usage of this plugin, for later usage, you use {@link tLib#get()}
+        
+        // Builds the library for usage of this plugin
         return tLib.build(this, config);
     }
 
