@@ -21,7 +21,7 @@ In order to use the project, you must add it as a maven compile dependency:
   <dependency>
     <groupId>dev.tehin</groupId>
     <artifactId>tlib-spigot</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
   </dependency>
 </dependencies>
 ```
@@ -60,35 +60,50 @@ For using the library, you must build it and register your classes, as follows:
 package dev.tehin.example;
 
 public class MainPlugin extends JavaPlugin {
+    
+    private static @Getter tLib lib;
 
     @Override
     public void onEnable() {
-        // Builds the library for usage of this plugin, for later usage, you use {@link tLib#get()}
-        tLib.build(this);
+        // Load the library
+        lib = loadLib();
 
         // After building the library, you must register your commands and menus.
         registerCommands();
         registerMenus();
     }
+    
+    private tLib loadLib() {
+        TasksConfig tasks = new TasksConfig()
+                .corePoolSize(2)
+                .maximumPoolSize(4);
 
-    public void registerCommands() {
+        // Create the desired configuration (optional)
+        LibConfiguration config = new LibConfiguration()
+                .tasks(tasks);
+  
+        // Builds the library for usage of this plugin, for later usage, you use {@link tLib#get()}
+        return tLib.build(this, config);
+    }
+
+    private void registerCommands() {
         CommandBase[] commands = {
             new HostCommand(),
             new GlobalCommand(),
             // [All Your Commands ...]
         };
 
-        tLib.get().getCommand().register(commands);
+        lib.getCommand().register(commands);
     }
 
-    public void registerMenus() {
+    private void registerMenus() {
         Menu[] menus = {
           new HostMenu(),
           new ParticlesMenu(),
           // [All Your Menus ...]      
         };
         
-        tLib.get().getMenu().register(menus);
+        lib.getMenu().register(menus);
     }
 }
 ```
@@ -144,7 +159,7 @@ public class HostCommand implements CommandBase {
         Player sender = (Player) args.getSender();
         Player target = Bukkit.getPlayer(args.getArg(0));
     
-        tLib.get().getMenu().open(target, HostMenu.class);
+        MainPlugin.getLib().getMenu().open(target, HostMenu.class);
     }
 }
 ```
