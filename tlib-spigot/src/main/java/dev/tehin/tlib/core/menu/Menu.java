@@ -6,7 +6,6 @@ import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.menu.craft.CraftItemProvider;
 import dev.tehin.tlib.utilities.MessageUtil;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -15,6 +14,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class Menu implements InventoryHolder {
@@ -49,10 +49,14 @@ public abstract class Menu implements InventoryHolder {
     }
 
     protected Inventory get(Player player) {
-        ItemStack[] items = create(player);
+        List<ItemStack> items = create(player);
 
-        Inventory inventory = Bukkit.createInventory(this, items.length, MessageUtil.color(display));
-        inventory.setContents(items);
+        while (items.size() % 9 != 0) {
+            items.add(null);
+        }
+
+        Inventory inventory = Bukkit.createInventory(this, items.size(), MessageUtil.color(display));
+        inventory.setContents(items.toArray(new ItemStack[0]));
 
         return inventory;
     }
@@ -67,6 +71,6 @@ public abstract class Menu implements InventoryHolder {
         return Bukkit.createInventory(this, 9);
     }
 
-    protected abstract ItemStack[] create(Player player);
+    protected abstract List<ItemStack> create(Player player);
 
 }
