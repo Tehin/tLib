@@ -2,6 +2,7 @@ package dev.tehin.tlib.core.menu.action;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.NavigationAction;
+import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.menu.Menu;
@@ -23,7 +24,7 @@ public class CraftNavigationAction extends CraftMenuAction implements Navigation
     }
 
     @Override
-    public void execute(Player player) {
+    public void execute(MenuManager manager, Player player) {
         player.closeInventory();
 
         lib.getMenu().open(player, navigation);

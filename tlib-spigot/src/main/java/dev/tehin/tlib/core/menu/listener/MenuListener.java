@@ -35,6 +35,6 @@ public class MenuListener implements Listener {
         MenuAction action = menu.getAction(Integer.parseInt(id.get()));
         if (action.getType() != e.getClick()) return;
 
-        action.execute((Player) e.getWhoClicked());
+        action.execute(manager, (Player) e.getWhoClicked());
     }
 }

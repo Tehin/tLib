@@ -1,6 +1,7 @@
 package dev.tehin.tlib.api.menu.action;
 
 import dev.tehin.tlib.api.menu.action.data.ActionData;
+import dev.tehin.tlib.api.menu.manager.MenuManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
@@ -42,7 +43,7 @@ public interface MenuAction {
      * Executes the action for the specified player
      * @param player The player who clicked
      */
-    void execute(Player player);
+    void execute(MenuManager manager, Player player);
 
     /**
      * Compares if two actions are the same, based on the item

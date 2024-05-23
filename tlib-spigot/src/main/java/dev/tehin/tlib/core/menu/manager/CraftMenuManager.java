@@ -9,6 +9,7 @@ import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.listener.MenuListener;
 import dev.tehin.tlib.utilities.PermissionUtil;
+import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -21,7 +22,7 @@ import java.util.Optional;
 public class CraftMenuManager implements MenuManager {
 
     private final HashMap<Class<? extends Menu>, Menu> menus = new HashMap<>();
-    private final CraftLib lib;
+    private @Getter final CraftLib lib;
 
     public CraftMenuManager(CraftLib lib) {
         this.lib = lib;
