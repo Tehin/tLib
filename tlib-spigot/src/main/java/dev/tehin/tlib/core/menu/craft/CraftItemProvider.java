@@ -10,6 +10,7 @@ import dev.tehin.tlib.core.menu.action.CraftNavigationAction;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.AllArgsConstructor;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.inventory.ItemStack;
@@ -72,6 +73,13 @@ public class CraftItemProvider implements ItemProvider {
 
     @Override
     public ItemStack asClickable(ItemBuilder builder, Consumer<Player> action) {
+        return asClickable(builder, new CraftMenuAction(ClickType.LEFT, action));
+    }
+
+    @Override
+    public ItemStack asError(ItemBuilder builder) {
+        Consumer<Player> action = (clicker) -> clicker.playSound(clicker.getLocation(), Sound.NOTE_BASS, 1, 0.75f);
+
         return asClickable(builder, new CraftMenuAction(ClickType.LEFT, action));
     }
 

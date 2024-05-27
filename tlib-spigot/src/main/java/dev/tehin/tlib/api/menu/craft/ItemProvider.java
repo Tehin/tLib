@@ -38,6 +38,14 @@ public interface ItemProvider {
     ItemStack asClickable(ItemBuilder builder, Consumer<Player> action);
 
     /**
+     * Creates an item that will play an error sound
+     * when the player clicks it, useful for no-permission items
+     * @param builder Builder that will create the {@link ItemStack} displayed
+     * @return {@link ItemStack} that has been created and registered
+     */
+    ItemStack asError(ItemBuilder builder);
+
+    /**
      * Creates an item that will navigate through menus when
      * clicked, the specified inventory will be opened
      * @param builder Builder that will create the {@link ItemStack} displayed
