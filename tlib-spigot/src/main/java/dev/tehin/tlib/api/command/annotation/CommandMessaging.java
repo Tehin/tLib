@@ -4,7 +4,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandArgsStructure {
-    int fixedLength() default -1;
-    Class<?>[] structure() default {};
+public @interface CommandMessaging {
+    String usage();
+    String noPermission();
 }

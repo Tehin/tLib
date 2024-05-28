@@ -1,5 +1,6 @@
 package dev.tehin.tlib.core.menu.manager;
 
+import dev.tehin.tlib.api.menu.annotations.MenuMessaging;
 import dev.tehin.tlib.api.menu.annotations.MenuProperties;
 import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.exceptions.MenuNotRegisteredException;
@@ -8,6 +9,7 @@ import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.listener.MenuListener;
+import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -57,12 +59,17 @@ public class CraftMenuManager implements MenuManager {
         for (Menu menu : menus) {
             Class<? extends Menu> clazz = menu.getClass();
             MenuProperties properties = clazz.getAnnotation(MenuProperties.class);
+            MenuMessaging messaging = clazz.getAnnotation(MenuMessaging.class);
 
             if (properties == null) throw new NoPropertiesFoundException(menu.getClass());
 
             menu.setDisplay(properties.display());
             menu.setPermission(properties.permission());
             menu.setLib(lib);
+
+            if (messaging != null) {
+                menu.setNoPermissionMessage(messaging.noPermission());
+            }
 
             this.menus.put(clazz, menu);
         }
@@ -72,7 +79,7 @@ public class CraftMenuManager implements MenuManager {
         Menu menu = getMenu(type);
 
         if (!PermissionUtil.has(player, menu.getPermission())) {
-            PermissionUtil.sendMessage(player);
+            MessageUtil.send(player, menu.getNoPermissionMessage());
             return;
         }
 

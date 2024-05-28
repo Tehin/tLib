@@ -5,6 +5,7 @@ import dev.tehin.tlib.api.menu.craft.ItemProvider;
 import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.menu.craft.CraftItemProvider;
 import dev.tehin.tlib.utilities.MessageUtil;
+import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -27,6 +28,7 @@ public abstract class Menu implements InventoryHolder {
     // Display and permission is set based on the annotation when registered
     private @Setter String display;
     private @Setter @Getter String permission;
+    private @Setter @Getter String noPermissionMessage = PermissionUtil.getMessage();
 
     public void open(Player player) {
         player.openInventory(get(player));

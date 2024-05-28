@@ -12,7 +12,7 @@ public class PermissionUtil {
         return sender.hasPermission(permission);
     }
 
-    public static void sendMessage(CommandSender sender) {
-        MessageUtil.send(sender, "&cYou don't have enough permissions to do this.");
+    public static String getMessage() {
+        return "&cYou don't have enough permissions to do this.";
     }
 }
