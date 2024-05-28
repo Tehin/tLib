@@ -33,7 +33,7 @@ public class EffectPlayer {
                     builder.getEffect(),
                     0,
                     builder.getData(),
-                    rgb.getR() / 255, rgb.getG() / 255, rgb.getB() / 255,
+                    rgb.getR() / 255f, rgb.getG() / 255f, rgb.getB() / 255f,
                     builder.getSpeed(),
                     builder.getParticlesPerPacket(),
                     builder.getViewingRadius()

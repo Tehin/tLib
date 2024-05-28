@@ -1,6 +1,7 @@
 package dev.tehin.tlib.utilities;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class ErrorWrapper {
@@ -26,5 +27,14 @@ public class ErrorWrapper {
 
         if (result == null) return defaultValue;
         return result;
+    }
+
+    public static void callOnException(Runnable runnable, Consumer<Exception> callback) {
+        try {
+            runnable.run();
+        } catch (Exception e) {
+            if (callback == null) return;
+            callback.accept(e);
+        }
     }
 }

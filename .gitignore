@@ -1,5 +1,7 @@
 target/
 .idea/
+tlib-spigot.iml
+tlib-bungee.iml
 tLib.iml
 pom.xml.tag
 pom.xml.releaseBackup
