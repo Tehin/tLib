@@ -68,7 +68,11 @@ public class CraftMenuManager implements MenuManager {
             menu.setLib(lib);
 
             if (messaging != null) {
-                menu.setNoPermissionMessage(messaging.noPermission());
+                if (messaging.noPermission().equalsIgnoreCase("hide")) {
+                    menu.setNoPermissionMessage(PermissionUtil.getBukkitHelpMessage());
+                } else {
+                    menu.setNoPermissionMessage(messaging.noPermission());
+                }
             }
 
             this.menus.put(clazz, menu);

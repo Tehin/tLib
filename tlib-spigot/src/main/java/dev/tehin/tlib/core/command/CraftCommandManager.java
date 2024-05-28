@@ -10,6 +10,7 @@ import dev.tehin.tlib.core.command.mappings.CommandMappings;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import dev.tehin.tlib.core.exceptions.CommandsAlreadyRegisteredException;
 import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
+import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.SneakyThrows;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
@@ -83,7 +84,12 @@ public class CraftCommandManager implements CommandManager {
 
         if (messaging != null) {
             wrapper.setUsage(messaging.usage());
-            wrapper.setNoPermissionMessage(messaging.noPermission());
+
+            if (messaging.noPermission().equalsIgnoreCase("hide")) {
+                wrapper.setNoPermissionMessage(PermissionUtil.getBukkitHelpMessage());
+            } else {
+                wrapper.setNoPermissionMessage(messaging.noPermission());
+            }
         }
 
         commands.register(wrapper);

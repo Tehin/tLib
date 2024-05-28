@@ -1,5 +1,6 @@
 package dev.tehin.tlib.utilities;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 
@@ -12,7 +13,11 @@ public class PermissionUtil {
         return sender.hasPermission(permission);
     }
 
-    public static String getMessage() {
+    public static String getDefaultMessage() {
         return "&cYou don't have enough permissions to do this.";
+    }
+
+    public static String getBukkitHelpMessage() {
+        return Bukkit.spigot().getConfig().getString("messages.unknown-command");
     }
 }
