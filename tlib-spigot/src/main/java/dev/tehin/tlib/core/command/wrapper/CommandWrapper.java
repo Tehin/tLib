@@ -27,8 +27,6 @@ public class CommandWrapper {
     private String description = "";
     private String[] alias = new String[0];
 
-    private TabCompleter tabCompleter;
-
     // TODO: Move to a messaging holder?
     private String noPermissionMessage = PermissionUtil.getDefaultMessage();
     private String usage;

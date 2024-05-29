@@ -1,5 +1,6 @@
 package dev.tehin.tlib.core.command.references;
 
+import dev.tehin.tlib.api.command.TabCompleterBase;
 import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import dev.tehin.tlib.utilities.AlgorithmicUtil;
@@ -91,5 +92,12 @@ public class NodeCommandReference extends Command {
          */
         Optional<String> best = AlgorithmicUtil.getBestMatch(nodes.keySet(), "\\.", arg.getSubCommands());
         return best.map(nodes::get);
+    }
+
+    @Override
+    public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
+        return super.tabComplete(sender, alias, args);
+
+        // TODO: Add sub-command completion based on permissions?
     }
 }
