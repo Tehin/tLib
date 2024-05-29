@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 
 import java.util.Arrays;
 
@@ -23,9 +24,10 @@ public class CommandWrapper {
     private final String permission;
     private final CommandPath path;
 
-
     private String description = "";
     private String[] alias = new String[0];
+
+    private TabCompleter tabCompleter;
 
     // TODO: Move to a messaging holder?
     private String noPermissionMessage = PermissionUtil.getDefaultMessage();

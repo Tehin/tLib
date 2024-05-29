@@ -70,6 +70,7 @@ public class CraftCommandManager implements CommandManager {
         CommandDescription description = command.getClass().getAnnotation(CommandDescription.class);
         CommandArgsStructure args = command.getClass().getAnnotation(CommandArgsStructure.class);
         CommandMessaging messaging = command.getClass().getAnnotation(CommandMessaging.class);
+        CommandCompletion completer = command.getClass().getAnnotation(CommandCompletion.class);
 
         CommandWrapper wrapper = new CommandWrapper(command, properties.executors(), properties.permission(), new CommandPath(properties.path()));
 
@@ -90,6 +91,10 @@ public class CraftCommandManager implements CommandManager {
             } else {
                 wrapper.setNoPermissionMessage(messaging.noPermission());
             }
+        }
+
+        if (completer != null) {
+            wrapper.setTabCompleter(completer.value().getConstructor().newInstance());
         }
 
         commands.register(wrapper);

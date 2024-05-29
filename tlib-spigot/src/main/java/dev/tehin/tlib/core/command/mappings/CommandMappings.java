@@ -6,8 +6,11 @@ import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import dev.tehin.tlib.core.exceptions.SubCommandWithAliasException;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
+import org.bukkit.command.PluginCommand;
+import org.bukkit.command.TabCompleter;
 
 import java.util.*;
 
@@ -40,6 +43,8 @@ public class CommandMappings {
 
             load(wrapper);
         }
+
+        setCompletions();
     }
 
     // TODO: Move to a command load provider?
@@ -71,5 +76,20 @@ public class CommandMappings {
         }
 
         return subs;
+    }
+    
+    // TODO: Move to a command loader provider?
+    private void setCompletions() {
+        for (CommandWrapper value : commands.values()) {
+            TabCompleter completer = value.getTabCompleter();
+            if (completer == null) continue;
+
+            String parent = value.getPath().getParentCommand();
+
+            PluginCommand bukkit = Bukkit.getPluginCommand(parent);
+            if (bukkit == null) throw new IllegalStateException("Command /" + parent + " was not found in Bukkit list");
+
+            bukkit.setTabCompleter(completer);
+        }
     }
 }
