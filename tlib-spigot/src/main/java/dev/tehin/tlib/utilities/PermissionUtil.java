@@ -4,6 +4,8 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 
+import java.util.Optional;
+
 public class PermissionUtil {
 
     public static boolean has(CommandSender sender, String permission) {
@@ -18,6 +20,9 @@ public class PermissionUtil {
     }
 
     public static String getBukkitHelpMessage() {
-        return Bukkit.spigot().getConfig().getString("messages.unknown-command");
+        String fallback = "Unknown command. Type \"/help\" for help.";
+        String found = Bukkit.spigot().getConfig().getString("messages.unknown-command");
+
+        return Optional.ofNullable(found).orElse(fallback);
     }
 }
