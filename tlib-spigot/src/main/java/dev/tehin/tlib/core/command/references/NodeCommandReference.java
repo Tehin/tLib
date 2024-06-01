@@ -1,6 +1,5 @@
 package dev.tehin.tlib.core.command.references;
 
-import dev.tehin.tlib.api.command.TabCompleterBase;
 import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import dev.tehin.tlib.utilities.AlgorithmicUtil;
@@ -69,9 +68,15 @@ public class NodeCommandReference extends Command {
         }
 
         // Send to the sub-command only its arguments, ignoring the sub-command path
-        int length = match.get().getPath().getSubCommands().length;
+        // add one since the start is inclusive, and we don't need the sub command
+        int startIndex = match.get().getPath().getSubCommands().length + 1;
 
-        String[] parsedArgs = Arrays.copyOfRange(args, length, args.length);
+        if (startIndex > args.length) {
+            sendHelp(sender);
+            return false;
+        }
+
+        String[] parsedArgs = Arrays.copyOfRange(args, startIndex, args.length);
 
         match.get().execute(sender, label, parsedArgs);
         return true;
