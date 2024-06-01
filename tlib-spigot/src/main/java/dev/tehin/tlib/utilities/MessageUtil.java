@@ -1,13 +1,25 @@
 package dev.tehin.tlib.utilities;
 
+import dev.tehin.tlib.api.tLib;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class MessageUtil {
 
-    public static void send(CommandSender player, String message) {
-        player.sendMessage(color(message));
+    public static void send(CommandSender sender, String message) {
+        sender.sendMessage(color(message));
+    }
+
+    /**
+     * Sends the message with the defined prefix if configured
+     * @param lib Owner library
+     * @param sender Target of the message
+     * @param message Message to be displayed
+     */
+    public static void sendFormal(tLib lib, CommandSender sender, String message) {
+        String prefix = lib.getConfig().messaging().getPrefix();
+
+        send(sender, prefix + " " + message);
     }
 
     public static String color(String msg) {
