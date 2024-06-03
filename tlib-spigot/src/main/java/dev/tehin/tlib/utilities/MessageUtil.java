@@ -1,6 +1,7 @@
 package dev.tehin.tlib.utilities;
 
 import dev.tehin.tlib.api.tLib;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
@@ -24,6 +25,10 @@ public class MessageUtil {
 
     public static String color(String msg) {
         return ChatColor.translateAlternateColorCodes('&', msg);
+    }
+
+    public static void sendConsole(String message) {
+        send(Bukkit.getConsoleSender(), message);
     }
 
 }
