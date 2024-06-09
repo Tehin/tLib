@@ -7,9 +7,11 @@ import dev.tehin.tlib.api.menu.craft.ItemProvider;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.action.CraftMenuAction;
 import dev.tehin.tlib.core.menu.action.CraftNavigationAction;
+import dev.tehin.tlib.utilities.ErrorWrapper;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.AllArgsConstructor;
+import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -78,7 +80,19 @@ public class CraftItemProvider implements ItemProvider {
 
     @Override
     public ItemStack asError(ItemBuilder builder) {
-        Consumer<Player> action = (clicker) -> clicker.playSound(clicker.getLocation(), Sound.NOTE_BASS, 1, 0.75f);
+        Consumer<Player> action = (clicker) -> {
+            int volume = 1;
+            float pitch = 0.7f;
+            Location location = clicker.getLocation();
+
+            /*
+             * This might throw NoSuchFieldError if not found in newer versions
+             * If the error is intercepted, change to fallback name (newer versions)
+             */
+            Sound sound = ErrorWrapper.wrap(() -> Sound.valueOf("NOTE_BASS"), Sound.valueOf("BLOCK_NOTE_BLOCK_BASS"));
+
+            clicker.playSound(location, sound, volume, pitch);
+        };
 
         return asClickable(builder, new CraftMenuAction(ClickType.LEFT, action));
     }
