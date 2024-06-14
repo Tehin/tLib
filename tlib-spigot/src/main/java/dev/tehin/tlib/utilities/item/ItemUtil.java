@@ -11,6 +11,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ItemUtil {
 
@@ -83,19 +84,21 @@ public class ItemUtil {
         int empty = 9 - toAdd.length;
 
         switch (empty) {
-            case 8:
+            case 8: {
                 for (int i = 0; i < 4; i++) items.add(null);
                 items.add(toAdd[0]);
                 for (int i = 0; i < 4; i++) items.add(null);
                 return;
-            case 7:
+            }
+            case 7: {
                 for (int i = 0; i < 3; i++) items.add(null);
                 items.add(toAdd[0]);
                 items.add(null);
                 items.add(toAdd[1]);
                 for (int i = 0; i < 3; i++) items.add(null);
                 return;
-            case 6:
+            }
+            case 6: {
                 for (int i = 0; i < 2; i++) items.add(null);
                 items.add(toAdd[0]);
                 items.add(null);
@@ -104,7 +107,8 @@ public class ItemUtil {
                 items.add(toAdd[2]);
                 for (int i = 0; i < 2; i++) items.add(null);
                 return;
-            case 5:
+            }
+            case 5: {
                 for (int i = 1; i <= 9; i++) {
                     if (i % 2 != 0) {
                         items.add(null);
@@ -116,6 +120,22 @@ public class ItemUtil {
 
                     items.add(toAdd[index - 1]);
                 }
+            }
+            case 4: {
+                items.add(null);
+                items.add(toAdd[0]);
+                items.add(toAdd[1]);
+                items.add(null);
+                items.add(toAdd[2]);
+                items.add(null);
+                items.add(toAdd[3]);
+                items.add(toAdd[4]);
+                items.add(null);
+                return;
+            }
+            default: {
+                items.addAll(Arrays.stream(toAdd).collect(Collectors.toList()));
+            }
         }
     }
 }
