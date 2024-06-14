@@ -1,6 +1,7 @@
 package dev.tehin.tlib.utilities.item;
 
 import dev.tehin.tlib.core.item.ItemBuilder;
+import dev.tehin.tlib.core.material.ModernMaterialParser;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -9,7 +10,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class ItemDefaults {
     public static ItemStack getGlass() {
-        return new ItemBuilder(Material.STAINED_GLASS_PANE).name("&7").data(7).build();
+        return new ItemBuilder(ModernMaterialParser.parse("STAINED_GLASS_PANE")).name("&7").data(7).build();
     }
 
     public static ItemStack getComingSoon() {
