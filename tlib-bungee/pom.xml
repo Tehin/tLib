@@ -7,7 +7,7 @@
     <groupId>dev.tehin</groupId>
     <artifactId>tlib-bungee</artifactId>
     <name>tlib-bungee</name>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <properties>

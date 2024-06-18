@@ -40,7 +40,7 @@ Or, if you prefer to use our library in BungeeCord:
   <dependency>
     <groupId>dev.tehin</groupId>
     <artifactId>tlib-bungee</artifactId>
-    <version>1.0.0</version>
+    <version>1.1.0</version>
   </dependency>
 </dependencies>
 ```
