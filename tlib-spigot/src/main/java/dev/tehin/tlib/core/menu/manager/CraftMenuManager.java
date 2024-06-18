@@ -3,6 +3,7 @@ package dev.tehin.tlib.core.menu.manager;
 import dev.tehin.tlib.api.menu.annotations.MenuMessaging;
 import dev.tehin.tlib.api.menu.annotations.MenuProperties;
 import dev.tehin.tlib.core.CraftLib;
+import dev.tehin.tlib.core.LibLogger;
 import dev.tehin.tlib.core.exceptions.MenuNotRegisteredException;
 import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import dev.tehin.tlib.core.menu.Menu;
@@ -76,6 +77,7 @@ public class CraftMenuManager implements MenuManager {
             }
 
             this.menus.put(clazz, menu);
+            LibLogger.log("Loaded Menu: " + clazz);
         }
     }
 

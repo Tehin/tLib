@@ -30,29 +30,27 @@ public class CraftItemProvider implements ItemProvider {
         ItemStack item = builder.build();
         ItemMeta meta = item.getItemMeta();
 
+        if (action == null) return item;
+
         /*
          * If the action is not null, and we haven't already defined the item action, we do not execute
          */
-        if (action != null) {
-            int id = owner.getActionsSize() + 1;
+        int id = owner.getActionsSize() + 1;
 
-            /*
-             * We first set the action data, so we can compare it with the already cached ones
-             * The ID is set later since it is defined by our cache
-             */
-            ActionData data = new ActionData(meta.getDisplayName(), meta.getLore());
-            action.setData(data);
+        /*
+         * We first set the action data, so we can compare it with the already cached ones
+         * The ID is set later since it is defined by our cache
+         */
+        ActionData data = new ActionData(meta.getDisplayName(), meta.getLore());
+        action.setData(data);
 
-            Optional<Integer> cache = owner.getActionCachedId(action);
-            if (!cache.isPresent()) {
-                action.setId(id);
-                owner.addAction(id, action);
-            } else id = cache.get();
+        Optional<Integer> cache = owner.getActionCachedId(action);
+        if (!cache.isPresent()) {
+            action.setId(id);
+            owner.addAction(id, action);
+        } else id = cache.get();
 
-            item = ItemUtil.addTag(item, "action", String.valueOf(id));
-        }
-
-        return item;
+        return ItemUtil.addTag(item, "action", String.valueOf(id));
     }
 
     @Override

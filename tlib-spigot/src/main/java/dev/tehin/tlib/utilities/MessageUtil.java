@@ -1,9 +1,13 @@
 package dev.tehin.tlib.utilities;
 
 import dev.tehin.tlib.api.tLib;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
+import java.util.Arrays;
 
 public class MessageUtil {
 
@@ -11,7 +15,15 @@ public class MessageUtil {
         sender.sendMessage(color(message));
     }
 
-    /**
+    public static void send(CommandSender sender, String[] messages) {
+        Arrays.stream(messages).forEach(msg -> send(sender, msg));
+    }
+
+    public static void send(Player player, TextComponent component) {
+        player.spigot().sendMessage(component);
+    }
+
+    /**C
      * Sends the message with the defined prefix if configured
      * @param lib Owner library
      * @param sender Target of the message

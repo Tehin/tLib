@@ -52,7 +52,7 @@ public class CraftMenuAction implements MenuAction {
             List<String> thisLore = getData().getLore();
             List<String> equalsLore = equals.getData().getLore();
 
-            boolean nil = thisLore == null || equalsLore == null;
+            boolean nil = equalsLore == null;
             if (nil) break;
 
             boolean empty = thisLore.isEmpty() || equalsLore.isEmpty();
@@ -65,4 +65,10 @@ public class CraftMenuAction implements MenuAction {
 
         return lore;
     }
+
+    @Override
+    public String toString() {
+        return data.getName() + " -> " + action;
+    }
+
 }
