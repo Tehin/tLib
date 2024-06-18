@@ -1,7 +1,6 @@
 package dev.tehin.tlib.api.configuration;
 
 import dev.tehin.tlib.api.configuration.holders.CommandsConfig;
-import dev.tehin.tlib.api.configuration.holders.MenusConfig;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -10,6 +9,5 @@ import lombok.experimental.Accessors;
 public class LibConfiguration {
 
     private CommandsConfig commands;
-    private MenusConfig menus;
 
 }

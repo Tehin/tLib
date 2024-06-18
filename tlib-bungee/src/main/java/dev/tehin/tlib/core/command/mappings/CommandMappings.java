@@ -1,8 +1,8 @@
 package dev.tehin.tlib.core.command.mappings;
 
 import dev.tehin.tlib.api.tLib;
-import dev.tehin.tlib.core.command.references.NormalCommandReference;
 import dev.tehin.tlib.core.command.references.NodeCommandReference;
+import dev.tehin.tlib.core.command.references.NormalCommandReference;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import dev.tehin.tlib.core.exceptions.SubCommandWithAliasException;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,9 @@ import lombok.SneakyThrows;
 import net.md_5.bungee.api.ProxyServer;
 import net.md_5.bungee.api.plugin.Command;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 @RequiredArgsConstructor
 public class CommandMappings {
@@ -46,7 +48,7 @@ public class CommandMappings {
     private void load(CommandWrapper wrapper) {
         String main = wrapper.getPath().getParentCommand();
 
-        Command command;
+        Command command = null;
 
         if (wrapper.isSubCommand()) {
             command = new NodeCommandReference(main, getSubCommands(main));
@@ -72,4 +74,5 @@ public class CommandMappings {
 
         return subs;
     }
+
 }
