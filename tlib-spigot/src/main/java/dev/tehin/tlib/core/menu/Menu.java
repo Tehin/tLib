@@ -2,7 +2,6 @@ package dev.tehin.tlib.core.menu;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.craft.ItemProvider;
-import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.menu.craft.CraftItemProvider;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
@@ -19,8 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 public abstract class Menu implements InventoryHolder {
-
-    private @Getter @Setter CraftLib lib;
 
     private final HashMap<Integer, MenuAction> actions = new HashMap<>();
     protected final ItemProvider craft = new CraftItemProvider(this);

@@ -31,6 +31,13 @@ public interface tLib {
         return build(owner, null);
     }
 
+    /**
+     * @return The previous {@link tLib} instance created
+     */
+    static tLib get() {
+        return CraftLib.INSTANCE;
+    }
+
     Plugin getOwner();
 
     LibConfiguration getConfig();

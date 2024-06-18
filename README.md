@@ -21,7 +21,7 @@ In order to use the project, you must add it as a maven compile dependency:
   <dependency>
     <groupId>dev.tehin</groupId>
     <artifactId>tlib-spigot</artifactId>
-    <version>1.3.4</version>
+    <version>1.3.6</version>
   </dependency>
 </dependencies>
 ```
@@ -45,6 +45,39 @@ Or, if you prefer to use our library in BungeeCord:
 </dependencies>
 ```
 
+# Maven Relocation
+Since many plugins may use the library in the same JVM instance, you are advised to relocate the lib
+inside your plugin on compilation, since it could lead to issues due to how the Java Virtual Machine
+operates. Here is an example with **Maven Shade Plugin**:
+```xml
+[...]
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-shade-plugin</artifactId>
+    <version>3.2.4</version>
+    <executions>
+        <execution>
+            <phase>package</phase>
+            <goals>
+                <goal>shade</goal>
+            </goals>
+            <configuration>
+                <createDependencyReducedPom>false</createDependencyReducedPom>
+
+                <relocations>
+                    <!--Relocate tLib inside our plugin folder-->
+                    <relocation>
+                        <pattern>dev.tehin.tlib</pattern>
+                        <shadedPattern>io.github.myplugin.tlib</shadedPattern>
+                    </relocation>
+                </relocations>
+            </configuration>
+        </execution>
+    </executions>
+</plugin>
+[...]
+```
+
 # Getting Started
 Since the library handles everything in the background, implementations are really straightforward. 
 Nearly every option is configurable inside the API itself.
@@ -61,19 +94,16 @@ package dev.tehin.example;
 
 public class MainPlugin extends JavaPlugin {
     
-    private static @Getter tLib lib;
-
     @Override
     public void onEnable() {
         /* 
-         * Build and set the library as a static method for later usage
-         * (It is not required to be static)
+         * Build the library for this plugin
          * 
          * In this example, later usage would look like:
          * 
-         * MainPlugin.getLib().getMenu().open(Player, Menu)
+         * tLib.get().getMenu().open(Player, Menu)
          */
-        lib = loadLib();
+        loadLib();
 
         // After building the library, you must register your commands and menus.
         registerCommands();
@@ -85,7 +115,7 @@ public class MainPlugin extends JavaPlugin {
          * If you don't need to use any specific configuration
          * you can use the default ones (do not specify the second argument)
          * 
-         * Example of an instnace without any configuration:
+         * Example of an instance without any configuration:
          * 
          * return tLib.build(this);
          */
@@ -110,7 +140,7 @@ public class MainPlugin extends JavaPlugin {
             // [All Your Commands ...]
         };
 
-        lib.getCommand().register(commands);
+        tLib.get().getCommand().register(commands);
     }
 
     private void registerMenus() {
@@ -120,7 +150,7 @@ public class MainPlugin extends JavaPlugin {
           // [All Your Menus ...]      
         };
         
-        lib.getMenu().register(menus);
+        tLib.get().getMenu().register(menus);
     }
 }
 ```
@@ -176,7 +206,7 @@ public class HostCommand implements CommandBase {
         Player sender = (Player) args.getSender();
         Player target = Bukkit.getPlayer(args.getArg(0));
     
-        MainPlugin.getLib().getMenu().open(target, HostMenu.class);
+        tLib.get().getMenu().open(target, HostMenu.class);
     }
 }
 ```

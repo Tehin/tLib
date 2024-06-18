@@ -11,6 +11,8 @@ import org.bukkit.plugin.Plugin;
 @Getter
 public class CraftLib implements tLib {
 
+    public static CraftLib INSTANCE;
+
     private final Plugin owner;
     private final LibConfiguration config;
 
@@ -19,11 +21,14 @@ public class CraftLib implements tLib {
 
     @SneakyThrows
     public CraftLib(Plugin owner, LibConfiguration config) {
+        INSTANCE = this;
+        LibLogger.log("Created instance for: " + owner.getName());
+
         this.owner = owner;
         this.config = (config == null) ? new LibConfiguration() : config;
 
-        this.menu = new CraftMenuManager(this);
-        this.command = new CraftCommandManager(this);
+        this.menu = new CraftMenuManager();
+        this.command = new CraftCommandManager();
     }
 
     public static CraftLib build(Plugin owner, LibConfiguration configuration) {

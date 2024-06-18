@@ -2,9 +2,8 @@ package dev.tehin.tlib.core.command;
 
 import dev.tehin.tlib.api.command.annotation.*;
 import dev.tehin.tlib.api.command.manager.CommandManager;
-import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.api.command.CommandBase;
-import dev.tehin.tlib.core.CraftLib;
+import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.command.args.CommandPath;
 import dev.tehin.tlib.core.command.mappings.CommandMappings;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
@@ -12,9 +11,7 @@ import dev.tehin.tlib.core.exceptions.CommandsAlreadyRegisteredException;
 import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.SneakyThrows;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandMap;
-import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
 
@@ -23,14 +20,11 @@ import java.util.Arrays;
 
 public class CraftCommandManager implements CommandManager {
 
-    private final CraftLib lib;
     private CommandMappings commands;
     private boolean registered = false;
 
-    public CraftCommandManager(CraftLib lib) {
-        this.lib = lib;
-
-        Plugin plugin = lib.getOwner();
+    public CraftCommandManager() {
+        Plugin plugin = tLib.get().getOwner();
 
         if (!(plugin.getServer().getPluginManager() instanceof SimplePluginManager)) {
             // TODO: Error due to no command support

@@ -1,6 +1,5 @@
 package dev.tehin.tlib.utilities.task;
 
-import dev.tehin.tlib.api.tLib;
 import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;

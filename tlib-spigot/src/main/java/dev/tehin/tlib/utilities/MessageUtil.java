@@ -25,12 +25,11 @@ public class MessageUtil {
 
     /**C
      * Sends the message with the defined prefix if configured
-     * @param lib Owner library
      * @param sender Target of the message
      * @param message Message to be displayed
      */
-    public static void sendFormal(tLib lib, CommandSender sender, String message) {
-        String prefix = lib.getConfig().messaging().getPrefix();
+    public static void sendFormal(CommandSender sender, String message) {
+        String prefix = tLib.get().getConfig().messaging().getPrefix();
 
         send(sender, prefix + " " + message);
     }

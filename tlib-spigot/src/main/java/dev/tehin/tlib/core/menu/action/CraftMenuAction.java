@@ -3,6 +3,7 @@ package dev.tehin.tlib.core.menu.action;
 import dev.tehin.tlib.api.menu.action.data.ActionData;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
+import dev.tehin.tlib.api.tLib;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -29,7 +30,7 @@ public class CraftMenuAction implements MenuAction {
         if (this.getData() == null) throw new RuntimeException("Tried to execute an inventory action that has no identifier, you MUST set the name with InventoryAction.setData(ActionData)");
 
         long now = System.currentTimeMillis();
-        if (now - last <= manager.getLib().getConfig().menus().getClickDelayInMs()) return;
+        if (now - last <= tLib.get().getConfig().menus().getClickDelayInMs()) return;
 
         setLast(now);
         getAction().accept(player);

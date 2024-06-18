@@ -1,9 +1,7 @@
 package dev.tehin.tlib.api.menu.manager;
 
-import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.Menu;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
 public interface MenuManager {
 
@@ -28,8 +26,4 @@ public interface MenuManager {
      */
     void open(Player player, Class<? extends Menu> type);
 
-    /**
-     * @return Associated library with this manager
-     */
-    tLib getLib();
 }

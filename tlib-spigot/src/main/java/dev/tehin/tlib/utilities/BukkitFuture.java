@@ -1,6 +1,5 @@
 package dev.tehin.tlib.utilities;
 
-import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -12,40 +11,34 @@ public class BukkitFuture<T> {
 
     public enum LibThread {
         BUKKIT,
-        PARALLEL
+        ASYNC
     }
-
-    private final tLib lib;
 
     private Consumer<T> sync, async;
     private Consumer<Exception> error;
 
     public void complete(T object) {
         if (sync != null) {
-            TaskUtil.runSync(() -> {
-                ErrorWrapper.callOnException(() -> sync.accept(object), error);
-            }, lib.getOwner());
+            TaskUtil.runSync(() -> ErrorWrapper.callOnException(() -> sync.accept(object), error));
         }
 
         if (async != null) {
-            TaskUtil.runAsync(() -> {
-                ErrorWrapper.callOnException(() -> async.accept(object), error);
-            }, lib);
+            TaskUtil.runAsync(() -> ErrorWrapper.callOnException(() -> async.accept(object), error));
         }
     }
 
-    public static <T> BukkitFuture<T> consume(tLib lib, LibThread thread, Supplier<T> task) {
-        BukkitFuture<T> future = new BukkitFuture<>(lib);
+    public static <T> BukkitFuture<T> consume(LibThread thread, Supplier<T> task) {
+        BukkitFuture<T> future = new BukkitFuture<>();
 
         Runnable result = () -> future.complete(task.get());
 
         switch (thread) {
             case BUKKIT: {
-                TaskUtil.runSync(result, lib.getOwner());
+                TaskUtil.runSync(result);
                 break;
             }
-            case PARALLEL: {
-                TaskUtil.runAsync(result, lib);
+            case ASYNC: {
+                TaskUtil.runAsync(result);
                 break;
             }
         }
@@ -58,7 +51,7 @@ public class BukkitFuture<T> {
             case BUKKIT:
                 this.sync = consumer;
                 break;
-            case PARALLEL:
+            case ASYNC:
                 this.async = consumer;
                 break;
         }

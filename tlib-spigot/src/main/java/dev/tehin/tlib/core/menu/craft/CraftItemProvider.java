@@ -1,5 +1,6 @@
 package dev.tehin.tlib.core.menu.craft;
 
+import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.action.data.ActionData;
 import dev.tehin.tlib.api.menu.action.MenuAction;
@@ -64,7 +65,7 @@ public class CraftItemProvider implements ItemProvider {
             TaskUtil.runSync(() -> {
                 player.chat("/" + command);
                 player.closeInventory();
-            }, owner.getLib().getOwner());
+            });
         };
 
         CraftMenuAction action = new CraftMenuAction(ClickType.LEFT, executor);
@@ -101,6 +102,6 @@ public class CraftItemProvider implements ItemProvider {
 
     @Override
     public ItemStack asNavigable(ItemBuilder builder, Class<? extends Menu>  navigate) {
-        return asClickable(builder, new CraftNavigationAction(ClickType.LEFT, navigate, owner.getLib()));
+        return asClickable(builder, new CraftNavigationAction(ClickType.LEFT, navigate));
     }
 }

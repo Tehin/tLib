@@ -25,12 +25,9 @@ import java.util.Optional;
 public class CraftMenuManager implements MenuManager {
 
     private final HashMap<Class<? extends Menu>, Menu> menus = new HashMap<>();
-    private @Getter final CraftLib lib;
 
-    public CraftMenuManager(CraftLib lib) {
-        this.lib = lib;
-
-        Bukkit.getPluginManager().registerEvents(new MenuListener(this), lib.getOwner());
+    public CraftMenuManager() {
+        Bukkit.getPluginManager().registerEvents(new MenuListener(this), tLib.get().getOwner());
     }
 
     /**
@@ -66,7 +63,6 @@ public class CraftMenuManager implements MenuManager {
 
             menu.setDisplay(properties.display());
             menu.setPermission(properties.permission());
-            menu.setLib(lib);
 
             if (messaging != null) {
                 if (messaging.noPermission().equalsIgnoreCase("hide")) {

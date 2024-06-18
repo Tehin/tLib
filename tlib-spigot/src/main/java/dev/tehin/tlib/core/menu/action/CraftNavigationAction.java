@@ -4,7 +4,6 @@ import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.NavigationAction;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
-import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.menu.Menu;
 import lombok.Getter;
 import org.bukkit.entity.Player;
@@ -14,20 +13,18 @@ import org.bukkit.event.inventory.ClickType;
 public class CraftNavigationAction extends CraftMenuAction implements NavigationAction {
 
     private final Class<? extends Menu> navigation;
-    private final CraftLib lib;
 
-    public CraftNavigationAction(ClickType type, Class<? extends Menu> navigation, CraftLib lib) {
+    public CraftNavigationAction(ClickType type, Class<? extends Menu> navigation) {
         super(type, null);
 
         this.navigation = navigation;
-        this.lib = lib;
     }
 
     @Override
     public void execute(MenuManager manager, Player player) {
         player.closeInventory();
 
-        lib.getMenu().open(player, navigation);
+        tLib.get().getMenu().open(player, navigation);
     }
 
     @Override
