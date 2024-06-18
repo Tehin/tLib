@@ -21,7 +21,6 @@ public class CraftLib implements tLib {
 
     @SneakyThrows
     public CraftLib(Plugin owner, LibConfiguration config) {
-        INSTANCE = this;
         LibLogger.log("Created instance for: " + owner.getName());
 
         this.owner = owner;
@@ -31,7 +30,7 @@ public class CraftLib implements tLib {
         this.command = new CraftCommandManager();
     }
 
-    public static CraftLib build(Plugin owner, LibConfiguration configuration) {
-        return new CraftLib(owner, configuration);
+    public static void build(Plugin owner, LibConfiguration configuration) {
+        INSTANCE = new CraftLib(owner, configuration);
     }
 }

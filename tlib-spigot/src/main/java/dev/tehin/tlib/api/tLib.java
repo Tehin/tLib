@@ -18,17 +18,16 @@ public interface tLib {
      * @param configuration The base configuration for the library
      * @return The {@link tLib} instance to be used with the base configuration
      */
-    static tLib build(Plugin owner, LibConfiguration configuration) {
-        return CraftLib.build(owner, configuration);
+    static void build(Plugin owner, LibConfiguration configuration) {
+        CraftLib.build(owner, configuration);
     }
 
     /**
      * Builds a new {@link tLib} instance to be used
      * @param owner The {@link Plugin} owner
-     * @return The {@link tLib} instance to be used
      */
-    static tLib build(Plugin owner) {
-        return build(owner, null);
+    static void build(Plugin owner) {
+        build(owner, null);
     }
 
     /**
