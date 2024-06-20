@@ -33,8 +33,12 @@ public class NodeCommandReference extends Command {
         }
     }
 
-    // TODO: Replace with parent command help message
     private void sendHelp(CommandSender sender) {
+        if (nodes.containsKey("help")) {
+            nodes.get("help").execute(sender, new String[0]);
+            return;
+        }
+
         MessageUtil.send(sender, "&cSpecified sub-command was not found, please use '/help'");
     }
 
