@@ -98,7 +98,7 @@ public class NodeCommandReference extends Command {
          * This is done due to the fact that sub-commands have arguments, which
          * are NOT included in the sub-command path
          */
-        Optional<String> best = AlgorithmicUtil.getBestMatch(nodes.keySet(), "\\.", arg.getSubCommands()).describeConstable();
+        Optional<String> best = AlgorithmicUtil.getBestMatch(nodes.keySet(), "\\.", arg.getSubCommands());
         return best.map(nodes::get);
     }
 
