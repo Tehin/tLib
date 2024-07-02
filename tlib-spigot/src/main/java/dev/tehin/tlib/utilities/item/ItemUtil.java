@@ -81,16 +81,16 @@ public class ItemUtil {
     }
 
     public static void addWithSpaces(List<ItemStack> items, ItemStack... toAdd) {
-        int empty = 9 - toAdd.length;
+        int length = toAdd.length;
 
-        switch (empty) {
-            case 8: {
+        switch (length) {
+            case 1: {
                 for (int i = 0; i < 4; i++) items.add(null);
                 items.add(toAdd[0]);
                 for (int i = 0; i < 4; i++) items.add(null);
                 return;
             }
-            case 7: {
+            case 2: {
                 for (int i = 0; i < 3; i++) items.add(null);
                 items.add(toAdd[0]);
                 items.add(null);
@@ -98,7 +98,7 @@ public class ItemUtil {
                 for (int i = 0; i < 3; i++) items.add(null);
                 return;
             }
-            case 6: {
+            case 3: {
                 for (int i = 0; i < 2; i++) items.add(null);
                 items.add(toAdd[0]);
                 items.add(null);
@@ -108,7 +108,7 @@ public class ItemUtil {
                 for (int i = 0; i < 2; i++) items.add(null);
                 return;
             }
-            case 5: {
+            case 4: {
                 for (int i = 1; i <= 9; i++) {
                     if (i % 2 != 0) {
                         items.add(null);
@@ -116,12 +116,12 @@ public class ItemUtil {
                     }
 
                     int index = i / 2;
-                    if (index > toAdd.length) return;
 
                     items.add(toAdd[index - 1]);
                 }
+                return;
             }
-            case 4: {
+            case 5: {
                 items.add(null);
                 items.add(toAdd[0]);
                 items.add(toAdd[1]);

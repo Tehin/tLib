@@ -14,6 +14,14 @@ public class ErrorWrapper {
         }
     }
 
+    public static <T> T wrapWithSupplier(Supplier<T> supplier, Supplier<T> defaultValue) {
+        try {
+            return supplier.get();
+        } catch (Exception e) {
+            return defaultValue.get();
+        }
+    }
+
     public static <T> T wrap(CompletableFuture<T> supplier, T defaultValue) {
         try {
             return supplier.get();
