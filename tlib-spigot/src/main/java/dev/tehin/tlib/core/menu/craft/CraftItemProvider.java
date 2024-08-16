@@ -88,7 +88,7 @@ public class CraftItemProvider implements ItemProvider {
              * This might throw NoSuchFieldError if not found in newer versions
              * If the error is intercepted, change to fallback name (newer versions)
              */
-            Sound sound = ErrorWrapper.wrap(() -> Sound.valueOf("NOTE_BASS"), Sound.valueOf("BLOCK_NOTE_BLOCK_BASS"));
+            Sound sound = ErrorWrapper.wrapWithSupplier(() -> Sound.valueOf("NOTE_BASS"), () -> Sound.valueOf("BLOCK_NOTE_BLOCK_BASS"));
 
             clicker.playSound(location, sound, volume, pitch);
         };

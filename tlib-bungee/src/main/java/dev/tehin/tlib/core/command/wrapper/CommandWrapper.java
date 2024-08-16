@@ -37,10 +37,11 @@ public class CommandWrapper {
     private boolean loaded = false;
 
     public void execute(CommandSender sender, String[] args) {
-        if (!isExecutorSupported(sender)) {
-            MessageUtil.send(sender, "&cYou can't execute this command.");
-            return;
-        }
+        // TEMP DISABLED
+//        if (!isExecutorSupported(sender)) {
+//            MessageUtil.send(sender, "&cYou can't execute this command.");
+//            return;
+//        }
 
         if (!PermissionUtil.has(sender, permission)) {
             MessageUtil.send(sender, getNoPermissionMessage());

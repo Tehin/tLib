@@ -109,16 +109,15 @@ public class ItemUtil {
                 return;
             }
             case 4: {
-                for (int i = 1; i <= 9; i++) {
-                    if (i % 2 != 0) {
-                        items.add(null);
-                        continue;
-                    }
-
-                    int index = i / 2;
-
-                    items.add(toAdd[index - 1]);
-                }
+                items.add(null);
+                items.add(toAdd[0]);
+                items.add(null);
+                items.add(toAdd[1]);
+                items.add(null);
+                items.add(toAdd[2]);
+                items.add(null);
+                items.add(toAdd[3]);
+                items.add(null);
                 return;
             }
             case 5: {
