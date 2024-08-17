@@ -48,4 +48,25 @@ public class ItemBuilder {
         base.setItemMeta(meta);
         return base;
     }
+
+    public void apply(ItemStack found) {
+        ItemMeta meta = found.getItemMeta();
+
+        if (name != null) {
+            meta.setDisplayName(MessageUtil.color(name));
+        }
+
+        if (lore.length > 0) {
+            meta.setLore(Arrays.stream(lore).map(MessageUtil::color).collect(Collectors.toList()));
+        }
+
+        if (glow) ItemUtil.addGlow(found);
+
+        if (color != null && material.name().toUpperCase().contains("LEATHER")) {
+            LeatherArmorMeta leather = (LeatherArmorMeta) meta;
+            leather.setColor(color.getColor());
+        }
+
+        found.setItemMeta(meta);
+    }
 }

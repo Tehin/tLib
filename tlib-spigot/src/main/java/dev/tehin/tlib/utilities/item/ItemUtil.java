@@ -1,5 +1,6 @@
 package dev.tehin.tlib.utilities.item;
 
+import dev.tehin.tlib.api.menu.action.MenuAction;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -22,11 +23,7 @@ public class ItemUtil {
     }
 
     public static void addGlow(ItemStack item){
-        ItemMeta meta = item.getItemMeta();
-        meta.addEnchant(Enchantment.SILK_TOUCH, 1, false);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-
-        item.setItemMeta(meta);
+        item.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
     }
 
     public static ItemStack addTag(ItemStack item, String tag, String content) {
@@ -136,5 +133,25 @@ public class ItemUtil {
                 items.addAll(Arrays.stream(toAdd).collect(Collectors.toList()));
             }
         }
+    }
+
+    public boolean isEqual(ItemStack s1, ItemStack s2) {
+        if (!s1.getItemMeta().getDisplayName().equals(s2.getItemMeta().getDisplayName())) return false;
+
+        List<String> lore1 = s1.getItemMeta().getLore();
+        List<String> lore2 = s2.getItemMeta().getLore();
+
+        boolean lore = false;
+        for (int i = 0; i < lore1.size(); i++) {
+            boolean empty = lore2.isEmpty();
+            boolean differentSizes = lore1.size() != lore2.size();
+
+            if (empty || differentSizes) break;
+
+            lore = lore1.get(i).equals(lore2.get(i));
+            if (!lore) break;
+        }
+
+        return lore;
     }
 }

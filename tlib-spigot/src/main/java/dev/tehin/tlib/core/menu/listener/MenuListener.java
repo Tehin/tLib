@@ -23,14 +23,14 @@ public class MenuListener implements Listener {
     @EventHandler
     public void onClick(InventoryClickEvent e) {
         Optional<Menu> type = manager.getMenu(e.getInventory());
-        if (!type.isPresent() || e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
+        if (type.isEmpty() || e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
 
         e.setCancelled(true);
 
         Menu menu = type.get();
         Optional<String> id = ItemUtil.getTag(e.getCurrentItem(), "action");
 
-        if (!id.isPresent()) return;
+        if (id.isEmpty()) return;
 
         MenuAction action = menu.getAction(Integer.parseInt(id.get()));
         if (action.getType() != e.getClick()) return;
