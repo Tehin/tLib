@@ -86,6 +86,15 @@ public abstract class Menu implements InventoryHolder {
 
     protected abstract List<ItemStack> create(Player player);
 
+    public void reload() {
+        if (!(this instanceof StaticMenu)) {
+            throw new UnsupportedOperationException("The menu is not static, please implement StaticMenu");
+        }
+
+        this.actions.clear();
+        this.inventory = null;
+    }
+
     /**
      * Updates the item in the position, changing their data and
      * lore if material is the same, if not, the ItemStack will be replaced
