@@ -5,9 +5,11 @@ import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.command.CraftCommandManager;
 import dev.tehin.tlib.core.hotbar.CraftHotbarManager;
 import dev.tehin.tlib.core.item.CraftItemManager;
+import dev.tehin.tlib.core.listener.CoreListener;
 import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 @Getter
@@ -36,6 +38,8 @@ public class CraftLib implements tLib {
         this.command = new CraftCommandManager();
         this.hotbar = new CraftHotbarManager();
         this.item = new CraftItemManager();
+
+        Bukkit.getPluginManager().registerEvents(new CoreListener(menu, item), tLib.get().getOwner());
     }
 
     public static void build(Plugin owner, LibConfiguration configuration) {

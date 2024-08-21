@@ -24,10 +24,6 @@ public class CraftMenuManager implements MenuManager {
 
     private final HashMap<Class<? extends Menu>, Menu> menus = new HashMap<>();
 
-    public CraftMenuManager() {
-        Bukkit.getPluginManager().registerEvents(new CoreListener(this), tLib.get().getOwner());
-    }
-
     /**
      * Safely get the Menu owner of specified inventory
      * @param inventory The inventory we are getting the Menu from
