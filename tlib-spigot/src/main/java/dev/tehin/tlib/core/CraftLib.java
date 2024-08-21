@@ -3,6 +3,8 @@ package dev.tehin.tlib.core;
 import dev.tehin.tlib.api.configuration.LibConfiguration;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.command.CraftCommandManager;
+import dev.tehin.tlib.core.hotbar.CraftHotbarManager;
+import dev.tehin.tlib.core.item.CraftItemManager;
 import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -18,6 +20,8 @@ public class CraftLib implements tLib {
 
     private final CraftMenuManager menu;
     private final CraftCommandManager command;
+    private final CraftItemManager item;
+    private final CraftHotbarManager hotbar;
 
     @SneakyThrows
     public CraftLib(Plugin owner, LibConfiguration config) {
@@ -30,6 +34,8 @@ public class CraftLib implements tLib {
 
         this.menu = new CraftMenuManager();
         this.command = new CraftCommandManager();
+        this.hotbar = new CraftHotbarManager();
+        this.item = new CraftItemManager();
     }
 
     public static void build(Plugin owner, LibConfiguration configuration) {
