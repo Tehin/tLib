@@ -67,8 +67,9 @@ public class CraftMenuManager implements MenuManager {
             }
 
             this.menus.put(clazz, menu);
-            LibLogger.log("Loaded Menu: " + clazz);
         }
+
+        LibLogger.log("Found " + menus.length + " menu instances.");
     }
 
     public void open(Player player, Class<? extends Menu> type) {

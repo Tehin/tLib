@@ -29,7 +29,7 @@ public class CraftLib implements tLib {
     public CraftLib(Plugin owner, LibConfiguration config) {
         INSTANCE = this;
 
-        LibLogger.log("Created instance for: " + owner.getName());
+        LibLogger.log("Creating instance for " + owner.getName() + "...");
 
         this.owner = owner;
         this.config = (config == null) ? new LibConfiguration() : config;
@@ -40,6 +40,8 @@ public class CraftLib implements tLib {
         this.item = new CraftItemManager();
 
         Bukkit.getPluginManager().registerEvents(new CoreListener(menu, item), tLib.get().getOwner());
+
+        LibLogger.log("Done.");
     }
 
     public static void build(Plugin owner, LibConfiguration configuration) {
