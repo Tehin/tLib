@@ -2,6 +2,7 @@ package dev.tehin.tlib.core.item;
 
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.item.ItemUtil;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Accessors(fluent = true, chain = true)
 @Setter
+@Getter
 public class ItemBuilder {
 
     private final Material material;
@@ -59,6 +61,8 @@ public class ItemBuilder {
         if (lore.length > 0) {
             meta.setLore(Arrays.stream(lore).map(MessageUtil::color).collect(Collectors.toList()));
         }
+
+        found.setDurability((short) data);
 
         if (glow) ItemUtil.addGlow(found);
 

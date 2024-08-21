@@ -107,19 +107,29 @@ public abstract class Menu implements InventoryHolder {
         }
 
         // Prevent updates if no one has opened the inventory yet
-        if (getInventory() == null) return false;
+        if (getInventory() == null) {
+            System.out.println("Item could not be updated due to inventory not being opened yet");
+            return false;
+        }
 
         ItemStack found = getInventory().getItem(position);
-        if (found == null) return false;
+        if (found == null) {
+            System.out.println("Item could not be updated due to position being off");
+            return false;
+        }
 
         ItemData data = new ItemData(found.getItemMeta().getDisplayName(), found.getItemMeta().getLore());
 
         // Get id based on our item properties
         Optional<MenuAction> action = getAction(data);
-        if (action.isEmpty()) return false;
+        if (action.isEmpty()) {
+            System.out.println("Item could not be updated due to action not being found");
+            return false;
+        }
 
         // Set the item properties
         builder.apply(found);
+        action.get().setData(new ItemData(found.getItemMeta().getDisplayName(), found.getItemMeta().getLore()));
 
         return true;
     }
