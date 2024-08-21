@@ -31,9 +31,9 @@ public class InteractableItem {
     }
 
     private void create() {
-        result = builder.build();
+        ItemStack built = builder.build();
 
-        ItemUtil.addTag(result, "action", id);
+        result = ItemUtil.addTag(built, "action", id);
     }
 
     public void handle(Player player) {
