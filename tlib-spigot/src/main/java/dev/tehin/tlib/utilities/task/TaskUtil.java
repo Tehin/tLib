@@ -9,18 +9,6 @@ import java.util.concurrent.*;
 
 public class TaskUtil {
 
-    // TODO: Add dependency, compile and change to own ParallelThreads system
-    private static ThreadPoolExecutor POOL = null;
-
-    private static void load() {
-        TasksConfig config = tLib.get().getConfig().tasks();
-
-        POOL = new ThreadPoolExecutor(config.getCorePoolSize(),
-                config.getMaximumPoolSize(),
-                config.getThreadKeepAliveInMs(), TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>());
-    }
-
     /**
      * Runs the task inside the main thread.
      * <br/><br/>
@@ -45,9 +33,9 @@ public class TaskUtil {
      * @param task The task to be executed
      */
     public static void runAsync(Runnable task) {
-        if (POOL == null) load();
+        Plugin owner = tLib.get().getOwner();
 
-        POOL.execute(task);
+        Bukkit.getScheduler().runTaskAsynchronously(owner, task);
     }
 
     /**
@@ -57,7 +45,9 @@ public class TaskUtil {
      * @param delayInTicks Delay in Minecraft ticks (1 tick = 50ms)
      */
     public static void runSyncLater(Runnable task, int delayInTicks) {
-        tLib.get().getOwner().getServer().getScheduler().runTaskLater(tLib.get().getOwner(), task, delayInTicks);
+        Plugin owner = tLib.get().getOwner();
+
+        owner.getServer().getScheduler().runTaskLater(owner, task, delayInTicks);
     }
 
     /**
@@ -66,18 +56,10 @@ public class TaskUtil {
      *
      * @param task Task to be executed
      * @param delayInTicks Delay in Minecraft ticks (1 tick = 50ms)
-     * @return Future got by our {@link ThreadPoolExecutor}
      */
-    public static Future<?> runAsyncLater(Runnable task, int delayInTicks) {
-        if (POOL == null) load();
+    public static void runAsyncLater(Runnable task, int delayInTicks) {
+        Plugin owner = tLib.get().getOwner();
 
-        return POOL.submit(() -> {
-            try {
-                TimeUnit.MILLISECONDS.sleep(delayInTicks * 50L);
-                task.run();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        Bukkit.getScheduler().runTaskLaterAsynchronously(owner, task, delayInTicks);
     }
 }
