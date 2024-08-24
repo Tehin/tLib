@@ -1,6 +1,6 @@
 package dev.tehin.tlib.api.menu.action;
 
-import dev.tehin.tlib.api.menu.action.data.ActionData;
+import dev.tehin.tlib.api.menu.action.data.ItemData;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
@@ -32,12 +32,12 @@ public interface MenuAction {
     /**
      * @return Metadata of the action (item name, lore and more)
      */
-    ActionData getData();
+    ItemData getData();
 
     /**
      * @param data The data to be set
      */
-    void setData(ActionData data);
+    void setData(ItemData data);
 
     /**
      * Executes the action for the specified player
@@ -51,4 +51,11 @@ public interface MenuAction {
      * @return If both actions are equal
      */
     boolean equals(MenuAction comparator);
+
+    /**
+     * Compares if two actions are the same, based on the item
+     * @param comparator Action to be compared to
+     * @return If both actions are equal
+     */
+    boolean equals(ItemData comparator);
 }

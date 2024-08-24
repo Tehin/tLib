@@ -1,5 +1,6 @@
 package dev.tehin.tlib.utilities.task;
 
+import dev.tehin.tlib.api.tLib;
 import lombok.Getter;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitTask;
@@ -13,6 +14,7 @@ import java.util.function.Consumer;
 @Getter
 public class TaskTimer {
 
+
     public static Consumer<TaskTimer> EMPTY_CONSUMER = (t) -> {};
     public static Runnable EMPTY_RUNNABLE = () -> {};
 
@@ -24,9 +26,9 @@ public class TaskTimer {
     private final Runnable end;
     private final int delay;
     private double counter;
-    private ScheduledThreadPoolExecutor executor;
-    private BukkitTask bukkitReference;
     private boolean sync = false;
+
+    private BukkitTask bukkitReference;
 
     private int ticks = 0;
 
@@ -60,10 +62,10 @@ public class TaskTimer {
      * Be aware of the thread-safety if working with Bukkit.
      */
     public void runAsync() {
-        this.executor = new ScheduledThreadPoolExecutor(1);
+        Plugin owner = tLib.get().getOwner();
 
-        executor
-                .scheduleAtFixedRate(this::play, 0, getDelay(), TimeUnit.MILLISECONDS);
+        bukkitReference = owner.getServer().getScheduler()
+                        .runTaskTimerAsynchronously(owner, this::play, 0, delay / 50);
     }
 
     /**
@@ -72,11 +74,13 @@ public class TaskTimer {
      * Be aware of tick overloads, if that is the case, increase the ticks so
      * the job takes less tick time.
      */
-    public void runSync(Plugin plugin) {
+    public void runSync() {
         sync = true;
 
-        bukkitReference = plugin.getServer().getScheduler()
-                .runTaskTimer(plugin, this::play, 0, delay / 50);
+        Plugin owner = tLib.get().getOwner();
+
+        bukkitReference = owner.getServer().getScheduler()
+                .runTaskTimer(owner, this::play, 0, delay / 50);
     }
 
     private void play() {
@@ -109,13 +113,7 @@ public class TaskTimer {
             this.data.clear();
         }
 
-        if (sync) {
-            this.bukkitReference.cancel();
-            return;
-        }
-
-        // If the task is not sync, cancel the executor.
-        this.executor.shutdownNow();
+        this.bukkitReference.cancel();
     }
 
     /**

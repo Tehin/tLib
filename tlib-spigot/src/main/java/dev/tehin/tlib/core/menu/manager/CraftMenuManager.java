@@ -2,17 +2,15 @@ package dev.tehin.tlib.core.menu.manager;
 
 import dev.tehin.tlib.api.menu.annotations.MenuMessaging;
 import dev.tehin.tlib.api.menu.annotations.MenuProperties;
-import dev.tehin.tlib.core.CraftLib;
 import dev.tehin.tlib.core.LibLogger;
 import dev.tehin.tlib.core.exceptions.MenuNotRegisteredException;
 import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
-import dev.tehin.tlib.core.menu.listener.MenuListener;
+import dev.tehin.tlib.core.listener.CoreListener;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -25,10 +23,6 @@ import java.util.Optional;
 public class CraftMenuManager implements MenuManager {
 
     private final HashMap<Class<? extends Menu>, Menu> menus = new HashMap<>();
-
-    public CraftMenuManager() {
-        Bukkit.getPluginManager().registerEvents(new MenuListener(this), tLib.get().getOwner());
-    }
 
     /**
      * Safely get the Menu owner of specified inventory
@@ -73,8 +67,9 @@ public class CraftMenuManager implements MenuManager {
             }
 
             this.menus.put(clazz, menu);
-            LibLogger.log("Loaded Menu: " + clazz);
         }
+
+        LibLogger.log("Found " + menus.length + " menu instances.");
     }
 
     public void open(Player player, Class<? extends Menu> type) {
