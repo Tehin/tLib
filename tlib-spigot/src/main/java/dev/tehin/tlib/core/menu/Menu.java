@@ -20,15 +20,20 @@ import java.util.Optional;
 public abstract class Menu implements InventoryHolder {
 
     private final HashMap<Integer, MenuAction> actions = new HashMap<>();
+
+
     protected final ItemProvider craft = new CraftItemProvider(this);
 
-    // Display and permission is set based on the annotation when registered
     private @Setter String display;
     private @Setter @Getter String permission;
     private @Setter @Getter String noPermissionMessage = PermissionUtil.getDefaultMessage();
 
+    private @Getter final MenuOptions options = new MenuOptions();
+
     public void open(Player player) {
         player.openInventory(get(player));
+
+        player.playSound(player.getLocation(), options.soundOnOpen(), 1, 1);
     }
 
     public MenuAction getAction(int id) {
