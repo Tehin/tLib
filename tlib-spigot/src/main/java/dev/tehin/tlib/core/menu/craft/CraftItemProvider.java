@@ -1,8 +1,7 @@
 package dev.tehin.tlib.core.menu.craft;
 
-import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.menu.Menu;
-import dev.tehin.tlib.api.menu.action.data.ActionData;
+import dev.tehin.tlib.api.menu.action.data.ItemData;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.craft.ItemProvider;
 import dev.tehin.tlib.core.item.ItemBuilder;
@@ -42,14 +41,16 @@ public class CraftItemProvider implements ItemProvider {
          * We first set the action data, so we can compare it with the already cached ones
          * The ID is set later since it is defined by our cache
          */
-        ActionData data = new ActionData(meta.getDisplayName(), meta.getLore());
+        ItemData data = new ItemData(meta.getDisplayName(), meta.getLore());
         action.setData(data);
 
-        Optional<Integer> cache = owner.getActionCachedId(action);
-        if (!cache.isPresent()) {
+        Optional<Integer> cache = owner.getActionId(data);
+        if (cache.isEmpty()) {
             action.setId(id);
             owner.addAction(id, action);
-        } else id = cache.get();
+        } else {
+            id = cache.get();
+        }
 
         return ItemUtil.addTag(item, "action", String.valueOf(id));
     }
@@ -88,7 +89,7 @@ public class CraftItemProvider implements ItemProvider {
              * This might throw NoSuchFieldError if not found in newer versions
              * If the error is intercepted, change to fallback name (newer versions)
              */
-            Sound sound = ErrorWrapper.wrap(() -> Sound.valueOf("NOTE_BASS"), Sound.valueOf("BLOCK_NOTE_BLOCK_BASS"));
+            Sound sound = ErrorWrapper.wrapWithSupplier(() -> Sound.valueOf("NOTE_BASS"), () -> Sound.valueOf("BLOCK_NOTE_BLOCK_BASS"));
 
             clicker.playSound(location, sound, volume, pitch);
         };

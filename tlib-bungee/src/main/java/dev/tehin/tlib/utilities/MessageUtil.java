@@ -2,6 +2,7 @@ package dev.tehin.tlib.utilities;
 
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.CommandSender;
+import net.md_5.bungee.api.chat.BaseComponent;
 import net.md_5.bungee.api.chat.TextComponent;
 
 import java.util.Arrays;
@@ -9,8 +10,8 @@ import java.util.Collection;
 
 public class MessageUtil {
 
-    public static TextComponent format(String msg) {
-        return new TextComponent(color(msg));
+    public static BaseComponent format(String msg) {
+        return TextComponent.fromLegacy(color(msg));
     }
 
     public static void send(CommandSender sender, String msg) {

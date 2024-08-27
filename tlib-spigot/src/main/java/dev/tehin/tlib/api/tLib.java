@@ -2,6 +2,8 @@ package dev.tehin.tlib.api;
 
 import dev.tehin.tlib.api.command.manager.CommandManager;
 import dev.tehin.tlib.api.configuration.LibConfiguration;
+import dev.tehin.tlib.api.hotbar.HotbarManager;
+import dev.tehin.tlib.api.item.ItemManager;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.core.CraftLib;
 import org.bukkit.plugin.Plugin;
@@ -42,4 +44,7 @@ public interface tLib {
     LibConfiguration getConfig();
     MenuManager getMenu();
     CommandManager getCommand();
+    ItemManager getItem();
+    HotbarManager getHotbar();
+
 }

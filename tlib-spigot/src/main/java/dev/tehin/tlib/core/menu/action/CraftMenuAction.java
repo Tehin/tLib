@@ -1,6 +1,6 @@
 package dev.tehin.tlib.core.menu.action;
 
-import dev.tehin.tlib.api.menu.action.data.ActionData;
+import dev.tehin.tlib.api.menu.action.data.ItemData;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.api.tLib;
@@ -23,7 +23,7 @@ public class CraftMenuAction implements MenuAction {
     private int id;
     private long last;
 
-    private ActionData data;
+    private ItemData data;
 
     @Override
     public void execute(MenuManager manager, Player player) {
@@ -37,39 +37,40 @@ public class CraftMenuAction implements MenuAction {
     }
 
     @Override
-    public boolean equals(MenuAction equals) {
-        if (equals.getData() == null) return false;
-        if (equals.getData().getName() == null) return false;
+    public boolean equals(ItemData equals) {
+        if (equals == null) return false;
+        if (equals.name() == null) return false;
 
-        boolean name = getData().getName().equals(equals.getData().getName());
+        boolean name = getData().name().equals(equals.name());
         boolean lore = compareLore(equals);
 
         return lore && name;
     }
 
-    private boolean compareLore(MenuAction equals) {
-        boolean lore = false;
-        for (int i = 0; i < getData().getLore().size(); i++) {
-            List<String> thisLore = getData().getLore();
-            List<String> equalsLore = equals.getData().getLore();
+    @Override
+    public boolean equals(MenuAction equals) {
+        return equals(equals.getData());
+    }
 
-            boolean nil = equalsLore == null;
-            if (nil) break;
+    private boolean compareLore(ItemData equals) {
+        List<String> lore1 = getData().lore();
+        List<String> lore2 = equals.lore();
 
-            boolean empty = thisLore.isEmpty() || equalsLore.isEmpty();
-            boolean differentSizes = thisLore.size() != equalsLore.size();
-            if (empty || differentSizes) break;
+        if (lore1 == null || lore2 == null) return false;
 
-            lore = thisLore.get(i).equals(equalsLore.get(i));
-            if (!lore) break;
+        if (lore1.isEmpty() || lore2.isEmpty()) return true;
+        if (lore1.size() != lore2.size()) return false;
+
+        for (int i = 0; i < lore1.size(); i++) {
+            if (!lore1.get(i).equals(lore2.get(i))) return false;
         }
 
-        return lore;
+        return true;
     }
 
     @Override
     public String toString() {
-        return data.getName() + " -> " + action;
+        return data.name() + " -> " + action;
     }
 
 }
