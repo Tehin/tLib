@@ -1,5 +1,6 @@
 package dev.tehin.tlib.core.menu.action;
 
+import dev.tehin.tlib.api.menu.action.ActionExecutor;
 import dev.tehin.tlib.api.menu.action.data.ItemData;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
@@ -18,7 +19,7 @@ import java.util.function.Consumer;
 @RequiredArgsConstructor
 class CraftMenuAction implements MenuAction {
     private final ClickType type;
-    private final Consumer<Player> action;
+    private final ActionExecutor action;
 
     private int id;
     private long last;
@@ -33,7 +34,7 @@ class CraftMenuAction implements MenuAction {
         if (now - last <= tLib.get().getConfig().menus().getClickDelayInMs()) return;
 
         setLast(now);
-        getAction().accept(player);
+        getAction().execute(player);
     }
 
     @Override
