@@ -20,7 +20,7 @@ public class CraftItemManager implements ItemManager {
     public void register(InteractableItem... items) {
         for (InteractableItem item : items) {
             this.items.put(item.getId(), item);
-            candidates.add(item.getBuilder().material());
+            candidates.add(item.getBuilder().getMaterial());
         }
     }
 

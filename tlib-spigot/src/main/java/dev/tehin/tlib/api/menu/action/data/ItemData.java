@@ -10,8 +10,8 @@ import java.util.stream.Collectors;
 public record ItemData(String name, List<String> lore) {
 
     public static ItemData of(ItemBuilder builder) {
-        List<String> lore = Arrays.stream(builder.lore()).map(MessageUtil::color).collect(Collectors.toList());
+        List<String> lore = Arrays.stream(builder.getLore()).map(MessageUtil::color).collect(Collectors.toList());
 
-        return new ItemData(builder.name(), lore);
+        return new ItemData(builder.getName(), lore);
     }
 }

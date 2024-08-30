@@ -65,13 +65,41 @@ public class ItemBuilder {
 
         found.setDurability((short) data);
 
-        if (glow) ItemUtil.addGlow(found);
-
         if (color != null && material.name().toUpperCase().contains("LEATHER")) {
             LeatherArmorMeta leather = (LeatherArmorMeta) meta;
             leather.setColor(color.getColor());
         }
 
         found.setItemMeta(meta);
+
+        if (glow) found = ItemUtil.addGlow(found);
+    }
+
+    public Material getMaterial() {
+        return material;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getData() {
+        return data;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public String[] getLore() {
+        return lore;
+    }
+
+    public DyeColor getColor() {
+        return color;
+    }
+
+    public boolean isGlow() {
+        return glow;
     }
 }
