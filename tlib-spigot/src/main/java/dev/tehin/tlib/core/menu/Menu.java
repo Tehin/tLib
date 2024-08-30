@@ -8,6 +8,7 @@ import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.craft.CraftItemProvider;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
+import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -35,9 +36,9 @@ public abstract class Menu implements InventoryHolder {
     private Inventory inventory;
 
     public void open(Player player) {
-        player.openInventory(get(player));
+        TaskUtil.runSyncLater(() -> player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f), 2);
 
-        player.playSound(player.getLocation(), options.soundOnOpen(), 1, 1);
+        player.openInventory(get(player));
     }
 
     public MenuAction getAction(int id) {

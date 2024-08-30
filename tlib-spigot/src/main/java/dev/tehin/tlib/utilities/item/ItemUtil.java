@@ -1,12 +1,12 @@
 package dev.tehin.tlib.utilities.item;
 
-import dev.tehin.tlib.api.menu.action.MenuAction;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.NBTTagList;
 import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.Arrays;
@@ -22,8 +22,28 @@ public class ItemUtil {
         return Arrays.stream(pieces).anyMatch(piece -> material.name().toLowerCase().contains(piece));
     }
 
-    public static void addGlow(ItemStack item){
-        item.addUnsafeEnchantment(Enchantment.DURABILITY, 10);
+    public static ItemStack addGlow(ItemStack item){
+        // TODO: Mover a otro lugar para que sea util en todas las versiones?
+        try {
+            net.minecraft.server.v1_8_R3.ItemStack nmsStack = CraftItemStack.asNMSCopy(item);
+            NBTTagCompound tag = null;
+
+            if (!nmsStack.hasTag()) {
+                tag = new NBTTagCompound();
+                nmsStack.setTag(tag);
+            }
+
+            if (tag == null) tag = nmsStack.getTag();
+
+            NBTTagList ench = new NBTTagList();
+            tag.set("ench", ench);
+            nmsStack.setTag(tag);
+
+            return CraftItemStack.asCraftMirror(nmsStack);
+        } catch (Exception ignored) {
+            item.addUnsafeEnchantment(Enchantment.DURABILITY, 1);
+            return item;
+        }
     }
 
     public static ItemStack addTag(ItemStack item, String tag, String content) {

@@ -7,7 +7,7 @@
     <groupId>dev.tehin</groupId>
     <artifactId>tlib-spigot</artifactId>
     <name>tlib-spigot</name>
-    <version>1.6.1-DEV</version>
+    <version>1.6.2-DEV</version>
     <packaging>jar</packaging>
 
     <properties>
@@ -74,7 +74,7 @@
     <dependencies>
         <dependency>
             <groupId>org.spigotmc</groupId>
-            <artifactId>spigot-api</artifactId>
+            <artifactId>spigot</artifactId>
             <version>1.8.8-R0.1-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
