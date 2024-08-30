@@ -1,4 +1,4 @@
-package dev.tehin.tlib.core.command;
+package dev.tehin.tlib.core.command.executors;
 
 import dev.tehin.tlib.api.command.CommandBase;
 import lombok.AllArgsConstructor;
