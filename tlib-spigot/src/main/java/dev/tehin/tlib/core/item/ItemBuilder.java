@@ -1,5 +1,6 @@
 package dev.tehin.tlib.core.item;
 
+import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import lombok.Getter;
@@ -28,6 +29,7 @@ public class ItemBuilder {
     private List<String> lore = new ArrayList<>();
     private DyeColor color = null;
     private boolean glow = false;
+    private MenuAction action = null;
 
     public ItemStack build() {
         ItemStack base = new ItemStack(material, amount, (short) data);
@@ -88,4 +90,9 @@ public class ItemBuilder {
     public boolean isGlow() {
         return glow;
     }
+
+    public MenuAction getAction() {
+        return action;
+    }
+
 }

@@ -2,10 +2,9 @@ package dev.tehin.tlib.core.menu;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.data.ItemData;
-import dev.tehin.tlib.api.menu.craft.ItemProvider;
 import dev.tehin.tlib.api.menu.features.StaticMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
-import dev.tehin.tlib.core.menu.craft.CraftItemProvider;
+import dev.tehin.tlib.core.menu.options.MenuOptions;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
@@ -17,16 +16,13 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 public abstract class Menu implements InventoryHolder {
 
-    private final HashMap<Integer, MenuAction> actions = new HashMap<>();
-
-
-    protected final ItemProvider craft = new CraftItemProvider(this);
+    @Getter
+    private final MenuActions actions = new MenuActions();
 
     private @Setter String display;
     private @Setter @Getter String permission;
@@ -35,37 +31,22 @@ public abstract class Menu implements InventoryHolder {
     private @Getter final MenuOptions options = new MenuOptions();
     private Inventory inventory;
 
+    protected abstract MenuContentBuilder create(Player player);
+
+    protected MenuContentBuilder createContentBuilder() {
+        return new MenuContentBuilder(this);
+    }
+
     public void open(Player player) {
         TaskUtil.runSyncLater(() -> player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f), 2);
 
         player.openInventory(get(player));
     }
 
-    public MenuAction getAction(int id) {
-        return this.actions.get(id);
-    }
-
-    public void addAction(int id, MenuAction action) {
-        this.actions.put(id, action);
-    }
-
-    public Optional<MenuAction> getAction(ItemData data) {
-        Optional<Integer> id = getActionId(data);
-        return id.map(this::getAction);
-    }
-
-    public Optional<Integer> getActionId(ItemData data) {
-        for (MenuAction check : actions.values()) {
-            if (check.equals(data)) return Optional.of(check.getId());
-        }
-
-        return Optional.empty();
-    }
-
     protected Inventory get(Player player) {
         if (this instanceof StaticMenu && inventory != null) return getInventory();
 
-        List<ItemStack> items = create(player);
+        List<ItemStack> items = create(player).build();
 
         while (items.size() % 9 != 0) {
             items.add(null);
@@ -80,16 +61,10 @@ public abstract class Menu implements InventoryHolder {
         return inventory;
     }
 
-    public int getActionsSize() {
-        return this.actions.size();
-    }
-
     @Override
     public Inventory getInventory() {
         return inventory;
     }
-
-    protected abstract List<ItemStack> create(Player player);
 
     public void reload() {
         if (!(this instanceof StaticMenu)) {
@@ -126,7 +101,7 @@ public abstract class Menu implements InventoryHolder {
         ItemData data = new ItemData(found.getItemMeta().getDisplayName(), found.getItemMeta().getLore());
 
         // Get id based on our item properties
-        Optional<MenuAction> action = getAction(data);
+        Optional<MenuAction> action = getActions().get(data);
         if (action.isEmpty()) {
             System.out.println("Item could not be updated due to action not being found");
             return false;

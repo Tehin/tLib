@@ -1,4 +1,4 @@
-package dev.tehin.tlib.core.menu;
+package dev.tehin.tlib.core.menu.options;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

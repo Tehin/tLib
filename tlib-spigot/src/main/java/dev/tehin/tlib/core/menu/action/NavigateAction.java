@@ -10,12 +10,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 @Getter
-public class CraftNavigationAction extends CraftMenuAction implements NavigationAction {
+public class NavigateAction extends CraftMenuAction implements NavigationAction {
 
     private final Class<? extends Menu> navigation;
 
-    public CraftNavigationAction(ClickType type, Class<? extends Menu> navigation) {
-        super(type, null);
+    public NavigateAction(Class<? extends Menu> navigation) {
+        super(ClickType.LEFT, null);
 
         this.navigation = navigation;
     }
@@ -29,7 +29,8 @@ public class CraftNavigationAction extends CraftMenuAction implements Navigation
 
     @Override
     public boolean equals(MenuAction equals) {
-        if (!(equals instanceof CraftNavigationAction)) return false;
-        return ((CraftNavigationAction) equals).getNavigation() == this.navigation;
+        if (!(equals instanceof NavigateAction)) return false;
+        return ((NavigateAction) equals).getNavigation() == this.navigation;
     }
+
 }

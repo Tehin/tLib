@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class CraftMenuAction implements MenuAction {
+class CraftMenuAction implements MenuAction {
     private final ClickType type;
     private final Consumer<Player> action;
 
