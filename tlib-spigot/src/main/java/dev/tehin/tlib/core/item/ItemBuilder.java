@@ -20,7 +20,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Accessors(fluent = true, chain = true)
 @Setter
-@Getter
 public class ItemBuilder {
 
     private final Material material;
