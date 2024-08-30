@@ -56,9 +56,9 @@ public class ItemBuilder {
             leather.setColor(color.getColor());
         }
 
-        if (glow) ItemUtil.addGlow(item);
-
         item.setItemMeta(meta);
+
+        if (glow) ItemUtil.addGlow(item);
     }
 
     public Material getMaterial() {
