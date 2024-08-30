@@ -11,6 +11,7 @@ import dev.tehin.tlib.core.exceptions.CommandsAlreadyRegisteredException;
 import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.SneakyThrows;
+import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandMap;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.SimplePluginManager;
@@ -56,6 +57,12 @@ public class CraftCommandManager implements CommandManager {
 
     @SneakyThrows
     private void register(CommandBase command) {
+        boolean isSimple = command instanceof SimpleCommandExecutor;
+        if (isSimple) {
+            registerSimple((SimpleCommandExecutor) command);
+            return;
+        }
+
         CommandProperties properties = command.getClass().getAnnotation(CommandProperties.class);
         if (properties == null) throw new NoPropertiesFoundException(CommandBase.class);
 
@@ -85,6 +92,12 @@ public class CraftCommandManager implements CommandManager {
                 wrapper.setNoPermissionMessage(messaging.noPermission());
             }
         }
+
+        commands.register(wrapper);
+    }
+
+    private void registerSimple(SimpleCommandExecutor command) {
+        CommandWrapper wrapper = new CommandWrapper(command, null, command.getPermission(), new CommandPath(command.getPath()));
 
         commands.register(wrapper);
     }

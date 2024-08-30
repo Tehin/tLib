@@ -63,7 +63,9 @@ public class CommandWrapper {
     }
 
     private boolean isExecutorSupported(CommandSender sender) {
-       return Arrays.stream(executors)
+        if (executors == null) return true;
+
+        return Arrays.stream(executors)
                .anyMatch(executor -> ReflectionUtil.isChild(executor, sender.getClass()));
     }
 }
