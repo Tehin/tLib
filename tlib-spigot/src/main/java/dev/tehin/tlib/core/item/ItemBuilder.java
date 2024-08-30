@@ -12,7 +12,8 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -24,55 +25,40 @@ public class ItemBuilder {
     private final Material material;
     private String name = null;
     private int data = 0, amount = 1;
-    private String[] lore = new String[0];
+    private List<String> lore = new ArrayList<>();
     private DyeColor color = null;
     private boolean glow = false;
 
     public ItemStack build() {
         ItemStack base = new ItemStack(material, amount, (short) data);
-        ItemMeta meta = base.getItemMeta();
-
-        if (name != null) {
-            meta.setDisplayName(MessageUtil.color(name));
-        }
-
-        if (lore.length > 0) {
-            meta.setLore(Arrays.stream(lore).map(MessageUtil::color).collect(Collectors.toList()));
-        }
-
-        if (color != null && material.name().toUpperCase().contains("LEATHER")) {
-            LeatherArmorMeta leather = (LeatherArmorMeta) meta;
-            leather.setColor(color.getColor());
-        }
-
-        base.setItemMeta(meta);
-
-        if (glow) base = ItemUtil.addGlow(base);
+        setMeta(base);
 
         return base;
     }
 
     public void apply(ItemStack found) {
-        ItemMeta meta = found.getItemMeta();
+        setMeta(found);
+    }
+
+    private void setMeta(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
 
         if (name != null) {
             meta.setDisplayName(MessageUtil.color(name));
         }
 
-        if (lore.length > 0) {
-            meta.setLore(Arrays.stream(lore).map(MessageUtil::color).collect(Collectors.toList()));
+        if (!lore.isEmpty()) {
+            meta.setLore(lore.stream().map(MessageUtil::color).collect(Collectors.toList()));
         }
-
-        found.setDurability((short) data);
 
         if (color != null && material.name().toUpperCase().contains("LEATHER")) {
             LeatherArmorMeta leather = (LeatherArmorMeta) meta;
             leather.setColor(color.getColor());
         }
 
-        found.setItemMeta(meta);
+        if (glow) ItemUtil.addGlow(item);
 
-        if (glow) found = ItemUtil.addGlow(found);
+        item.setItemMeta(meta);
     }
 
     public Material getMaterial() {
@@ -91,7 +77,7 @@ public class ItemBuilder {
         return amount;
     }
 
-    public String[] getLore() {
+    public List<String> getLore() {
         return lore;
     }
 
