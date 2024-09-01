@@ -23,7 +23,6 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Optional;
 
-@RequiredArgsConstructor
 public abstract class Menu implements InventoryHolder {
 
     @Getter
@@ -36,6 +35,13 @@ public abstract class Menu implements InventoryHolder {
 
     private @Getter final MenuOptions options = new MenuOptions();
     private Inventory inventory;
+
+    protected Menu(String display, String permission) {
+        this.display = display;
+        this.permission = permission;
+
+        if (this instanceof StaticMenu) get(null, 0);
+    }
 
     protected abstract MenuContentBuilder create(Player player);
 
