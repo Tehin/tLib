@@ -12,8 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor
 public class PageableMenuTemplate implements MenuTemplate {
@@ -45,19 +44,33 @@ public class PageableMenuTemplate implements MenuTemplate {
         }
 
         int rows = size / PER_ROW;
+        System.out.println("Rows: " + rows);
 
-        // Create the array with spaces for the two borders
-        // The minimum size the array can have is 9, since we need to add the borders even on small inventories
-        List<ItemStack> result = new ArrayList<>(Math.max(9, size + (rows * 2)));
+        int max = Math.max(9, size + (rows * 2));
+        System.out.println("Max: " + max);
+
+        ItemStack[] result = new ItemStack[max];
 
         addBorders(result, rows, true);
         addBorders(result, rows, false);
 
-        for (int i = 0; i < size; i++) {
-            result.add(items.get(i));
+        Iterator<ItemStack> iterator = items.iterator();
+        for (int i = 0; i < max; i++) {
+            if (!iterator.hasNext()) break;
+
+            ItemStack current = result[i];
+
+            // Fill every empty space with an item
+            if (current == null) result[i] = iterator.next();
         }
 
-        return result;
+        // Fill the items with the correct ones since for whatever reason we cannot create a list based on nullified arrays
+        items.clear();
+        for (int i = 0; i < max; i++) {
+            items.add(result[i]);
+        }
+
+        return items;
     }
 
     private ItemBuilder previous() {
@@ -96,22 +109,27 @@ public class PageableMenuTemplate implements MenuTemplate {
                 .amount(currentPage - 1);
     }
 
-    private void addBorders(List<ItemStack> result, int rows, boolean left) {
+    private void addBorders(ItemStack[] result, int rows, boolean left) {
         int placed = 0;
-        int slot = left ? 0 : 8;
+        int slot = left ? 1 : 9;
 
-        while (placed <= rows) {
-            slot += 9;
-            placed++;
+        while (placed < rows) {
+            boolean last = placed == rows - 1;
 
-            boolean last = placed == rows;
-
+            ItemStack stack;
             if (last) {
-                result.add(slot, left ? next().build() : previous().build());
-                break;
+                System.out.println("Border Action: " + (slot - 1));
+                stack = left ? previous().build() : next().build();
+            } else {
+                System.out.println("Border Empty: " + (slot - 1));
+                stack = EMPTY.build();
             }
 
-            result.add(slot, EMPTY.build());
+            // Use -1 since our index is one lower than our +9 sum
+            result[slot - 1] = stack;
+
+            slot += 9;
+            placed++;
         }
     }
 
