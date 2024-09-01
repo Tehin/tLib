@@ -1,0 +1,20 @@
+package dev.tehin.tlib.core.menu.templates;
+
+import dev.tehin.tlib.core.menu.MenuTemplate;
+import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
+
+public class EmptyMenuTemplate implements MenuTemplate {
+
+    @Override
+    public List<ItemStack> apply(List<ItemStack> items) {
+        return items;
+    }
+
+    @Override
+    public int getUsableSpace() {
+        return 9 * 5;
+    }
+
+}

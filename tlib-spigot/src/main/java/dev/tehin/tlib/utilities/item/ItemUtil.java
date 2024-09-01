@@ -57,6 +57,12 @@ public class ItemUtil {
         return item;
     }
 
+    public static void fill(List<ItemStack> items) {
+        while (items.size() % 9 != 0) {
+            items.add(null);
+        }
+    }
+
     public static void addEmptyRow(List<ItemStack> items) {
         for (int i = 1; i <= 9; i++) items.add(null);
     }

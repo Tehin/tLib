@@ -2,11 +2,14 @@ package dev.tehin.tlib.core.menu;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.data.ItemData;
+import dev.tehin.tlib.api.menu.features.PageableMenu;
 import dev.tehin.tlib.api.menu.features.StaticMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.options.MenuOptions;
+import dev.tehin.tlib.core.menu.templates.PageableMenuTemplate;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
+import dev.tehin.tlib.utilities.item.ItemUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -41,25 +44,36 @@ public abstract class Menu implements InventoryHolder {
     }
 
     public void open(Player player) {
-        TaskUtil.runSyncLater(() -> player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f), 2);
-
-        player.openInventory(get(player));
+        open(player, 0);
     }
 
-    protected Inventory get(Player player) {
-        if (this instanceof StaticMenu && inventory != null) return getInventory();
-
-        List<ItemStack> items = create(player).build();
-
-        while (items.size() % 9 != 0) {
-            items.add(null);
+    public void open(Player player, int page) {
+        if (this instanceof PageableMenu && page > 0) {
+            throw new IllegalStateException("Not pageable menus cannot be opened with a page greater than 1, please implement PageableMenu");
         }
+
+        TaskUtil.runSyncLater(() -> player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f), 2);
+
+        player.openInventory(get(player, page));
+    }
+
+    protected Inventory get(Player player, int page) {
+        boolean isPageable = this instanceof PageableMenu;
+        boolean isStatic = this instanceof StaticMenu;
+
+        if (isStatic && isPageable) {
+            throw new UnsupportedOperationException("Pageable statics menus are not supported yet");
+        }
+
+        if (isStatic && inventory != null) return getInventory();
+
+        List<ItemStack> items = create(player).build(page, true);
 
         Inventory inventory = Bukkit.createInventory(this, items.size(), MessageUtil.color(display));
         inventory.setContents(items.toArray(new ItemStack[0]));
 
         // If the inventory has not already been created, assign it
-        if (this instanceof StaticMenu) this.inventory = inventory;
+        if (isStatic) this.inventory = inventory;
 
         return inventory;
     }
