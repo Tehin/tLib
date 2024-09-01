@@ -24,14 +24,14 @@ public class MenuContentBuilder {
     private final List<ItemStack> contents = new ArrayList<>(36);
 
     public MenuContentBuilder add(ItemBuilder builder) {
-        ItemStack stack = generate(builder);
+        ItemStack stack = register(builder);
 
         this.contents.add(stack);
         return this;
     }
 
     public MenuContentBuilder set(int index, ItemBuilder builder) {
-        ItemStack stack = generate(builder);
+        ItemStack stack = register(builder);
 
         this.contents.set(index, stack);
         return this;
@@ -48,7 +48,7 @@ public class MenuContentBuilder {
         MenuTemplate template = isPageable ? new PageableMenuTemplate(menu, page, currentItems / DEFAULT_PAGE_SIZE) : new EmptyMenuTemplate();
 
         // How many items can we freely use
-        final int maxItems = template.getUsableSpace();
+        final int maxItems = template.getMaxRows() * template.getMaxColumns();
 
         // If we have more items than our usable space, prevent menu creation
         boolean overflowed = currentItems > maxItems;
@@ -58,7 +58,7 @@ public class MenuContentBuilder {
         return template.apply(contents);
     }
 
-    private ItemStack generate(ItemBuilder builder) {
+    public ItemStack register(ItemBuilder builder) {
         ItemStack item = builder.build();
         MenuAction action = builder.getAction();
 

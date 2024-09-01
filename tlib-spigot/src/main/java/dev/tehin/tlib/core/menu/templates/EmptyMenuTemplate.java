@@ -13,8 +13,13 @@ public class EmptyMenuTemplate implements MenuTemplate {
     }
 
     @Override
-    public int getUsableSpace() {
-        return 9 * 5;
+    public int getMaxRows() {
+        return 9;
+    }
+
+    @Override
+    public int getMaxColumns() {
+        return 5;
     }
 
 }

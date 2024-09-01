@@ -39,8 +39,6 @@ public abstract class Menu implements InventoryHolder {
     protected Menu(String display, String permission) {
         this.display = display;
         this.permission = permission;
-
-        if (this instanceof StaticMenu) get(null, 0);
     }
 
     protected abstract MenuContentBuilder create(Player player);
@@ -54,7 +52,7 @@ public abstract class Menu implements InventoryHolder {
     }
 
     public void open(Player player, int page) {
-        if (this instanceof PageableMenu && page > 0) {
+        if (!(this instanceof PageableMenu) && page > 0) {
             throw new IllegalStateException("Not pageable menus cannot be opened with a page greater than 1, please implement PageableMenu");
         }
 
@@ -74,6 +72,9 @@ public abstract class Menu implements InventoryHolder {
         if (isStatic && inventory != null) return getInventory();
 
         List<ItemStack> items = create(player).build(page, true);
+        if (items.size() % 9 != 0) {
+            throw new IllegalStateException("Menu size '" + items.size() + "' is not a multiple of 9");
+        }
 
         Inventory inventory = Bukkit.createInventory(this, items.size(), MessageUtil.color(display));
         inventory.setContents(items.toArray(new ItemStack[0]));

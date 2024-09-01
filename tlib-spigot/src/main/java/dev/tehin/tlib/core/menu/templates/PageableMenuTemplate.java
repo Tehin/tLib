@@ -1,12 +1,10 @@
 package dev.tehin.tlib.core.menu.templates;
 
-import dev.tehin.tlib.api.menu.action.ActionExecutor;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.Menu;
-import dev.tehin.tlib.core.menu.MenuActions;
+import dev.tehin.tlib.core.menu.MenuContentBuilder;
 import dev.tehin.tlib.core.menu.MenuTemplate;
-import dev.tehin.tlib.core.menu.action.ErrorAction;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Material;
@@ -17,8 +15,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PageableMenuTemplate implements MenuTemplate {
 
-    private static final int PER_ROW = 7;
-    private static final ItemBuilder EMPTY = new ItemBuilder(Material.STAINED_GLASS_PANE).name("&7").data(0);
+    private static final ItemBuilder PANE = new ItemBuilder(Material.STAINED_GLASS_PANE).name("&7").data(0);
 
     private final Menu menu;
     private final int currentPage;
@@ -26,116 +23,109 @@ public class PageableMenuTemplate implements MenuTemplate {
 
     @Override
     public List<ItemStack> apply(List<ItemStack> items) {
-        int size = items.size();
+        // Use builder to register actions
+        MenuContentBuilder builder = new MenuContentBuilder(menu);
 
-        int maxItemsThisPage = getUsableSpace() * (currentPage + 1);
+        final int maxContent = getMaxColumns() * getMaxRows();
+        final boolean firstPage = currentPage == 0;
 
-        // We subtract 1 if not on the first page since we are getting the index inclusive
-        int firstItemThisPage = (currentPage == 0) ? 0 : (getUsableSpace() * currentPage) - 1;
+        boolean isFull = items.size() >= maxContent;
 
-        // If we are not on the first page, or in the first page but, we have more items than we can use, trim the list for our needs
-        if (size > maxItemsThisPage || currentPage != 0) {
-            items = items.subList(firstItemThisPage, Math.min(size, maxItemsThisPage));
-        }
+        int start = Math.max(0, (9 * currentPage) - 1);
 
-        while (items.size() % PER_ROW != 0) {
-            items.add(null);
-            size++;
-        }
+        // If first page, get the max content minus one since we start from 0 and
+        // not from our desired page start
+        int end = (firstPage) ? maxContent - 1 : start + (9 * maxContent);
 
-        int rows = Math.min(size / PER_ROW, 5);
-        System.out.println("Rows: " + rows);
+        // We add one since end is exclusive
+        items = items.subList(start, Math.min(items.size(), end + 1));
+        if (!isFull) fill(items);
 
-        int max = Math.max(9, size + (rows * 2));
-        System.out.println("Max: " + max);
+        addSeparator(items);
+        addOptions(items, builder);
 
-        ItemStack[] result = new ItemStack[max];
-
-        addBorders(result, rows, true);
-        addBorders(result, rows, false);
-
-        Iterator<ItemStack> iterator = items.iterator();
-        for (int i = 0; i < max; i++) {
-            if (!iterator.hasNext()) break;
-
-            ItemStack current = result[i];
-
-            // Fill every empty space with an item
-            if (current == null) result[i] = iterator.next();
-        }
-
-        // Fill the items with the correct ones since for whatever reason we cannot create a list based on nullified arrays
-        items.clear();
-        for (int i = 0; i < max; i++) {
-            items.add(result[i]);
-        }
-
-        System.out.println("Size: " + items.size());
         return items;
     }
 
-    private ItemBuilder previous() {
-        String color = "&a";
-        int data = 13;
-        MenuAction action = new ExecutorAction(player -> menu.open(player, currentPage - 1));
-
-        if (currentPage == 0) {
-            color = "&c";
-            data = 14;
-            action = new ErrorAction();
+    private void fill(List<ItemStack> items) {
+        while (items.size() % 9 != 0) {
+            items.add(null);
         }
-
-        return new ItemBuilder(Material.STAINED_GLASS_PANE)
-                .data(data)
-                .name(color + "&lPágina Anterior")
-                .action(action)
-                .amount(currentPage >= 1 ? 1 : currentPage - 1);
     }
 
-    private ItemBuilder next() {
-        String color = "&a";
-        int data = 13;
-        MenuAction action = new ExecutorAction(player -> menu.open(player, currentPage + 1));
-
-        if (currentPage == maxPage) {
-            color = "&c";
-            data = 14;
-            action = new ErrorAction();
+    private void addEmpty(List<ItemStack> items, int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            items.add(null);
         }
-
-        return new ItemBuilder(Material.STAINED_GLASS_PANE)
-                .data(data)
-                .name(color + "&lPágina Siguiente")
-                .action(action)
-                .amount(currentPage == maxPage ? 1 : currentPage + 1);
     }
 
-    private void addBorders(ItemStack[] result, int rows, boolean left) {
-        int placed = 0;
-        int slot = left ? 1 : 9;
+    private ItemStack previous(MenuContentBuilder builder) {
+        if (currentPage == 0) return new ItemStack(Material.AIR);
 
-        while (placed < rows) {
-            boolean last = placed == rows - 1;
+        MenuAction action = new ExecutorAction(player -> {
+            player.closeInventory();
+            menu.open(player, currentPage + 1);
+        });
 
-            ItemStack stack;
-            if (last) {
-                System.out.println("Border Action: " + (slot - 1));
-                stack = left ? previous().build() : next().build();
-            } else {
-                System.out.println("Border Empty: " + (slot - 1));
-                stack = EMPTY.build();
-            }
+        // Parse since page starts from 0 and not from 1
+        final int previousPageParsed = currentPage;
 
-            // Use -1 since our index is one lower than our +9 sum
-            result[slot - 1] = stack;
+        ItemBuilder item = new ItemBuilder(Material.STAINED_GLASS_PANE)
+                .data(13)
+                .name("&a&lAnterior &7(Página #" + previousPageParsed + ")")
+                .action(action)
+                .amount(previousPageParsed);
 
-            slot += 9;
-            placed++;
+        return builder.register(item);
+    }
+
+    private ItemStack next(MenuContentBuilder builder) {
+        if (currentPage == maxPage) return new ItemStack(Material.AIR);
+
+        MenuAction action = new ExecutorAction(player -> {
+            player.closeInventory();
+            menu.open(player, currentPage + 1);
+        });
+
+        // Parse since page starts from 0 and not from 1
+        final int nextPageParsed = currentPage + 2;
+        ItemBuilder item = new ItemBuilder(Material.STAINED_GLASS_PANE)
+                .data(13)
+                .name("&a&lSiguiente &7(Página #" + nextPageParsed + ")")
+                .action(action)
+                .amount(nextPageParsed);
+
+        return builder.register(item);
+    }
+
+    private ItemBuilder filter() {
+        return new ItemBuilder(Material.HOPPER)
+                .name("&f&lFiltrar");
+    }
+
+    private void addSeparator(List<ItemStack> items) {
+        ItemStack stack = PANE.build();
+
+        for (int i = 0; i < 9; i++) {
+            items.add(stack);
         }
+    }
+
+    private void addOptions(List<ItemStack> items, MenuContentBuilder builder) {
+        items.add(previous(builder));
+        addEmpty(items, 3);
+        items.add(filter().build());
+        addEmpty(items, 3);
+        items.add(next(builder));
     }
 
     @Override
-    public int getUsableSpace() {
-        return 5 * PER_ROW;
+    public int getMaxRows() {
+        return 3;
+    }
+
+    @Override
+    public int getMaxColumns() {
+        return 9;
     }
 }

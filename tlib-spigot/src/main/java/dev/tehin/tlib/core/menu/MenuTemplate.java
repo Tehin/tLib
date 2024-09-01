@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface MenuTemplate {
     List<ItemStack> apply(List<ItemStack> items);
-    int getUsableSpace();
+
+    int getMaxRows();
+    int getMaxColumns();
 }
