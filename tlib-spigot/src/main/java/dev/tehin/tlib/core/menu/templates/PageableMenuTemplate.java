@@ -43,7 +43,7 @@ public class PageableMenuTemplate implements MenuTemplate {
             size++;
         }
 
-        int rows = size / PER_ROW;
+        int rows = Math.min(size / PER_ROW, 5);
         System.out.println("Rows: " + rows);
 
         int max = Math.max(9, size + (rows * 2));
@@ -70,6 +70,7 @@ public class PageableMenuTemplate implements MenuTemplate {
             items.add(result[i]);
         }
 
+        System.out.println("Size: " + items.size());
         return items;
     }
 
@@ -88,7 +89,7 @@ public class PageableMenuTemplate implements MenuTemplate {
                 .data(data)
                 .name(color + "&lPágina Anterior")
                 .action(action)
-                .amount(currentPage - 1);
+                .amount(currentPage >= 1 ? 1 : currentPage - 1);
     }
 
     private ItemBuilder next() {
@@ -106,7 +107,7 @@ public class PageableMenuTemplate implements MenuTemplate {
                 .data(data)
                 .name(color + "&lPágina Siguiente")
                 .action(action)
-                .amount(currentPage - 1);
+                .amount(currentPage == maxPage ? 1 : currentPage + 1);
     }
 
     private void addBorders(ItemStack[] result, int rows, boolean left) {
