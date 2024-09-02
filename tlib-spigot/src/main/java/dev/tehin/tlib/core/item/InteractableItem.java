@@ -34,7 +34,7 @@ public class InteractableItem {
     private void create() {
         ItemStack built = builder.build();
 
-        result = ItemUtil.addTag(built, "action", id);
+        result = ItemUtil.addTag(built, "hotbar-action", id);
     }
 
     public void handle(Player player) {
