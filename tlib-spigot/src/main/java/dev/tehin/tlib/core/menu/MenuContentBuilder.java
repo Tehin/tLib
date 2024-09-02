@@ -21,7 +21,7 @@ public class MenuContentBuilder {
     private static final int PAGEABLE_INVENTORY_SIZE = 5 * 7;
 
     private final Menu menu;
-    private final List<ItemStack> contents = new ArrayList<>(36);
+    private final List<ItemStack> contents = new ArrayList<>(54);
 
     public MenuContentBuilder add(ItemBuilder... builders) {
         if (builders == null) {
@@ -32,7 +32,7 @@ public class MenuContentBuilder {
         for (ItemBuilder builder : builders) {
             if (builder == null) {
                 this.contents.add(null);
-                return this;
+                continue;
             }
 
             ItemStack stack = register(builder);

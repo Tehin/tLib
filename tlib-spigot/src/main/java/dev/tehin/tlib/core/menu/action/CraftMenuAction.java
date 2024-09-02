@@ -40,7 +40,7 @@ class CraftMenuAction implements MenuAction {
     @Override
     public boolean equals(ItemData equals) {
         if (equals == null) return false;
-        if (equals.name() == null) return false;
+        if (equals.name() == null || getData() == null) return false;
 
         boolean name = getData().name().equals(equals.name());
         boolean lore = compareLore(equals);
