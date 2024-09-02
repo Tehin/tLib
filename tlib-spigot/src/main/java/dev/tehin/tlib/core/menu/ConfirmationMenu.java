@@ -34,7 +34,7 @@ public class ConfirmationMenu extends Menu{
                 .action(onCancel == null ? new ExecutorAction(HumanEntity::closeInventory) : new ExecutorAction(onCancel));
 
         ItemBuilder info = new ItemBuilder(Material.PAPER)
-                .name(display)
+                .name("&7")
                 .lore(description);
 
         ItemBuilder yes = new ItemBuilder(Material.WOOL)

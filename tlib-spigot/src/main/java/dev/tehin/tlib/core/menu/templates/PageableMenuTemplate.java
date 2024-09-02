@@ -95,7 +95,7 @@ public class PageableMenuTemplate implements MenuTemplate {
     }
 
     private ItemStack next(MenuContentBuilder builder) {
-        if (currentPage == maxPage) return new ItemStack(Material.AIR);
+        if (currentPage == maxPage || maxPage == 1) return new ItemStack(Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
             menu.open(player, currentPage + 1);
