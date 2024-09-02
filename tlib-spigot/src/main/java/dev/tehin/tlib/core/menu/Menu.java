@@ -6,13 +6,10 @@ import dev.tehin.tlib.api.menu.features.PageableMenu;
 import dev.tehin.tlib.api.menu.features.StaticMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.options.MenuOptions;
-import dev.tehin.tlib.core.menu.templates.PageableMenuTemplate;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
-import dev.tehin.tlib.utilities.item.ItemUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -58,23 +55,6 @@ public abstract class Menu implements InventoryHolder {
 
         TaskUtil.runSyncLater(() -> player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f), 2);
 
-        Inventory result = get(player, page);
-
-        Inventory open = player.getOpenInventory().getTopInventory();
-        InventoryHolder holder = open.getHolder();
-
-        // Open the inventory and open ours if it's a static menu or not a menu of our property
-        if (!(holder instanceof Menu) || holder instanceof StaticMenu) {
-            player.closeInventory();
-            player.openInventory(result);
-            return;
-        }
-
-        // If it's not a static menu, replace the contents for a smooth transition
-        open.setContents(result.getContents());
-    }
-
-    protected Inventory get(Player player, int page) {
         boolean isPageable = this instanceof PageableMenu;
         boolean isStatic = this instanceof StaticMenu;
 
@@ -82,18 +62,48 @@ public abstract class Menu implements InventoryHolder {
             throw new UnsupportedOperationException("Pageable statics menus are not supported yet");
         }
 
-        if (isStatic && inventory != null) return getInventory();
+        if (isStatic && inventory != null) {
+            player.openInventory(getInventory());
+            return;
+        }
 
+        List<ItemStack> items = get(player, page);
+
+        // If the inventory has not already been created, assign it
+        // We avoid checking this in the first if statement to improve performance since
+        // we don't want to create items that will not be used on a static inventory
+        if (isStatic) {
+            this.inventory = createInventory(items);
+            player.openInventory(getInventory());
+            return;
+        }
+
+        Inventory open = player.getOpenInventory().getTopInventory();
+        InventoryHolder holder = open.getHolder();
+
+        // Open the inventory and open ours if it's a static menu or not a menu of our property
+        if (!(holder instanceof Menu) || holder instanceof StaticMenu) {
+            player.closeInventory();
+            player.openInventory(createInventory(items));
+            return;
+        }
+
+        // If it's not a static menu, replace the contents for a smooth transition
+        open.setContents(items.toArray(new ItemStack[0]));
+    }
+
+    protected List<ItemStack> get(Player player, int page) {
         List<ItemStack> items = create(player).build(page, true);
         if (items.size() % 9 != 0) {
             throw new IllegalStateException("Menu size '" + items.size() + "' is not a multiple of 9");
         }
 
+        return items;
+    }
+
+    private Inventory createInventory(List<ItemStack> items) {
         Inventory inventory = Bukkit.createInventory(this, items.size(), MessageUtil.color(display));
         inventory.setContents(items.toArray(new ItemStack[0]));
-
-        // If the inventory has not already been created, assign it
-        if (isStatic) this.inventory = inventory;
 
         return inventory;
     }
