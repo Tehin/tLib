@@ -42,7 +42,10 @@ public class PageableMenuTemplate implements MenuTemplate {
         items = items.subList(start, Math.min(items.size(), end + 1));
 
         boolean isFull = items.size() >= maxContent;
-        if (!isFull) fill(items);
+
+        // Fill items if not full, try to adjust to the size of items if it's the first and only page
+        // If not, fill the whole inventory so the menu does not change suddenly of size
+        if (!isFull) fill(items, !firstPage);
 
         addSeparator(items);
         addOptions(items, builder);
@@ -50,9 +53,15 @@ public class PageableMenuTemplate implements MenuTemplate {
         return items;
     }
 
-    private void fill(List<ItemStack> items) {
-        while (items.size() % 9 != 0) {
-            items.add(null);
+    private void fill(List<ItemStack> items, boolean full) {
+        if (!full) {
+            while (items.size() % 9 != 0) {
+                items.add(null);
+            }
+        } else {
+            while (items.size() < getMaxRows() * getMaxColumns()) {
+                items.add(null);
+            }
         }
     }
 
