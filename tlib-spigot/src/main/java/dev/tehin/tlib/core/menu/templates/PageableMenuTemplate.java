@@ -32,8 +32,6 @@ public class PageableMenuTemplate implements MenuTemplate {
         final int maxContent = getMaxColumns() * getMaxRows();
         final boolean firstPage = currentPage == 0;
 
-        boolean isFull = items.size() >= maxContent;
-
         int start = Math.max(0, (maxContent * currentPage) - 1);
 
         // If first page, get the max content minus one since we start from 0 and
@@ -42,6 +40,8 @@ public class PageableMenuTemplate implements MenuTemplate {
 
         // We add one since end is exclusive
         items = items.subList(start, Math.min(items.size(), end + 1));
+
+        boolean isFull = items.size() >= maxContent;
         if (!isFull) fill(items);
 
         addSeparator(items);

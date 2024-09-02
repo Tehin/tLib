@@ -45,7 +45,7 @@ public class MenuContentBuilder {
         int currentItems = contents.size();
 
         // Get template based on implementations
-        MenuTemplate template = isPageable ? new PageableMenuTemplate(menu, page, currentItems / DEFAULT_PAGE_SIZE) : new EmptyMenuTemplate();
+        MenuTemplate template = isPageable ? new PageableMenuTemplate(menu, page, (int) Math.ceil((double) currentItems / DEFAULT_PAGE_SIZE)) : new EmptyMenuTemplate();
 
         // How many items can we freely use
         final int maxItems = template.getMaxRows() * template.getMaxColumns();
