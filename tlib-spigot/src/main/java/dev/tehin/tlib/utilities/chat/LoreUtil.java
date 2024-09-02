@@ -13,31 +13,26 @@ public class LoreUtil {
         StringBuilder currentLine = new StringBuilder();
 
         for (String word : words) {
-            if(lines.size() < (maxLines - 1)) {
+            if (lines.size() < (maxLines - 1)) {
                 if (currentLine.length() + word.length() > 40) {
                     lines.add("&7" + currentLine.toString().trim());
                     currentLine = new StringBuilder();
-                    if (lines.size() == maxLines - 1) {
-                        currentLine.append(word).append(" ");
-                        continue;
-                    }
                 }
                 if (currentLine.length() + word.length() == 40) {
                     currentLine.append(word);
-                }
-                else {
+                } else {
                     currentLine.append(word).append(" ");
                 }
-            }
-            else {
+            } else {
                 currentLine.append(word).append(" ");
             }
         }
-        if (lines.size() == maxLines - 1) {
+
+        if (!currentLine.isEmpty()) {
             String lastLine = currentLine.toString().trim();
-            if(lastLine.length() > 40) {
+            if (lastLine.length() > 40) {
                 System.out.println("El string '" + input + "' supera el límite máximo de caracteres.");
-                lastLine = lastLine.substring(0,40);
+                lastLine = lastLine.substring(0, 40);
             }
             lines.add("&7" + lastLine);
         }
