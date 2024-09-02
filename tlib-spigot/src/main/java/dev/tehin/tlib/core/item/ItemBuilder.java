@@ -9,8 +9,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.banner.Pattern;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -36,6 +38,11 @@ public class ItemBuilder {
 
     @Setter(AccessLevel.NONE)
     private Map<Enchantment, Integer> enchants = null;
+
+    @Setter(AccessLevel.NONE)
+    private List<Pattern> patterns = null;
+
+    private DyeColor baseColor = null;
 
     public ItemStack build() {
         ItemStack base = new ItemStack(material, amount);
@@ -65,6 +72,12 @@ public class ItemBuilder {
             }
         }
 
+        if (meta instanceof BannerMeta bannerMeta) {
+            if (baseColor != null) bannerMeta.setBaseColor(baseColor);
+
+            if (patterns != null) patterns.forEach(bannerMeta::addPattern);
+        }
+
         if (name != null) {
             meta.setDisplayName(MessageUtil.color(name));
         }
@@ -87,6 +100,12 @@ public class ItemBuilder {
         if (enchants == null) enchants = new HashMap<>();
 
         enchants.put(enchantment, level);
+    }
+
+    public void addPattern(Pattern pattern) {
+        if (patterns == null) patterns = new ArrayList<>();
+
+        patterns.add(pattern);
     }
 
     public Material getMaterial() {
@@ -119,6 +138,10 @@ public class ItemBuilder {
 
     public MenuAction getAction() {
         return action;
+    }
+
+    public DyeColor getBaseColor() {
+        return baseColor;
     }
 
 }
