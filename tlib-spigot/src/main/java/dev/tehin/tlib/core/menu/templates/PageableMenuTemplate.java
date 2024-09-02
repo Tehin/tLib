@@ -31,11 +31,11 @@ public class PageableMenuTemplate implements MenuTemplate {
 
         boolean isFull = items.size() >= maxContent;
 
-        int start = Math.max(0, (9 * currentPage) - 1);
+        int start = Math.max(0, (maxContent * currentPage) - 1);
 
         // If first page, get the max content minus one since we start from 0 and
-        // not from our desired page start
-        int end = (firstPage) ? maxContent - 1 : start + (9 * maxContent);
+        // not from our desired page start.
+        int end = (firstPage) ? maxContent - 1 : ((start + (9 * getMaxRows()) - 1));
 
         // We add one since end is exclusive
         items = items.subList(start, Math.min(items.size(), end + 1));
@@ -64,7 +64,7 @@ public class PageableMenuTemplate implements MenuTemplate {
 
         MenuAction action = new ExecutorAction(player -> {
             player.closeInventory();
-            menu.open(player, currentPage + 1);
+            menu.open(player, currentPage - 1);
         });
 
         // Parse since page starts from 0 and not from 1
