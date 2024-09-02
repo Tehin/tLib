@@ -35,7 +35,7 @@ public class CoreListener implements Listener {
         e.setCancelled(true);
 
         Menu menu = type.get();
-        Optional<String> id = ItemUtil.getTag(e.getCurrentItem(), "action");
+        Optional<String> id = ItemUtil.getTag(e.getCurrentItem(), "menu-action");
 
         if (id.isEmpty()) return;
 

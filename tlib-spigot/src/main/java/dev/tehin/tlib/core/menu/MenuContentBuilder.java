@@ -97,6 +97,6 @@ public class MenuContentBuilder {
             id = cache.get().getId();
         }
 
-        return ItemUtil.addTag(item, "action", String.valueOf(id));
+        return ItemUtil.addTag(item, "menu-action", String.valueOf(id));
     }
 }

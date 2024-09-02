@@ -49,7 +49,7 @@ public class CraftItemManager implements ItemManager {
         // Performance, do not check the NBT tag of every item clicked
         if (!candidates.contains(item.getType())) return Optional.empty();
 
-        Optional<String> action = ItemUtil.getTag(item, "action");
+        Optional<String> action = ItemUtil.getTag(item, "hotbar-action");
         return action.map(items::get);
     }
 
