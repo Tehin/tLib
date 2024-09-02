@@ -9,6 +9,10 @@ public class EmptyMenuTemplate implements MenuTemplate {
 
     @Override
     public List<ItemStack> apply(List<ItemStack> items) {
+        while (items.size() % 9 != 0) {
+            items.add(null);
+        }
+
         return items;
     }
 
