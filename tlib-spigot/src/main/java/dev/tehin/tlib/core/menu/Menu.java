@@ -58,7 +58,20 @@ public abstract class Menu implements InventoryHolder {
 
         TaskUtil.runSyncLater(() -> player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f), 2);
 
-        player.openInventory(get(player, page));
+        Inventory result = get(player, page);
+
+        Inventory open = player.getOpenInventory().getTopInventory();
+        InventoryHolder holder = open.getHolder();
+
+        // Open the inventory and open ours if it's a static menu or not a menu of our property
+        if (!(holder instanceof Menu) || holder instanceof StaticMenu) {
+            player.closeInventory();
+            player.openInventory(result);
+            return;
+        }
+
+        // If it's not a static menu, replace the contents for a smooth transition
+        open.setContents(result.getContents());
     }
 
     protected Inventory get(Player player, int page) {

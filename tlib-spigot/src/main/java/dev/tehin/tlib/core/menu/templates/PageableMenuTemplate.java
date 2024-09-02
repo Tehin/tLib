@@ -66,7 +66,6 @@ public class PageableMenuTemplate implements MenuTemplate {
         if (currentPage == 0) return new ItemStack(Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
-            player.closeInventory();
             menu.open(player, currentPage - 1);
         });
 
@@ -90,13 +89,13 @@ public class PageableMenuTemplate implements MenuTemplate {
         if (currentPage == maxPage) return new ItemStack(Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
-            player.closeInventory();
             menu.open(player, currentPage + 1);
         });
 
         // Parse since page starts from 0 and not from 1
         final int nextPageParsed = currentPage + 2;
         ItemBuilder item = new ItemBuilder(Material.BANNER)
+                .baseColor(DyeColor.BLACK)
                 .addPattern(new Pattern(DyeColor.GREEN, PatternType.RHOMBUS_MIDDLE))
                 .addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_LEFT))
                 .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_TOP_LEFT))
