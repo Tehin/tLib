@@ -82,11 +82,11 @@ public class PageableMenuTemplate implements MenuTemplate {
         final int previousPageParsed = currentPage;
 
         ItemBuilder item = new ItemBuilder(Material.BANNER)
-                .baseColor(DyeColor.BLACK)
+                .baseColor(DyeColor.WHITE)
                 .addPattern(new Pattern(DyeColor.RED, PatternType.RHOMBUS_MIDDLE))
-                .addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_RIGHT))
-                .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_TOP_RIGHT))
-                .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_BOTTOM_RIGHT))
+                .addPattern(new Pattern(DyeColor.WHITE, PatternType.STRIPE_RIGHT))
+                .addPattern(new Pattern(DyeColor.WHITE, PatternType.SQUARE_TOP_RIGHT))
+                .addPattern(new Pattern(DyeColor.WHITE, PatternType.SQUARE_BOTTOM_RIGHT))
                 .name("&a&lAnterior &7(Página #" + previousPageParsed + ")")
                 .action(action)
                 .amount(previousPageParsed);
@@ -104,11 +104,11 @@ public class PageableMenuTemplate implements MenuTemplate {
         // Parse since page starts from 0 and not from 1
         final int nextPageParsed = currentPage + 2;
         ItemBuilder item = new ItemBuilder(Material.BANNER)
-                .baseColor(DyeColor.BLACK)
+                .baseColor(DyeColor.WHITE)
                 .addPattern(new Pattern(DyeColor.GREEN, PatternType.RHOMBUS_MIDDLE))
-                .addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_LEFT))
-                .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_TOP_LEFT))
-                .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_BOTTOM_LEFT))
+                .addPattern(new Pattern(DyeColor.WHITE, PatternType.STRIPE_LEFT))
+                .addPattern(new Pattern(DyeColor.WHITE, PatternType.SQUARE_TOP_LEFT))
+                .addPattern(new Pattern(DyeColor.WHITE, PatternType.SQUARE_BOTTOM_LEFT))
                 .name("&a&lSiguiente &7(Página #" + nextPageParsed + ")")
                 .action(action)
                 .amount(nextPageParsed);
