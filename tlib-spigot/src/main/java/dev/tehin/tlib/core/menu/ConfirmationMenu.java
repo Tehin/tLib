@@ -11,14 +11,17 @@ public class ConfirmationMenu extends Menu{
 
     private final String display;
     private final String description;
-    private final ActionExecutor action;
 
-    public ConfirmationMenu(String display, String description, ActionExecutor action) {
+    private final ActionExecutor onConfirm;
+    private final ActionExecutor onCancel;
+
+    public ConfirmationMenu(String display, String description, ActionExecutor onConfirm, ActionExecutor onCancel) {
         super(display, null);
 
         this.display = display;
         this.description = description;
-        this.action = action;
+        this.onConfirm = onConfirm;
+        this.onCancel = onCancel;
     }
 
     @Override
@@ -28,7 +31,7 @@ public class ConfirmationMenu extends Menu{
         ItemBuilder no = new ItemBuilder(Material.WOOL)
                 .data(14)
                 .name("&c&lCANCELAR")
-                .action(new ExecutorAction(HumanEntity::closeInventory));
+                .action(onCancel == null ? new ExecutorAction(HumanEntity::closeInventory) : new ExecutorAction(onCancel));
 
         ItemBuilder info = new ItemBuilder(Material.PAPER)
                 .name(display)
@@ -37,7 +40,7 @@ public class ConfirmationMenu extends Menu{
         ItemBuilder yes = new ItemBuilder(Material.WOOL)
                 .data(5)
                 .name("&a&lCONFIRMAR")
-                .action(new ExecutorAction(action));
+                .action(new ExecutorAction(onConfirm));
 
         content.add(null, no, null, null, info, null, null, yes, null);
         return content;
