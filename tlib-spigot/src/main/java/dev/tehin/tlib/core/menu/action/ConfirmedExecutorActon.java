@@ -1,7 +1,7 @@
 package dev.tehin.tlib.core.menu.action;
 
 import dev.tehin.tlib.api.menu.action.ActionExecutor;
-import dev.tehin.tlib.core.menu.ConfirmationMenu;
+import dev.tehin.tlib.core.menu.defaults.ConfirmationMenu;
 
 public class ConfirmedExecutorActon extends ExecutorAction {
 

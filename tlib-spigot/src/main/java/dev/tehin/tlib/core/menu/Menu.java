@@ -38,17 +38,17 @@ public abstract class Menu implements InventoryHolder {
         this.permission = permission;
     }
 
-    protected abstract MenuContentBuilder create(Player player);
+    protected abstract MenuContentBuilder create(Player player, MenuFilter filter);
 
     protected MenuContentBuilder createContentBuilder() {
         return new MenuContentBuilder(this);
     }
 
     public void open(Player player) {
-        open(player, 0);
+        open(player, 0, MenuFilter.ALL);
     }
 
-    public void open(Player player, int page) {
+    public void open(Player player, int page, MenuFilter filter) {
         if (!(this instanceof PageableMenu) && page > 0) {
             throw new IllegalStateException("Not pageable menus cannot be opened with a page greater than 1, please implement PageableMenu");
         }
@@ -67,7 +67,7 @@ public abstract class Menu implements InventoryHolder {
             return;
         }
 
-        List<ItemStack> items = get(player, page);
+        List<ItemStack> items = get(player, page, filter);
 
         // If the inventory has not already been created, assign it
         // We avoid checking this in the first if statement to improve performance since
@@ -92,8 +92,8 @@ public abstract class Menu implements InventoryHolder {
         open.setContents(items.toArray(new ItemStack[0]));
     }
 
-    protected List<ItemStack> get(Player player, int page) {
-        List<ItemStack> items = create(player).build(page, true);
+    protected List<ItemStack> get(Player player, int page, MenuFilter filter) {
+        List<ItemStack> items = create(player, filter).build(page, filter, true);
         if (items.size() % 9 != 0) {
             throw new IllegalStateException("Menu size '" + items.size() + "' is not a multiple of 9");
         }

@@ -7,6 +7,7 @@ import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.templates.EmptyMenuTemplate;
 import dev.tehin.tlib.core.menu.templates.PageableMenuTemplate;
 import dev.tehin.tlib.utilities.item.ItemUtil;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.inventory.ItemStack;
 
@@ -22,6 +23,14 @@ public class MenuContentBuilder {
 
     private final Menu menu;
     private final List<ItemStack> contents = new ArrayList<>(54);
+
+    private MenuPresets presets;
+
+    public MenuPresets getPresets() {
+        if (presets == null) presets = new MenuPresets(menu);
+
+        return presets;
+    }
 
     public MenuContentBuilder add(ItemBuilder... builders) {
         if (builders == null) {
@@ -50,7 +59,7 @@ public class MenuContentBuilder {
         return this;
     }
 
-    public List<ItemStack> build(int page, boolean useTemplate) {
+    public List<ItemStack> build(int page, MenuFilter filter, boolean useTemplate) {
         if (!useTemplate) return contents;
 
         boolean isPageable = menu instanceof PageableMenu;
@@ -58,7 +67,7 @@ public class MenuContentBuilder {
         int currentItems = contents.size();
 
         // Get template based on implementations
-        MenuTemplate template = isPageable ? new PageableMenuTemplate(menu, page, (int) Math.ceil((double) currentItems / DEFAULT_PAGE_SIZE)) : new EmptyMenuTemplate();
+        MenuTemplate template = isPageable ? new PageableMenuTemplate(menu, filter, page, (int) Math.ceil((double) currentItems / DEFAULT_PAGE_SIZE)) : new EmptyMenuTemplate();
 
         // How many items can we freely use
         final int maxItems = template.getMaxRows() * template.getMaxColumns();

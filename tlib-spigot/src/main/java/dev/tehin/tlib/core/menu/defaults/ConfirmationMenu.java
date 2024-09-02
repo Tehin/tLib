@@ -1,15 +1,17 @@
-package dev.tehin.tlib.core.menu;
+package dev.tehin.tlib.core.menu.defaults;
 
 import dev.tehin.tlib.api.menu.action.ActionExecutor;
 import dev.tehin.tlib.core.item.ItemBuilder;
+import dev.tehin.tlib.core.menu.Menu;
+import dev.tehin.tlib.core.menu.MenuContentBuilder;
+import dev.tehin.tlib.core.menu.MenuFilter;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 
-public class ConfirmationMenu extends Menu{
+public class ConfirmationMenu extends Menu {
 
-    private final String display;
     private final String description;
 
     private final ActionExecutor onConfirm;
@@ -18,14 +20,13 @@ public class ConfirmationMenu extends Menu{
     public ConfirmationMenu(String display, String description, ActionExecutor onConfirm, ActionExecutor onCancel) {
         super(display, null);
 
-        this.display = display;
         this.description = description;
         this.onConfirm = onConfirm;
         this.onCancel = onCancel;
     }
 
     @Override
-    protected MenuContentBuilder create(Player player) {
+    protected MenuContentBuilder create(Player player, MenuFilter filter) {
         MenuContentBuilder content = createContentBuilder();
 
         ItemBuilder no = new ItemBuilder(Material.WOOL)

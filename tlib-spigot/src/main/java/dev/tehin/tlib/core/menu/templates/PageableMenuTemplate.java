@@ -6,6 +6,7 @@ import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.core.menu.MenuContentBuilder;
 import dev.tehin.tlib.core.menu.MenuTemplate;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
+import dev.tehin.tlib.core.menu.MenuFilter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -21,6 +22,7 @@ public class PageableMenuTemplate implements MenuTemplate {
     private static final ItemBuilder PANE = new ItemBuilder(Material.STAINED_GLASS_PANE).name("&7").data(0);
 
     private final Menu menu;
+    private final MenuFilter filter;
     private final int currentPage;
     private final int maxPage;
 
@@ -75,7 +77,7 @@ public class PageableMenuTemplate implements MenuTemplate {
         if (currentPage == 0) return new ItemStack(Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
-            menu.open(player, currentPage - 1);
+            menu.open(player, currentPage - 1, filter);
         });
 
         // Parse since page starts from 0 and not from 1
@@ -98,7 +100,7 @@ public class PageableMenuTemplate implements MenuTemplate {
         if (currentPage == maxPage || maxPage == 1) return new ItemStack(Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
-            menu.open(player, currentPage + 1);
+            menu.open(player, currentPage + 1, filter);
         });
 
         // Parse since page starts from 0 and not from 1
@@ -116,11 +118,6 @@ public class PageableMenuTemplate implements MenuTemplate {
         return builder.register(item);
     }
 
-    private ItemBuilder filter() {
-        return new ItemBuilder(Material.HOPPER)
-                .name("&f&lFiltrar");
-    }
-
     private void addSeparator(List<ItemStack> items) {
         ItemStack stack = PANE.build();
 
@@ -132,7 +129,7 @@ public class PageableMenuTemplate implements MenuTemplate {
     private void addOptions(List<ItemStack> items, MenuContentBuilder builder) {
         items.add(previous(builder));
         addEmpty(items, 3);
-        items.add(filter().build());
+        items.add(builder.getPresets().getFilter(filter));
         addEmpty(items, 3);
         items.add(next(builder));
     }
