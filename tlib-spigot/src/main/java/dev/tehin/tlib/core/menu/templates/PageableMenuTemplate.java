@@ -7,7 +7,10 @@ import dev.tehin.tlib.core.menu.MenuContentBuilder;
 import dev.tehin.tlib.core.menu.MenuTemplate;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.DyeColor;
 import org.bukkit.Material;
+import org.bukkit.block.banner.Pattern;
+import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
@@ -70,8 +73,12 @@ public class PageableMenuTemplate implements MenuTemplate {
         // Parse since page starts from 0 and not from 1
         final int previousPageParsed = currentPage;
 
-        ItemBuilder item = new ItemBuilder(Material.STAINED_GLASS_PANE)
-                .data(13)
+        ItemBuilder item = new ItemBuilder(Material.BANNER)
+                .baseColor(DyeColor.BLACK)
+                .addPattern(new Pattern(DyeColor.RED, PatternType.RHOMBUS_MIDDLE))
+                .addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_RIGHT))
+                .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_TOP_RIGHT))
+                .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_BOTTOM_RIGHT))
                 .name("&a&lAnterior &7(Página #" + previousPageParsed + ")")
                 .action(action)
                 .amount(previousPageParsed);
@@ -89,8 +96,11 @@ public class PageableMenuTemplate implements MenuTemplate {
 
         // Parse since page starts from 0 and not from 1
         final int nextPageParsed = currentPage + 2;
-        ItemBuilder item = new ItemBuilder(Material.STAINED_GLASS_PANE)
-                .data(13)
+        ItemBuilder item = new ItemBuilder(Material.BANNER)
+                .addPattern(new Pattern(DyeColor.GREEN, PatternType.RHOMBUS_MIDDLE))
+                .addPattern(new Pattern(DyeColor.BLACK, PatternType.STRIPE_LEFT))
+                .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_TOP_LEFT))
+                .addPattern(new Pattern(DyeColor.BLACK, PatternType.SQUARE_BOTTOM_LEFT))
                 .name("&a&lSiguiente &7(Página #" + nextPageParsed + ")")
                 .action(action)
                 .amount(nextPageParsed);

@@ -96,16 +96,18 @@ public class ItemBuilder {
         if (glow) ItemUtil.addGlow(item);
     }
 
-    public void addEnchant(Enchantment enchantment, int level) {
+    public ItemBuilder addEnchant(Enchantment enchantment, int level) {
         if (enchants == null) enchants = new HashMap<>();
 
         enchants.put(enchantment, level);
+        return this;
     }
 
-    public void addPattern(Pattern pattern) {
+    public ItemBuilder addPattern(Pattern pattern) {
         if (patterns == null) patterns = new ArrayList<>();
 
         patterns.add(pattern);
+        return this;
     }
 
     public Material getMaterial() {
