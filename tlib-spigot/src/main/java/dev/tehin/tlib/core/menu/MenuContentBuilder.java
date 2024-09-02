@@ -23,10 +23,23 @@ public class MenuContentBuilder {
     private final Menu menu;
     private final List<ItemStack> contents = new ArrayList<>(36);
 
-    public MenuContentBuilder add(ItemBuilder builder) {
-        ItemStack stack = register(builder);
+    public MenuContentBuilder add(ItemBuilder... builders) {
+        if (builders == null) {
+            this.contents.add(null);
+            return this;
+        }
 
-        this.contents.add(stack);
+        for (ItemBuilder builder : builders) {
+            if (builder == null) {
+                this.contents.add(null);
+                return this;
+            }
+
+            ItemStack stack = register(builder);
+
+            this.contents.add(stack);
+        }
+
         return this;
     }
 

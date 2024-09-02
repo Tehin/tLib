@@ -2,6 +2,7 @@ package dev.tehin.tlib.core.item;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.utilities.MessageUtil;
+import dev.tehin.tlib.utilities.chat.LoreUtil;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -107,6 +108,18 @@ public class ItemBuilder {
         if (patterns == null) patterns = new ArrayList<>();
 
         patterns.add(pattern);
+        return this;
+    }
+
+    public ItemBuilder lore(String lore) {
+        this.lore = LoreUtil.split(lore);
+
+        return this;
+    }
+
+    public ItemBuilder lore(List<String> lore) {
+        this.lore = lore;
+
         return this;
     }
 
