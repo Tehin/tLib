@@ -135,7 +135,6 @@ public abstract class Menu implements InventoryHolder {
 
         // Prevent updates if no one has opened the inventory yet
         if (getInventory() == null) {
-            System.out.println("Item could not be updated due to inventory not being opened yet");
             return false;
         }
 
