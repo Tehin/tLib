@@ -312,7 +312,7 @@ public class HostMenu extends Menu {
               .color(DyeColor.RED); // Color of the item (works with leather)
   
       // The consumer to be executed on click
-      Consumer<Player> action = (clicker) -> {
+      ActionExecutor action = (clicker) -> {
           clicker.sendMessage("You have clicked the inventory!");
       };
   

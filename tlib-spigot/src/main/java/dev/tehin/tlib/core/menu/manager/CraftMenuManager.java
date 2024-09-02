@@ -1,18 +1,14 @@
 package dev.tehin.tlib.core.menu.manager;
 
 import dev.tehin.tlib.api.menu.annotations.MenuMessaging;
-import dev.tehin.tlib.api.menu.annotations.MenuProperties;
 import dev.tehin.tlib.core.LibLogger;
 import dev.tehin.tlib.core.exceptions.MenuNotRegisteredException;
 import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
-import dev.tehin.tlib.api.tLib;
-import dev.tehin.tlib.core.listener.CoreListener;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.SneakyThrows;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
@@ -50,13 +46,7 @@ public class CraftMenuManager implements MenuManager {
     public void register(Menu... menus) {
         for (Menu menu : menus) {
             Class<? extends Menu> clazz = menu.getClass();
-            MenuProperties properties = clazz.getAnnotation(MenuProperties.class);
             MenuMessaging messaging = clazz.getAnnotation(MenuMessaging.class);
-
-            if (properties == null) throw new NoPropertiesFoundException(menu.getClass());
-
-            menu.setDisplay(properties.display());
-            menu.setPermission(properties.permission());
 
             if (messaging != null) {
                 if (messaging.noPermission().equalsIgnoreCase("hide")) {

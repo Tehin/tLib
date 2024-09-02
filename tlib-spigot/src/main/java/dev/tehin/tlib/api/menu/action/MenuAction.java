@@ -17,7 +17,7 @@ public interface MenuAction {
     /**
      * @return The action to be executed to the player
      */
-    Consumer<Player> getAction();
+    ActionExecutor getAction();
 
     /**
      * @return The interaction unique id

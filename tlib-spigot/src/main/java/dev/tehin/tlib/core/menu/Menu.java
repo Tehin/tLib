@@ -2,10 +2,10 @@ package dev.tehin.tlib.core.menu;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.data.ItemData;
-import dev.tehin.tlib.api.menu.craft.ItemProvider;
+import dev.tehin.tlib.api.menu.features.PageableMenu;
 import dev.tehin.tlib.api.menu.features.StaticMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
-import dev.tehin.tlib.core.menu.craft.CraftItemProvider;
+import dev.tehin.tlib.core.menu.options.MenuOptions;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
@@ -17,79 +17,101 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
 public abstract class Menu implements InventoryHolder {
 
-    private final HashMap<Integer, MenuAction> actions = new HashMap<>();
+    @Getter
+    private final MenuActions actions = new MenuActions();
 
+    private final String display;
+    private final @Getter String permission;
 
-    protected final ItemProvider craft = new CraftItemProvider(this);
-
-    private @Setter String display;
-    private @Setter @Getter String permission;
     private @Setter @Getter String noPermissionMessage = PermissionUtil.getDefaultMessage();
 
     private @Getter final MenuOptions options = new MenuOptions();
     private Inventory inventory;
 
+    protected Menu(String display, String permission) {
+        this.display = display;
+        this.permission = permission;
+    }
+
+    protected abstract MenuContentBuilder create(Player player);
+
+    protected MenuContentBuilder createContentBuilder() {
+        return new MenuContentBuilder(this);
+    }
+
     public void open(Player player) {
+        open(player, 0);
+    }
+
+    public void open(Player player, int page) {
+        if (!(this instanceof PageableMenu) && page > 0) {
+            throw new IllegalStateException("Not pageable menus cannot be opened with a page greater than 1, please implement PageableMenu");
+        }
+
         TaskUtil.runSyncLater(() -> player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f), 2);
 
-        player.openInventory(get(player));
-    }
+        boolean isPageable = this instanceof PageableMenu;
+        boolean isStatic = this instanceof StaticMenu;
 
-    public MenuAction getAction(int id) {
-        return this.actions.get(id);
-    }
-
-    public void addAction(int id, MenuAction action) {
-        this.actions.put(id, action);
-    }
-
-    public Optional<MenuAction> getAction(ItemData data) {
-        Optional<Integer> id = getActionId(data);
-        return id.map(this::getAction);
-    }
-
-    public Optional<Integer> getActionId(ItemData data) {
-        for (MenuAction check : actions.values()) {
-            if (check.equals(data)) return Optional.of(check.getId());
+        if (isStatic && isPageable) {
+            throw new UnsupportedOperationException("Pageable statics menus are not supported yet");
         }
 
-        return Optional.empty();
-    }
-
-    protected Inventory get(Player player) {
-        if (this instanceof StaticMenu && inventory != null) return getInventory();
-
-        List<ItemStack> items = create(player);
-
-        while (items.size() % 9 != 0) {
-            items.add(null);
+        if (isStatic && inventory != null) {
+            player.openInventory(getInventory());
+            return;
         }
 
+        List<ItemStack> items = get(player, page);
+
+        // If the inventory has not already been created, assign it
+        // We avoid checking this in the first if statement to improve performance since
+        // we don't want to create items that will not be used on a static inventory
+        if (isStatic) {
+            this.inventory = createInventory(items);
+            player.openInventory(getInventory());
+            return;
+        }
+
+        Inventory open = player.getOpenInventory().getTopInventory();
+        InventoryHolder holder = open.getHolder();
+
+        // Open the inventory and open ours if it's a static menu or not a menu of our property
+        if (!(holder.getClass().isInstance(this)) || holder instanceof StaticMenu) {
+            player.closeInventory();
+            player.openInventory(createInventory(items));
+            return;
+        }
+
+        // If it's not a static menu, replace the contents for a smooth transition
+        open.setContents(items.toArray(new ItemStack[0]));
+    }
+
+    protected List<ItemStack> get(Player player, int page) {
+        List<ItemStack> items = create(player).build(page, true);
+        if (items.size() % 9 != 0) {
+            throw new IllegalStateException("Menu size '" + items.size() + "' is not a multiple of 9");
+        }
+
+        return items;
+    }
+
+    private Inventory createInventory(List<ItemStack> items) {
         Inventory inventory = Bukkit.createInventory(this, items.size(), MessageUtil.color(display));
         inventory.setContents(items.toArray(new ItemStack[0]));
 
-        // If the inventory has not already been created, assign it
-        if (this instanceof StaticMenu) this.inventory = inventory;
-
         return inventory;
-    }
-
-    public int getActionsSize() {
-        return this.actions.size();
     }
 
     @Override
     public Inventory getInventory() {
         return inventory;
     }
-
-    protected abstract List<ItemStack> create(Player player);
 
     public void reload() {
         if (!(this instanceof StaticMenu)) {
@@ -126,7 +148,7 @@ public abstract class Menu implements InventoryHolder {
         ItemData data = new ItemData(found.getItemMeta().getDisplayName(), found.getItemMeta().getLore());
 
         // Get id based on our item properties
-        Optional<MenuAction> action = getAction(data);
+        Optional<MenuAction> action = getActions().get(data);
         if (action.isEmpty()) {
             System.out.println("Item could not be updated due to action not being found");
             return false;

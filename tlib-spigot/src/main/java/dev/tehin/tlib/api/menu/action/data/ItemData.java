@@ -2,6 +2,8 @@ package dev.tehin.tlib.api.menu.action.data;
 
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.utilities.MessageUtil;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Arrays;
 import java.util.List;
@@ -10,8 +12,16 @@ import java.util.stream.Collectors;
 public record ItemData(String name, List<String> lore) {
 
     public static ItemData of(ItemBuilder builder) {
-        List<String> lore = Arrays.stream(builder.getLore()).map(MessageUtil::color).collect(Collectors.toList());
+        List<String> lore = builder.getLore().stream()
+                .map(MessageUtil::color)
+                .collect(Collectors.toList());
 
         return new ItemData(builder.getName(), lore);
+    }
+
+    public static ItemData of(ItemStack item) {
+        ItemMeta meta = item.getItemMeta();
+
+        return new ItemData(meta.getDisplayName(), meta.getLore());
     }
 }

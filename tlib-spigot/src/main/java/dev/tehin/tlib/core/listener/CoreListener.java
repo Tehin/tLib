@@ -1,6 +1,5 @@
 package dev.tehin.tlib.core.listener;
 
-import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.item.CraftItemManager;
 import dev.tehin.tlib.core.item.InteractableItem;
 import dev.tehin.tlib.core.menu.Menu;
@@ -40,7 +39,7 @@ public class CoreListener implements Listener {
 
         if (id.isEmpty()) return;
 
-        MenuAction action = menu.getAction(Integer.parseInt(id.get()));
+        MenuAction action = menu.getActions().get(Integer.parseInt(id.get()));
         if (action.getType() != e.getClick()) return;
 
         action.execute(menus, (Player) e.getWhoClicked());

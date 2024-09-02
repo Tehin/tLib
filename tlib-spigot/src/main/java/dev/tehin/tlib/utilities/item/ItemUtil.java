@@ -24,13 +24,12 @@ public class ItemUtil {
         return Arrays.stream(pieces).anyMatch(piece -> material.name().toLowerCase().contains(piece));
     }
 
-    public static ItemStack addGlow(ItemStack item){
+    public static void addGlow(ItemStack item){
         ItemMeta meta = item.getItemMeta();
         meta.addEnchant(Enchantment.DURABILITY, 1, true);
         meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
 
         item.setItemMeta(meta);
-        return item;
     }
 
     public static ItemStack addTag(ItemStack item, String tag, String content) {
@@ -56,6 +55,12 @@ public class ItemUtil {
         item.addUnsafeEnchantment(enchantment, level);
 
         return item;
+    }
+
+    public static void fill(List<ItemStack> items) {
+        while (items.size() % 9 != 0) {
+            items.add(null);
+        }
     }
 
     public static void addEmptyRow(List<ItemStack> items) {
