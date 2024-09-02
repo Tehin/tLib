@@ -82,7 +82,7 @@ public abstract class Menu implements InventoryHolder {
         InventoryHolder holder = open.getHolder();
 
         // Open the inventory and open ours if it's a static menu or not a menu of our property
-        if (!(holder instanceof Menu) || holder instanceof StaticMenu) {
+        if (!(holder.getClass().isInstance(this)) || holder instanceof StaticMenu) {
             player.closeInventory();
             player.openInventory(createInventory(items));
             return;
