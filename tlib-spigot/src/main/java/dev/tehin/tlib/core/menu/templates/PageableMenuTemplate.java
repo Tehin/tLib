@@ -33,6 +33,7 @@ public class PageableMenuTemplate implements MenuTemplate {
     public List<ItemStack> apply(List<ItemStack> items) {
         // Use builder to register actions
         MenuContentBuilder builder = new MenuContentBuilder(menu);
+        int itemCount = items.size();
 
         final boolean firstPage = currentPage == 0;
 
@@ -44,7 +45,7 @@ public class PageableMenuTemplate implements MenuTemplate {
         if (!isFull) fill(items, !firstPage);
 
         addSeparator(items);
-        addOptions(items, builder);
+        addOptions(items, itemCount, builder);
 
         return items;
     }
@@ -91,9 +92,9 @@ public class PageableMenuTemplate implements MenuTemplate {
     }
 
     protected ItemStack next(int itemCount, MenuContentBuilder builder) {
-        int maxPage = (int) Math.ceil((double) itemCount / getMaxContent());
+        int pages = (int) Math.ceil((double) itemCount / getMaxContent());
 
-        if (currentPage == maxPage || maxPage == 1) return new ItemStack(Material.AIR);
+        if (currentPage == (pages - 1) || pages == 1) return new ItemStack(Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
             menu.open(player, currentPage + 1, filter);
@@ -122,12 +123,12 @@ public class PageableMenuTemplate implements MenuTemplate {
         }
     }
 
-    protected void addOptions(List<ItemStack> items, MenuContentBuilder builder) {
+    protected void addOptions(List<ItemStack> items, int itemCount, MenuContentBuilder builder) {
         items.add(previous(builder));
         addEmpty(items, 3);
         items.add(builder.getPresets().getFilter(filter));
         addEmpty(items, 3);
-        items.add(next(items.size(), builder));
+        items.add(next(itemCount, builder));
     }
 
     protected List<ItemStack> paginate(List<ItemStack> items) {
