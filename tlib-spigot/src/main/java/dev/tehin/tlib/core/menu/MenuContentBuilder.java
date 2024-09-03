@@ -55,7 +55,16 @@ public class MenuContentBuilder {
     public MenuContentBuilder set(int index, ItemBuilder builder) {
         ItemStack stack = register(builder);
 
-        this.contents.set(index, stack);
+        if (contents.size() > index) {
+            contents.set(index, stack);
+        } else {
+            while (contents.size() < index) {
+                contents.add(null);
+            }
+
+            contents.add(stack);
+        }
+
         return this;
     }
 
