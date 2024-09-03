@@ -7,6 +7,9 @@ import dev.tehin.tlib.core.menu.MenuContentBuilder;
 import dev.tehin.tlib.core.menu.MenuTemplate;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
 import dev.tehin.tlib.core.menu.MenuFilter;
+import dev.tehin.tlib.utilities.PaginationUtil;
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
@@ -17,6 +20,7 @@ import org.bukkit.inventory.ItemStack;
 import java.util.*;
 
 @RequiredArgsConstructor
+@Getter(AccessLevel.PROTECTED)
 public class PageableMenuTemplate implements MenuTemplate {
 
     private static final ItemBuilder PANE = new ItemBuilder(Material.STAINED_GLASS_PANE).name("&7").data(0);
@@ -24,26 +28,16 @@ public class PageableMenuTemplate implements MenuTemplate {
     private final Menu menu;
     private final MenuFilter filter;
     private final int currentPage;
-    private final int maxPage;
 
     @Override
     public List<ItemStack> apply(List<ItemStack> items) {
         // Use builder to register actions
         MenuContentBuilder builder = new MenuContentBuilder(menu);
 
-        final int maxContent = getMaxColumns() * getMaxRows();
         final boolean firstPage = currentPage == 0;
 
-        int start = Math.max(0, (maxContent * currentPage) - 1);
-
-        // If first page, get the max content minus one since we start from 0 and
-        // not from our desired page start.
-        int end = (firstPage) ? maxContent - 1 : ((start + (9 * getMaxRows()) - 1));
-
-        // We add one since end is exclusive
-        items = items.subList(start, Math.min(items.size(), end + 1));
-
-        boolean isFull = items.size() >= maxContent;
+        items = paginate(items);
+        boolean isFull = items.size() >= getMaxContent();
 
         // Fill items if not full, try to adjust to the size of items if it's the first and only page
         // If not, fill the whole inventory so the menu does not change suddenly of size
@@ -55,7 +49,7 @@ public class PageableMenuTemplate implements MenuTemplate {
         return items;
     }
 
-    private void fill(List<ItemStack> items, boolean full) {
+    protected void fill(List<ItemStack> items, boolean full) {
         if (!full) {
             while (items.size() % 9 != 0) {
                 items.add(null);
@@ -67,13 +61,13 @@ public class PageableMenuTemplate implements MenuTemplate {
         }
     }
 
-    private void addEmpty(List<ItemStack> items, int quantity) {
+    protected void addEmpty(List<ItemStack> items, int quantity) {
         for (int i = 0; i < quantity; i++) {
             items.add(null);
         }
     }
 
-    private ItemStack previous(MenuContentBuilder builder) {
+    protected ItemStack previous(MenuContentBuilder builder) {
         if (currentPage == 0) return new ItemStack(Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
@@ -96,7 +90,9 @@ public class PageableMenuTemplate implements MenuTemplate {
         return builder.register(item);
     }
 
-    private ItemStack next(MenuContentBuilder builder) {
+    protected ItemStack next(int itemCount, MenuContentBuilder builder) {
+        int maxPage = (int) Math.ceil((double) itemCount / getMaxContent());
+
         if (currentPage == maxPage || maxPage == 1) return new ItemStack(Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
@@ -118,7 +114,7 @@ public class PageableMenuTemplate implements MenuTemplate {
         return builder.register(item);
     }
 
-    private void addSeparator(List<ItemStack> items) {
+    protected void addSeparator(List<ItemStack> items) {
         ItemStack stack = PANE.build();
 
         for (int i = 0; i < 9; i++) {
@@ -126,12 +122,16 @@ public class PageableMenuTemplate implements MenuTemplate {
         }
     }
 
-    private void addOptions(List<ItemStack> items, MenuContentBuilder builder) {
+    protected void addOptions(List<ItemStack> items, MenuContentBuilder builder) {
         items.add(previous(builder));
         addEmpty(items, 3);
         items.add(builder.getPresets().getFilter(filter));
         addEmpty(items, 3);
-        items.add(next(builder));
+        items.add(next(items.size(), builder));
+    }
+
+    protected List<ItemStack> paginate(List<ItemStack> items) {
+        return PaginationUtil.paginate(items, currentPage, getMaxContent());
     }
 
     @Override
@@ -142,5 +142,9 @@ public class PageableMenuTemplate implements MenuTemplate {
     @Override
     public int getMaxColumns() {
         return 9;
+    }
+
+    protected int getMaxContent() {
+        return getMaxRows() * getMaxColumns();
     }
 }

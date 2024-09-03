@@ -68,15 +68,12 @@ public class MenuContentBuilder {
         return this;
     }
 
-    public List<ItemStack> build(int page, MenuFilter filter, boolean useTemplate) {
+    public List<ItemStack> build(MenuTemplate template, boolean useTemplate) {
         if (!useTemplate) return contents;
 
         boolean isPageable = menu instanceof PageableMenu;
 
         int currentItems = contents.size();
-
-        // Get template based on implementations
-        MenuTemplate template = isPageable ? new PageableMenuTemplate(menu, filter, page, (int) Math.ceil((double) currentItems / DEFAULT_PAGE_SIZE)) : new EmptyMenuTemplate();
 
         // How many items can we freely use
         final int maxItems = template.getMaxRows() * template.getMaxColumns();

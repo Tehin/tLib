@@ -6,6 +6,8 @@ import dev.tehin.tlib.api.menu.features.PageableMenu;
 import dev.tehin.tlib.api.menu.features.StaticMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.options.MenuOptions;
+import dev.tehin.tlib.core.menu.templates.EmptyMenuTemplate;
+import dev.tehin.tlib.core.menu.templates.PageableMenuTemplate;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
@@ -93,7 +95,7 @@ public abstract class Menu implements InventoryHolder {
     }
 
     protected List<ItemStack> get(Player player, int page, MenuFilter filter) {
-        List<ItemStack> items = create(player, filter).build(page, filter, true);
+        List<ItemStack> items = create(player, filter).build(getTemplate(filter, page), true);
         if (items.size() % 9 != 0) {
             throw new IllegalStateException("Menu size '" + items.size() + "' is not a multiple of 9");
         }
@@ -168,6 +170,10 @@ public abstract class Menu implements InventoryHolder {
      */
     public boolean update(ItemBuilder builder) {
         throw new UnsupportedOperationException("Not implemented yet, please use Menu#update(int, ItemBuilder)");
+    }
+
+    public MenuTemplate getTemplate(MenuFilter filter, int page) {
+        return (this instanceof PageableMenu) ? new PageableMenuTemplate(this, filter, page) : new EmptyMenuTemplate();
     }
 
 }
