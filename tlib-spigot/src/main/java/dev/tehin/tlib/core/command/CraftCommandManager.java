@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class CraftCommandManager implements CommandManager {
 
     private CommandMappings commands;
-    private boolean registered = false;
+    private boolean loaded = false;
 
     public CraftCommandManager() {
         Plugin plugin = tLib.get().getOwner();
@@ -41,22 +41,24 @@ public class CraftCommandManager implements CommandManager {
         } catch (IllegalArgumentException | SecurityException | NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
 
+    @Override
+    public void register(CommandBase... commands) {
+        Arrays.stream(commands).forEach(this::register);
     }
 
     @SneakyThrows
     @Override
-    public void register(CommandBase... commands) {
-        if (this.registered) throw new CommandsAlreadyRegisteredException();
+    public void load() {
+        if (this.loaded) throw new CommandsAlreadyRegisteredException();
 
-        this.registered = true;
-
-        Arrays.stream(commands).forEach(this::register);
+        this.loaded = true;
         this.commands.load();
     }
 
     @SneakyThrows
-    public void register(CommandBase command) {
+    private void register(CommandBase command) {
         boolean isSimple = command instanceof SimpleCommandExecutor;
         if (isSimple) {
             registerSimple((SimpleCommandExecutor) command);

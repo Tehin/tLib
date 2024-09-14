@@ -9,4 +9,10 @@ public interface CommandManager {
      * @param commands Commands to be registered
      */
     void register(CommandBase... commands);
+
+    /**
+     * Load the commands after each of them is registered
+     * to ensure a clean sub command mappings
+     */
+    void load();
 }
