@@ -68,6 +68,10 @@ public class MenuContentBuilder {
         return this;
     }
 
+    public int size() {
+        return contents.size();
+    }
+
     public List<ItemStack> build(MenuTemplate template, boolean useTemplate) {
         if (!useTemplate) return contents;
 

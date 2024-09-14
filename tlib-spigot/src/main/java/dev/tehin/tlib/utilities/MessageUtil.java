@@ -8,6 +8,9 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 public class MessageUtil {
 
@@ -18,6 +21,13 @@ public class MessageUtil {
     public static void send(CommandSender sender, String[] messages) {
         Arrays.stream(messages).forEach(msg -> send(sender, msg));
     }
+
+    public static void send(CommandSender sender, Collection<String> messages) {
+        for (String message : messages) {
+            send(sender, message);
+        }
+    }
+
 
     public static void send(Player player, TextComponent component) {
         player.spigot().sendMessage(component);

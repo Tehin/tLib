@@ -56,7 +56,7 @@ public class CraftCommandManager implements CommandManager {
     }
 
     @SneakyThrows
-    private void register(CommandBase command) {
+    public void register(CommandBase command) {
         boolean isSimple = command instanceof SimpleCommandExecutor;
         if (isSimple) {
             registerSimple((SimpleCommandExecutor) command);

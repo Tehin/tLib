@@ -18,12 +18,12 @@ public class EmptyMenuTemplate implements MenuTemplate {
 
     @Override
     public int getMaxRows() {
-        return 9;
+        return 6;
     }
 
     @Override
     public int getMaxColumns() {
-        return 5;
+        return 9;
     }
 
 }
