@@ -62,4 +62,8 @@ public class TaskUtil {
 
         Bukkit.getScheduler().runTaskLaterAsynchronously(owner, task, delayInTicks);
     }
+
+    public static TaskSet createSet() {
+        return new TaskSet();
+    }
 }
