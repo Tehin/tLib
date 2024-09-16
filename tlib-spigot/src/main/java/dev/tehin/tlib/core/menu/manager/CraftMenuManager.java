@@ -24,8 +24,6 @@ public class CraftMenuManager implements MenuManager {
 
     @Override
     public Optional<Menu> getOpenMenu(Player player) {
-        System.out.println(player.getUniqueId());
-        System.out.println(opened);
         if (!opened.containsKey(player.getUniqueId())) return Optional.empty();
 
         return Optional.of(opened.get(player.getUniqueId()));
@@ -73,12 +71,10 @@ public class CraftMenuManager implements MenuManager {
     }
 
     public void registerOpen(Player player, Menu menu) {
-        System.out.println("Registering: " + player.getUniqueId());
         opened.put(player.getUniqueId(), menu);
     }
 
     public void registerClose(Player player) {
-        System.out.println("Unregistering: " + player.getUniqueId());
         opened.remove(player.getUniqueId());
     }
 

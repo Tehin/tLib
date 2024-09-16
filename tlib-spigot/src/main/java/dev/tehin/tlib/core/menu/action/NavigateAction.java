@@ -22,8 +22,6 @@ public class NavigateAction extends CraftMenuAction implements NavigationAction 
 
     @Override
     public void execute(MenuManager manager, Player player) {
-        player.closeInventory();
-
         tLib.get().getMenu().open(player, navigation);
     }
 
