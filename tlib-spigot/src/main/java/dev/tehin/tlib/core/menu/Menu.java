@@ -4,10 +4,13 @@ import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.data.ItemData;
 import dev.tehin.tlib.api.menu.features.PageableMenu;
 import dev.tehin.tlib.api.menu.features.StaticMenu;
+import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.item.ItemBuilder;
+import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import dev.tehin.tlib.core.menu.options.MenuOptions;
 import dev.tehin.tlib.core.menu.templates.EmptyMenuTemplate;
 import dev.tehin.tlib.core.menu.templates.PageableMenuTemplate;
+import dev.tehin.tlib.utilities.InventoryUtil;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import dev.tehin.tlib.utilities.task.TaskUtil;
@@ -66,6 +69,7 @@ public abstract class Menu implements InventoryHolder {
 
         if (isStatic && inventory != null) {
             player.openInventory(getInventory());
+            registerOpen(player);
             return;
         }
 
@@ -77,21 +81,35 @@ public abstract class Menu implements InventoryHolder {
         if (isStatic) {
             this.inventory = createInventory(items);
             player.openInventory(getInventory());
+            registerOpen(player);
             return;
         }
 
         Inventory open = player.getOpenInventory().getTopInventory();
-        InventoryHolder holder = open.getHolder();
+        Optional<Menu> menu = tLib.get().getMenu().getOpenMenu(player);
 
-        // Open the inventory and open ours if it's a static menu or not a menu of our property
-        if (!(holder.getClass().isInstance(this)) || holder instanceof StaticMenu) {
+        // Close the inventory and open ours if it's a static menu, or it's not a menu of our property
+        // TODO: Allow updates of different size inventories through spigot directly
+        if (menu.isEmpty() || menu.get() instanceof StaticMenu || open.getSize() != items.size()) {
             player.closeInventory();
             player.openInventory(createInventory(items));
+            registerOpen(player);
             return;
         }
 
         // If it's not a static menu, replace the contents for a smooth transition
         open.setContents(items.toArray(new ItemStack[0]));
+
+        // After setting the contents, update the title using packets, updating the size
+        InventoryUtil.update(player, display, items.size());
+        registerOpen(player);
+    }
+
+    // Register that the player opened the inventory, override if one is already opened
+    // Use this function separately on each case to avoid unintentional unregister
+    private void registerOpen(Player player) {
+        CraftMenuManager manager = (CraftMenuManager) tLib.get().getMenu();
+        manager.registerOpen(player, this);
     }
 
     protected List<ItemStack> get(Player player, int page, MenuFilter filter) {

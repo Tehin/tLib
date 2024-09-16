@@ -3,6 +3,8 @@ package dev.tehin.tlib.api.menu.manager;
 import dev.tehin.tlib.core.menu.Menu;
 import org.bukkit.entity.Player;
 
+import java.util.Optional;
+
 public interface MenuManager {
 
     /**
@@ -19,11 +21,17 @@ public interface MenuManager {
     Menu getMenu(Class<? extends Menu> type);
 
     /**
+     * Gets the open {@link Menu} of the specified player
+     * @param player The player
+     * @return The found {@link Menu}, or empty if not found
+     */
+    Optional<Menu> getOpenMenu(Player player);
+
+    /**
      * Opens the specified {@link Menu} to the player, with
      * the registered actions listening
      * @param player Player who will be targeted
      * @param type Class representing the {@link Menu}
      */
     void open(Player player, Class<? extends Menu> type);
-
 }

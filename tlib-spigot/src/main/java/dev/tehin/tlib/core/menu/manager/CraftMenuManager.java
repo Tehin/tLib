@@ -3,7 +3,6 @@ package dev.tehin.tlib.core.menu.manager;
 import dev.tehin.tlib.api.menu.annotations.MenuMessaging;
 import dev.tehin.tlib.core.LibLogger;
 import dev.tehin.tlib.core.exceptions.MenuNotRegisteredException;
-import dev.tehin.tlib.core.exceptions.NoPropertiesFoundException;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.manager.MenuManager;
 import dev.tehin.tlib.utilities.MessageUtil;
@@ -14,22 +13,22 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 
 public class CraftMenuManager implements MenuManager {
 
     private final HashMap<Class<? extends Menu>, Menu> menus = new HashMap<>();
+    private final Map<UUID, Menu> opened = new HashMap<>();
 
-    /**
-     * Safely get the Menu owner of specified inventory
-     * @param inventory The inventory we are getting the Menu from
-     * @return Empty {@link Optional} if not found, or wrapping {@link Menu} if found
-     */
-    public Optional<Menu> getMenu(Inventory inventory) {
-        InventoryHolder holder = inventory.getHolder();
-        if (!(holder instanceof Menu)) return Optional.empty();
+    @Override
+    public Optional<Menu> getOpenMenu(Player player) {
+        System.out.println(player.getUniqueId());
+        System.out.println(opened);
+        if (!opened.containsKey(player.getUniqueId())) return Optional.empty();
 
-        return Optional.of((Menu) holder);
+        return Optional.of(opened.get(player.getUniqueId()));
     }
 
     @SneakyThrows
@@ -73,5 +72,14 @@ public class CraftMenuManager implements MenuManager {
         menu.open(player);
     }
 
+    public void registerOpen(Player player, Menu menu) {
+        System.out.println("Registering: " + player.getUniqueId());
+        opened.put(player.getUniqueId(), menu);
+    }
+
+    public void registerClose(Player player) {
+        System.out.println("Unregistering: " + player.getUniqueId());
+        opened.remove(player.getUniqueId());
+    }
 
 }

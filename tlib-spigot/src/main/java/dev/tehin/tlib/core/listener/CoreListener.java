@@ -12,7 +12,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Optional;
@@ -29,7 +31,8 @@ public class CoreListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        Optional<Menu> type = menus.getMenu(e.getInventory());
+        Optional<Menu> type = menus.getOpenMenu((Player) e.getWhoClicked());
+        System.out.println("Result: " + type);
         if (type.isEmpty() || e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
 
         e.setCancelled(true);
@@ -57,5 +60,15 @@ public class CoreListener implements Listener {
         if (interactable.isEmpty()) return;
 
         interactable.get().handle(e.getPlayer());
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        menus.registerClose((Player) event.getPlayer());
+    }
+
+    @EventHandler
+    public void onLeave(PlayerQuitEvent event) {
+        menus.registerClose(event.getPlayer());
     }
 }
