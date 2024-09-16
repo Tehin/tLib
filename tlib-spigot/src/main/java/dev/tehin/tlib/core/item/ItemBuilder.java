@@ -12,6 +12,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -36,6 +37,7 @@ public class ItemBuilder {
     private DyeColor color = null;
     private boolean glow = false;
     private MenuAction action = null;
+    private ItemFlag flag;
 
     @Setter(AccessLevel.NONE)
     private Map<Enchantment, Integer> enchants = null;
@@ -92,6 +94,7 @@ public class ItemBuilder {
             leather.setColor(color.getColor());
         }
 
+        if (flag != null) meta.addItemFlags(flag);
         item.setItemMeta(meta);
 
         if (glow) ItemUtil.addGlow(item);

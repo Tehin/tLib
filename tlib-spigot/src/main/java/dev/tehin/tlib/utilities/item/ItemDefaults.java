@@ -2,6 +2,10 @@ package dev.tehin.tlib.utilities.item;
 
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.material.ModernMaterialParser;
+import dev.tehin.tlib.core.menu.Menu;
+import dev.tehin.tlib.core.menu.action.ExecutorAction;
+import dev.tehin.tlib.core.menu.action.NavigateAction;
+import dev.tehin.tlib.utilities.chat.LoreUtil;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
@@ -9,6 +13,17 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 public class ItemDefaults {
+
+    public static ItemBuilder GLASS = new ItemBuilder(Material.STAINED_GLASS_PANE).data(0).name("&7");
+
+    public static ItemBuilder BACK(Menu back) {
+        return new ItemBuilder(Material.INK_SACK)
+                .data(1)
+                .name("&c&lVolver")
+                .lore(LoreUtil.split("Regresa al anterior menú"))
+                .action(new ExecutorAction(back::open));
+    }
+
     public static ItemStack getGlass() {
         return new ItemBuilder(ModernMaterialParser.getGlassPane()).name("&7").data(7).build();
     }

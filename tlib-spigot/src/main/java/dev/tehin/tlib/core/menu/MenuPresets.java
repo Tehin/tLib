@@ -16,6 +16,10 @@ public class MenuPresets {
     private final Menu menu;
 
     public ItemStack getFilter(MenuFilter current) {
+        return menu.createContentBuilder().register(getFilterBuild(current));
+    }
+
+    public ItemBuilder getFilterBuild(MenuFilter current) {
         List<String> lore = new ArrayList<>();
 
         MenuFilter next = MenuFilter.ALL;
@@ -40,13 +44,11 @@ public class MenuPresets {
         MenuFilter finalNext = next;
         ActionExecutor action = player -> menu.open(player, 0, finalNext);
 
-        ItemBuilder builder = new ItemBuilder(Material.HOPPER)
+        return new ItemBuilder(Material.HOPPER)
                 .name("&f&lFiltrar")
                 .lore(lore)
                 .glow(current != MenuFilter.ALL)
                 .action(new ExecutorAction(action));
-
-        return menu.createContentBuilder().register(builder);
     }
 
 }

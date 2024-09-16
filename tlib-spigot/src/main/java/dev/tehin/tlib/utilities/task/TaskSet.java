@@ -4,10 +4,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Supplier;
 
-class TaskSet {
+public class TaskSet {
 
     private final List<TaskEntry> tasks = new LinkedList<>();
-    private Supplier<Boolean> condition;
+    private Supplier<Boolean> cancelIf;
 
     public TaskSet at(int time, Runnable task) {
         tasks.add(new TaskEntry(time, task));
@@ -15,7 +15,7 @@ class TaskSet {
     }
 
     public TaskSet cancelIf(Supplier<Boolean> condition) {
-        this.condition = condition;
+        this.cancelIf = condition;
         return this;
     }
 
@@ -33,7 +33,7 @@ class TaskSet {
 
     private Runnable getRunnable(Runnable entry) {
         return () -> {
-            if (condition != null && !condition.get()) return;
+            if (cancelIf != null && cancelIf.get()) return;
 
             entry.run();
         };

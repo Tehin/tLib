@@ -48,6 +48,10 @@ public class MessageUtil {
         return ChatColor.translateAlternateColorCodes('&', msg);
     }
 
+    public static String strip(String msg) {
+        return ChatColor.stripColor(color(msg));
+    }
+
     public static void sendConsole(String message) {
         send(Bukkit.getConsoleSender(), message);
     }

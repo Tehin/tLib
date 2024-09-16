@@ -1,5 +1,7 @@
 package dev.tehin.tlib.utilities.item;
 
+import dev.tehin.tlib.core.item.ItemBuilder;
+import dev.tehin.tlib.core.menu.MenuContentBuilder;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
@@ -165,5 +167,23 @@ public class ItemUtil {
         }
 
         return lore;
+    }
+
+    // New version
+    public static void fillRow(MenuContentBuilder builder, ItemBuilder item) {
+        for (int i = 0; i < 9; i++) {
+            builder.add(item);
+        }
+    }
+
+    public static void fillRowWithMiddle(MenuContentBuilder builder, ItemBuilder filler, ItemBuilder middle) {
+        for (int i = 0; i < 9; i++) {
+            if (i == 4) {
+                builder.add(middle);
+                continue;
+            }
+
+            builder.add(filler);
+        }
     }
 }
