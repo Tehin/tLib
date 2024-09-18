@@ -1,5 +1,6 @@
 package dev.tehin.tlib.utilities.item;
 
+import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.material.ModernMaterialParser;
 import dev.tehin.tlib.core.menu.Menu;
@@ -17,11 +18,15 @@ public class ItemDefaults {
     public static ItemBuilder GLASS = new ItemBuilder(Material.STAINED_GLASS_PANE).data(0).name("&7");
 
     public static ItemBuilder BACK(Menu back) {
-        return new ItemBuilder(Material.INK_SACK)
-                .data(1)
+        return new ItemBuilder(Material.WATCH)
+//                .data(1)
                 .name("&c&lVolver")
                 .lore(LoreUtil.split("Regresa al anterior menú"))
                 .action(new ExecutorAction(back::open));
+    }
+
+    public static ItemBuilder BACK(Class<? extends Menu> back) {
+        return BACK(tLib.get().getMenu().getMenu(back));
     }
 
     public static ItemStack getGlass() {
