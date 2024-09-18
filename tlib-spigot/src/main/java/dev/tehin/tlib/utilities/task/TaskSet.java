@@ -1,10 +1,17 @@
 package dev.tehin.tlib.utilities.task;
 
-import java.util.LinkedList;
-import java.util.List;
+import lombok.Getter;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
+
+import java.util.*;
 import java.util.function.Supplier;
 
 public class TaskSet {
+
+    // Sets that use queues for overlap prevention
+    @Getter
+    private static final Map<UUID, Integer> queues = new HashMap<>();
 
     private final List<TaskEntry> tasks = new LinkedList<>();
     private Supplier<Boolean> cancelIf;
@@ -17,6 +24,37 @@ public class TaskSet {
     public TaskSet cancelIf(Supplier<Boolean> condition) {
         this.cancelIf = condition;
         return this;
+    }
+
+    public int getTotalDuration() {
+        return tasks.stream().mapToInt(TaskEntry::delay).sum();
+    }
+
+    // TODO: Tomar en cuenta si las tareas se dan en diferentes timings (reducir la duration conforme pasan los ticks)
+    public void queueRun(Player player, int endOffset) {
+        int totalDuration = getTotalDuration() + endOffset + 1;
+
+        Runnable task = () -> {
+            runSync();
+
+            // Clear this set from the queue after it's finished
+            TaskUtil.runSyncLater(() -> {
+                queues.computeIfPresent(player.getUniqueId(), (k, v) -> {
+                    int result = v - totalDuration;
+                    if (result <= 0) return null;
+
+                    return result;
+                });
+            }, totalDuration);
+        };
+
+        TaskUtil.runSyncLater(task, queues.getOrDefault(player.getUniqueId(), 0));
+
+        queues.compute(player.getUniqueId(), (k, v) -> {
+            if (v == null) v = 0;
+
+            return v + totalDuration;
+        });
     }
 
     public void runSync() {

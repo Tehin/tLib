@@ -6,6 +6,7 @@ import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import dev.tehin.tlib.utilities.item.ItemUtil;
+import dev.tehin.tlib.utilities.task.TaskSet;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -69,5 +70,6 @@ public class CoreListener implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         menus.registerClose(event.getPlayer());
+        TaskSet.getQueues().remove(event.getPlayer().getUniqueId());
     }
 }
