@@ -7,6 +7,10 @@ public class LoreUtil {
 
     // TODO: Mejorar, se lo robé a Elecast
     public static List<String> split(String input) {
+        return split(input, "&7");
+    }
+
+    public static List<String> split(String input, String color) {
         int maxLines = 6;
         int maxChars = 40;
 
@@ -17,7 +21,7 @@ public class LoreUtil {
         for (String word : words) {
             if (lines.size() < (maxLines - 1)) {
                 if (currentLine.length() + word.length() > maxChars) {
-                    lines.add("&7" + currentLine.toString().trim());
+                    lines.add(color + currentLine.toString().trim());
                     currentLine = new StringBuilder();
                 }
                 if (currentLine.length() + word.length() == maxChars) {
@@ -36,7 +40,7 @@ public class LoreUtil {
                 System.out.println("El string '" + input + "' supera el límite máximo de caracteres.");
                 lastLine = lastLine.substring(0, 40);
             }
-            lines.add("&7" + lastLine);
+            lines.add(color + lastLine);
         }
 
         return lines;

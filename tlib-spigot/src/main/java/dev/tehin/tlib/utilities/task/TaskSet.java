@@ -14,10 +14,17 @@ public class TaskSet {
     private static final Map<UUID, Integer> queues = new HashMap<>();
 
     private final List<TaskEntry> tasks = new LinkedList<>();
+
     private Supplier<Boolean> cancelIf;
+    private Runnable onCancel;
 
     public TaskSet at(int time, Runnable task) {
         tasks.add(new TaskEntry(time, task));
+        return this;
+    }
+
+    public TaskSet onCancel(Runnable task) {
+        this.onCancel = task;
         return this;
     }
 
@@ -71,7 +78,13 @@ public class TaskSet {
 
     private Runnable getRunnable(Runnable entry) {
         return () -> {
-            if (cancelIf != null && cancelIf.get()) return;
+            if (cancelIf != null && cancelIf.get()) {
+                if (onCancel != null) {
+                    onCancel.run();
+                    onCancel = null;
+                }
+                return;
+            }
 
             entry.run();
         };
