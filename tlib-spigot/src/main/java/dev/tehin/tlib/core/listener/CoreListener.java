@@ -8,6 +8,7 @@ import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import dev.tehin.tlib.utilities.task.TaskSet;
 import org.bukkit.Material;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -44,6 +45,9 @@ public class CoreListener implements Listener {
 
         MenuAction action = menu.getActions().get(Integer.parseInt(id.get()));
         if (action.getType() != e.getClick()) return;
+
+        Player player = (Player) e.getWhoClicked();
+        player.playSound(player.getLocation(), menu.getOptions().soundOnClick(), 0.5f, 1);
 
         action.execute(menus, (Player) e.getWhoClicked());
     }
