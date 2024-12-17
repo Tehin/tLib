@@ -2,6 +2,7 @@ package dev.tehin.tlib.utilities.item;
 
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.MenuContentBuilder;
+import net.minemora.nms.NMS;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
@@ -35,11 +36,11 @@ public class ItemUtil {
     }
 
     public static ItemStack addTag(ItemStack item, String tag, String content) {
-        return NBTEditor.set(item, content, tag);
+        return NMS.get().getUtil().setNBT(item, tag, content);
     }
 
     public static Optional<String> getTag(ItemStack item, String tag) {
-        return NBTEditor.getString(item, tag);
+        return NMS.get().getUtil().getNBT(item, tag);
     }
 
     public static void addColor(DyeColor color, ItemStack... leatherArmors) {
