@@ -56,4 +56,13 @@ public class MessageUtil {
         send(Bukkit.getConsoleSender(), message);
     }
 
+    public static void broadcast(String message) {
+        Bukkit.broadcastMessage(color(message));
+    }
+
+    public static void broadcastFormal(String message) {
+        String prefix = tLib.get().getConfig().messaging().getPrefix();
+        broadcast(prefix + " " + message);
+    }
+
 }
