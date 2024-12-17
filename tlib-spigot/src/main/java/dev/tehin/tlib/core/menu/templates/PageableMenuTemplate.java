@@ -11,6 +11,7 @@ import dev.tehin.tlib.utilities.PaginationUtil;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.minemora.nms.NMS;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -23,7 +24,7 @@ import java.util.*;
 @Getter(AccessLevel.PROTECTED)
 public class PageableMenuTemplate implements MenuTemplate {
 
-    private static final ItemBuilder PANE = new ItemBuilder(Material.STAINED_GLASS_PANE).name("&7").data(0);
+    private static final ItemBuilder PANE = new ItemBuilder(NMS.Material.STAINED_GLASS_PANE).name("&7").data(0);
 
     private final Menu menu;
     private final MenuFilter filter;
@@ -69,7 +70,7 @@ public class PageableMenuTemplate implements MenuTemplate {
     }
 
     protected ItemStack previous(MenuContentBuilder builder) {
-        if (currentPage == 0) return new ItemStack(Material.AIR);
+        if (currentPage == 0) return new ItemStack(NMS.Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
             menu.open(player, currentPage - 1, filter);
@@ -78,7 +79,7 @@ public class PageableMenuTemplate implements MenuTemplate {
         // Parse since page starts from 0 and not from 1
         final int previousPageParsed = currentPage;
 
-        ItemBuilder item = new ItemBuilder(Material.BANNER)
+        ItemBuilder item = new ItemBuilder(NMS.Material.BANNER)
                 .baseColor(DyeColor.WHITE)
                 .addPattern(new Pattern(DyeColor.RED, PatternType.RHOMBUS_MIDDLE))
                 .addPattern(new Pattern(DyeColor.WHITE, PatternType.STRIPE_RIGHT))
@@ -94,7 +95,7 @@ public class PageableMenuTemplate implements MenuTemplate {
     protected ItemStack next(int itemCount, MenuContentBuilder builder) {
         int pages = (int) Math.ceil((double) itemCount / getMaxContent());
 
-        if (currentPage == (pages - 1) || pages == 1) return new ItemStack(Material.AIR);
+        if (currentPage == (pages - 1) || pages == 1) return new ItemStack(NMS.Material.AIR);
 
         MenuAction action = new ExecutorAction(player -> {
             menu.open(player, currentPage + 1, filter);
@@ -102,7 +103,7 @@ public class PageableMenuTemplate implements MenuTemplate {
 
         // Parse since page starts from 0 and not from 1
         final int nextPageParsed = currentPage + 2;
-        ItemBuilder item = new ItemBuilder(Material.BANNER)
+        ItemBuilder item = new ItemBuilder(NMS.Material.BANNER)
                 .baseColor(DyeColor.WHITE)
                 .addPattern(new Pattern(DyeColor.GREEN, PatternType.RHOMBUS_MIDDLE))
                 .addPattern(new Pattern(DyeColor.WHITE, PatternType.STRIPE_LEFT))

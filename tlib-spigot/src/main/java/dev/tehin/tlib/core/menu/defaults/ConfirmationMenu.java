@@ -6,6 +6,7 @@ import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.core.menu.MenuContentBuilder;
 import dev.tehin.tlib.core.menu.MenuFilter;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
+import net.minemora.nms.NMS;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -29,16 +30,16 @@ public class ConfirmationMenu extends Menu {
     protected MenuContentBuilder create(Player player, MenuFilter filter) {
         MenuContentBuilder content = createContentBuilder();
 
-        ItemBuilder no = new ItemBuilder(Material.WOOL)
+        ItemBuilder no = new ItemBuilder(NMS.Material.WOOL)
                 .data(14)
                 .name("&c&lCANCELAR")
                 .action(onCancel == null ? new ExecutorAction(HumanEntity::closeInventory) : new ExecutorAction(onCancel));
 
-        ItemBuilder info = new ItemBuilder(Material.PAPER)
+        ItemBuilder info = new ItemBuilder(NMS.Material.PAPER)
                 .name("&7")
                 .lore(description);
 
-        ItemBuilder yes = new ItemBuilder(Material.WOOL)
+        ItemBuilder yes = new ItemBuilder(NMS.Material.WOOL)
                 .data(5)
                 .name("&a&lCONFIRMAR")
                 .action(new ExecutorAction(onConfirm));

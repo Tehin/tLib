@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minemora.nms.NMS;
 import org.bukkit.Sound;
 
 @RequiredArgsConstructor
@@ -12,8 +13,8 @@ import org.bukkit.Sound;
 @Getter
 public class MenuOptions {
 
-    private Sound soundOnOpen = Sound.ITEM_PICKUP;
-    private Sound soundOnClick = Sound.CLICK;
+    private Sound soundOnOpen = NMS.Sound.ITEM_PICKUP;
+    private Sound soundOnClick = NMS.Sound.CLICK;
 
 
 }
