@@ -35,9 +35,11 @@ public class CoreListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         Optional<Menu> type = menus.getOpenMenu((Player) e.getWhoClicked());
-        if (type.isEmpty() || e.getCurrentItem() == null || e.getCurrentItem().getType() == NMS.Material.AIR) return;
+        if (type.isEmpty()) return;
 
         e.setCancelled(true);
+
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType() == NMS.Material.AIR) return;
 
         Menu menu = type.get();
         Optional<String> id = ItemUtil.getTag(e.getCurrentItem(), "menu-action");
