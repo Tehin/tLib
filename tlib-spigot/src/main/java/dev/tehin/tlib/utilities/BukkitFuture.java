@@ -3,64 +3,44 @@ package dev.tehin.tlib.utilities;
 import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.RequiredArgsConstructor;
 
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @RequiredArgsConstructor
 public class BukkitFuture<T> {
 
-    public enum LibThread {
-        BUKKIT,
-        ASYNC
-    }
-
-    private Consumer<T> sync, async;
-    private Consumer<Exception> error;
+    private BiConsumer<T, Throwable> consumer;
 
     public void complete(T object) {
-        if (sync != null) {
-            TaskUtil.runSync(() -> ErrorWrapper.callOnException(() -> sync.accept(object), error));
-        }
-
-        if (async != null) {
-            TaskUtil.runAsync(() -> ErrorWrapper.callOnException(() -> async.accept(object), error));
+        try {
+            if (consumer != null) consumer.accept(object, null);
+        } catch (Exception e) {
+            e.printStackTrace();
+            consumer.accept(null, e);
         }
     }
 
-    public static <T> BukkitFuture<T> consume(LibThread thread, Supplier<T> task) {
+    public static <T> BukkitFuture<T> supplyAsync(Supplier<T> task) {
         BukkitFuture<T> future = new BukkitFuture<>();
 
         Runnable result = () -> future.complete(task.get());
-
-        switch (thread) {
-            case BUKKIT: {
-                TaskUtil.runSync(result);
-                break;
-            }
-            case ASYNC: {
-                TaskUtil.runAsync(result);
-                break;
-            }
-        }
+        TaskUtil.runAsync(result);
 
         return future;
     }
 
-    public BukkitFuture<T> then(LibThread thread, Consumer<T> consumer) {
-        switch (thread) {
-            case BUKKIT:
-                this.sync = consumer;
-                break;
-            case ASYNC:
-                this.async = consumer;
-                break;
-        }
+    public static <T> BukkitFuture<T> supplySync(Supplier<T> task) {
+        BukkitFuture<T> future = new BukkitFuture<>();
 
-        return this;
+        Runnable result = () -> future.complete(task.get());
+        TaskUtil.runSync(result);
+
+        return future;
     }
 
-    public BukkitFuture<T> error(Consumer<Exception> handler) {
-        this.error = handler;
+    public BukkitFuture<T> whenComplete(BiConsumer<T, Throwable> consumer) {
+        this.consumer = consumer;
         return this;
     }
 
