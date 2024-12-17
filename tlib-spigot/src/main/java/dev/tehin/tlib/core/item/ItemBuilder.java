@@ -38,7 +38,9 @@ public class ItemBuilder {
     private DyeColor color = null;
     private boolean glow = false;
     private MenuAction action = null;
-    private ItemFlag flag;
+
+    @Setter(AccessLevel.NONE)
+    private List<ItemFlag> flags = new ArrayList<>();
 
     @Setter(AccessLevel.NONE)
     private Map<Enchantment, Integer> enchants = null;
@@ -97,7 +99,7 @@ public class ItemBuilder {
             leather.setColor(color.getColor());
         }
 
-        if (flag != null) meta.addItemFlags(flag);
+        if (!flags.isEmpty()) meta.addItemFlags(flags.toArray(new ItemFlag[0]));
         item.setItemMeta(meta);
 
         if (glow) ItemUtil.addGlow(item);
@@ -125,6 +127,12 @@ public class ItemBuilder {
 
     public ItemBuilder lore(List<String> lore) {
         this.lore = lore;
+
+        return this;
+    }
+
+    public ItemBuilder addFlag(ItemFlag flag) {
+        this.flags.add(flag);
 
         return this;
     }
