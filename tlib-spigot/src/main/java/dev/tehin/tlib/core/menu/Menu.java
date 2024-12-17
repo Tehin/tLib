@@ -194,4 +194,16 @@ public abstract class Menu implements InventoryHolder {
         return (this instanceof PageableMenu) ? new PageableMenuTemplate(this, filter, page) : new EmptyMenuTemplate();
     }
 
+    public void closeAll() {
+        tLib.get().getMenu().getAllOpen().forEach((uuid, menu) -> {
+            if (!menu.equals(this)) return;
+
+            Player player = Bukkit.getPlayer(uuid);
+
+            if (player != null) {
+                player.closeInventory();
+            }
+        });
+    }
+
 }

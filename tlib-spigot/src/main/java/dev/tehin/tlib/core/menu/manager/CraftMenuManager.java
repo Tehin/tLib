@@ -9,8 +9,6 @@ import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.SneakyThrows;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryHolder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +25,11 @@ public class CraftMenuManager implements MenuManager {
         if (!opened.containsKey(player.getUniqueId())) return Optional.empty();
 
         return Optional.of(opened.get(player.getUniqueId()));
+    }
+
+    @Override
+    public HashMap<UUID, Menu> getAllOpen() {
+        return new HashMap<>(opened);
     }
 
     @SneakyThrows

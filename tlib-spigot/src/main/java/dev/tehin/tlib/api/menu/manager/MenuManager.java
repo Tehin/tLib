@@ -3,7 +3,9 @@ package dev.tehin.tlib.api.menu.manager;
 import dev.tehin.tlib.core.menu.Menu;
 import org.bukkit.entity.Player;
 
+import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface MenuManager {
 
@@ -12,6 +14,8 @@ public interface MenuManager {
      * @param menus Array of {@link Menu} to be registered
      */
     void register(Menu... menus);
+
+    HashMap<UUID, Menu> getAllOpen();
 
     /**
      * Gets the {@link Menu} based on its class
