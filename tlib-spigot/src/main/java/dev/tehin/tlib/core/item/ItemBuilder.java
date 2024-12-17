@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minemora.nms.NMS;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
@@ -48,7 +49,9 @@ public class ItemBuilder {
     private DyeColor baseColor = null;
 
     public ItemStack build() {
-        ItemStack base = new ItemStack(material, amount);
+        ItemStack base = NMS.get().getItemStackCreator().create(material).getItemStack();
+        base.setAmount(amount);
+
         setProperties(base);
 
         return base;
@@ -59,7 +62,7 @@ public class ItemBuilder {
     }
 
     private void setProperties(ItemStack item) {
-        item.setDurability((short) data);
+        NMS.get().getUtil().setItemStackData(item, (short) data);
 
         ItemMeta meta = item.getItemMeta();
 
@@ -76,7 +79,7 @@ public class ItemBuilder {
         }
 
         if (meta instanceof BannerMeta bannerMeta) {
-            if (baseColor != null) bannerMeta.setBaseColor(baseColor);
+            if (baseColor != null) NMS.get().getItemStackCreator().fromStack(item).setBaseColor(baseColor);
 
             if (patterns != null) patterns.forEach(bannerMeta::addPattern);
         }
