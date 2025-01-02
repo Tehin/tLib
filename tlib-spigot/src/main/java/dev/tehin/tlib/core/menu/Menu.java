@@ -113,7 +113,7 @@ public abstract class Menu implements InventoryHolder {
     }
 
     protected List<ItemStack> get(Player player, int page, MenuFilter filter) {
-        List<ItemStack> items = create(player, filter).build(getTemplate(filter, page), true);
+        List<ItemStack> items = create(player, filter).build(getTemplate(filter, page));
         if (items.size() % 9 != 0) {
             throw new IllegalStateException("Menu size '" + items.size() + "' is not a multiple of 9");
         }

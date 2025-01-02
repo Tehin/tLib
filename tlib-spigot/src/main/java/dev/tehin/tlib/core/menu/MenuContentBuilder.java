@@ -4,11 +4,11 @@ import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.data.ItemData;
 import dev.tehin.tlib.api.menu.features.PageableMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
-import dev.tehin.tlib.core.menu.templates.EmptyMenuTemplate;
-import dev.tehin.tlib.core.menu.templates.PageableMenuTemplate;
+import dev.tehin.tlib.utilities.inventory.InventoryCenterer;
+import dev.tehin.tlib.utilities.inventory.ItemBuilderProvider;
 import dev.tehin.tlib.utilities.item.ItemUtil;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -32,24 +32,13 @@ public class MenuContentBuilder {
         return presets;
     }
 
-    public MenuContentBuilder add(ItemBuilder... builders) {
-        if (builders == null) {
-            this.contents.add(null);
-            return this;
-        }
-
-        for (ItemBuilder builder : builders) {
-            if (builder == null) {
-                this.contents.add(null);
-                continue;
-            }
-
-            ItemStack stack = register(builder);
-
-            this.contents.add(stack);
-        }
-
+    public MenuContentBuilder clear() {
+        this.contents.clear();
         return this;
+    }
+
+    public List<ItemStack> getRawItems() {
+        return this.contents;
     }
 
     public MenuContentBuilder set(int index, ItemBuilder builder) {
@@ -72,9 +61,7 @@ public class MenuContentBuilder {
         return contents.size();
     }
 
-    public List<ItemStack> build(MenuTemplate template, boolean useTemplate) {
-        if (!useTemplate) return contents;
-
+    public List<ItemStack> build(MenuTemplate template) {
         boolean isPageable = menu instanceof PageableMenu;
 
         int currentItems = contents.size();
@@ -87,7 +74,9 @@ public class MenuContentBuilder {
         if (overflowed && !isPageable) throw new IllegalStateException("Menu overflowed, please implement PageableMenu");
 
         // Apply the template to the item list
-        return template.apply(contents);
+        template.apply(this);
+
+        return contents;
     }
 
     public ItemStack register(ItemBuilder builder) {
@@ -118,4 +107,52 @@ public class MenuContentBuilder {
 
         return ItemUtil.addTag(item, "menu-action", String.valueOf(id));
     }
+
+    public MenuContentBuilder add(ItemBuilder... builders) {
+        if (builders == null) {
+            this.contents.add(null);
+            return this;
+        }
+
+        for (ItemBuilder builder : builders) {
+            if (builder == null) {
+                this.contents.add(null);
+                continue;
+            }
+
+            ItemStack stack = register(builder);
+
+            this.contents.add(stack);
+        }
+
+        return this;
+    }
+
+    public void addAll(List<ItemStack> newItems) {
+        this.contents.addAll(newItems);
+    }
+
+
+    public void addEmpty(int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            add(null);
+        }
+    }
+
+    public void fill() {
+        while (size() % 9 != 0) {
+            add(null);
+        }
+    }
+
+    public void addRow(ItemBuilder filler) {
+        for (int i = 0; i < 9; i++) {
+            add(filler);
+        }
+    }
+
+    public void addCentered(ItemBuilderProvider... items) {
+        InventoryCenterer.center(this, items);
+    }
+
 }

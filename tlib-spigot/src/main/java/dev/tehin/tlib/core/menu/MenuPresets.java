@@ -16,11 +16,7 @@ public class MenuPresets {
 
     private final Menu menu;
 
-    public ItemStack getFilter(MenuFilter current) {
-        return menu.createContentBuilder().register(getFilterBuild(current));
-    }
-
-    public ItemBuilder getFilterBuild(MenuFilter current) {
+    public ItemBuilder getFilter(MenuFilter current) {
         List<String> lore = new ArrayList<>();
 
         MenuFilter next = MenuFilter.ALL;

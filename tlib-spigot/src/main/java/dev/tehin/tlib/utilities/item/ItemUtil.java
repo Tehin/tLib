@@ -24,6 +24,10 @@ public class ItemUtil {
         return Arrays.stream(pieces).anyMatch(piece -> material.name().toLowerCase().contains(piece));
     }
 
+    public static boolean isSword(Material material) {
+        return material.name().contains("SWORD");
+    }
+
     public static void addGlow(ItemStack item){
         ItemMeta meta = item.getItemMeta();
         meta.addEnchant(Enchantment.DURABILITY, 1, true);
@@ -57,20 +61,24 @@ public class ItemUtil {
         return item;
     }
 
+    @Deprecated(forRemoval = true)
     public static void fill(List<ItemStack> items) {
         while (items.size() % 9 != 0) {
             items.add(null);
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void addEmptyRow(List<ItemStack> items) {
         for (int i = 1; i <= 9; i++) items.add(null);
     }
 
+    @Deprecated(forRemoval = true)
     public static void addGlassRow(List<ItemStack> items) {
         for (int i = 1; i <= 9; i++) items.add(ItemDefaults.getGlass());
     }
 
+    @Deprecated(forRemoval = true)
     public static void addGlassRowWithMiddle(List<ItemStack> items, ItemStack middle) {
         for (int i = 1; i <= 9; i++) {
             if (i == 5) {
@@ -82,6 +90,7 @@ public class ItemUtil {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void addItemInMiddle(List<ItemStack> items, ItemStack middle) {
         for (int i = 1; i <= 9; i++) {
             if (i == 5) items.add(middle);
@@ -89,6 +98,7 @@ public class ItemUtil {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void addWithSpaces(List<ItemStack> items, ItemStack... toAdd) {
         int length = toAdd.length;
 
@@ -167,13 +177,14 @@ public class ItemUtil {
         return lore;
     }
 
-    // New version
+    @Deprecated(forRemoval = true)
     public static void fillRow(MenuContentBuilder builder, ItemBuilder item) {
         for (int i = 0; i < 9; i++) {
             builder.add(item);
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void fillRowWithMiddle(MenuContentBuilder builder, ItemBuilder filler, ItemBuilder middle) {
         for (int i = 0; i < 9; i++) {
             if (i == 4) {

@@ -3,6 +3,7 @@ package dev.tehin.tlib.core.item;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.chat.LoreUtil;
+import dev.tehin.tlib.utilities.inventory.ItemBuilderProvider;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Accessors(fluent = true, chain = true)
 @Setter
-public class ItemBuilder {
+public class ItemBuilder implements ItemBuilderProvider {
 
     private final Material material;
     private String name = null;
@@ -173,4 +174,35 @@ public class ItemBuilder {
         return baseColor;
     }
 
+    @Override
+    public ItemBuilder clone() {
+        ItemBuilder item = new ItemBuilder(material)
+                .data(data)
+                .amount(amount)
+                .name(name)
+                .lore(lore)
+                .color(color)
+                .glow(glow)
+                .action(action)
+                .baseColor(baseColor);
+
+        if (patterns != null) {
+            patterns.forEach(item::addPattern);
+        }
+
+        if (enchants != null) {
+            enchants.forEach(item::addEnchant);
+        }
+
+        if (flags != null) {
+            flags.forEach(item::addFlag);
+        }
+
+        return item;
+    }
+
+    @Override
+    public ItemBuilder getItemBuilder() {
+        return this;
+    }
 }
