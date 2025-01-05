@@ -1,9 +1,11 @@
 package dev.tehin.tlib.api.command;
 
+import dev.tehin.tlib.core.command.args.CommandArgs;
+
 import java.util.List;
 
 public interface TabCompleterBase {
 
-    List<String> complete(String[] args);
+    List<String> complete(CommandArgs args);
 
 }

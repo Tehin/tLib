@@ -1,6 +1,7 @@
 package dev.tehin.tlib.core.command.references;
 
 import dev.tehin.tlib.api.command.TabCompleterBase;
+import dev.tehin.tlib.core.command.args.CommandArgs;
 import dev.tehin.tlib.core.command.wrapper.CommandWrapper;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -32,9 +33,8 @@ public class NormalCommandReference extends Command {
 
     @Override
     public List<String> tabComplete(CommandSender sender, String alias, String[] args) throws IllegalArgumentException {
-        if (!(wrapper.getCommand() instanceof TabCompleterBase)) return super.tabComplete(sender, alias, args);
+        if (!(wrapper.getCommand() instanceof TabCompleterBase completer)) return super.tabComplete(sender, alias, args);
 
-        TabCompleterBase completer = (TabCompleterBase) wrapper.getCommand();
-        return completer.complete(args);
+        return completer.complete(new CommandArgs(sender, alias, args));
     }
 }
