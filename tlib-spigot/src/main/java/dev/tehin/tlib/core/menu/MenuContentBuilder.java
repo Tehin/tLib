@@ -155,4 +155,8 @@ public class MenuContentBuilder {
         InventoryCenterer.center(this, items);
     }
 
+    public <T extends ItemBuilderProvider> void addCentered(List<T> items) {
+        InventoryCenterer.center(this, items);
+    }
+
 }
