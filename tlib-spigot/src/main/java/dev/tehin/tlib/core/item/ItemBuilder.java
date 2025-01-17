@@ -21,10 +21,7 @@ import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -76,8 +73,9 @@ public class ItemBuilder implements ItemBuilderProvider {
                     enchantMeta.addStoredEnchant(enchantment.getKey(), enchantment.getValue(), true);
                 }
             } else {
-                // If not, add the enchants to the item directly
-                enchants.forEach(item::addUnsafeEnchantment);
+                for (Map.Entry<Enchantment, Integer> entry : enchants.entrySet()) {
+                    meta.addEnchant(entry.getKey(), entry.getValue(), true);
+                }
             }
         }
 
@@ -174,6 +172,10 @@ public class ItemBuilder implements ItemBuilderProvider {
         return baseColor;
     }
 
+    public Map<Enchantment, Integer> getEnchants() {
+        return enchants;
+    }
+
     @Override
     public ItemBuilder clone() {
         ItemBuilder item = new ItemBuilder(material)
@@ -205,4 +207,125 @@ public class ItemBuilder implements ItemBuilderProvider {
     public ItemBuilder getItemBuilder() {
         return this;
     }
+
+    @Override
+    public String toString() {
+        StringBuilder string = new StringBuilder(material.name());
+
+        if (name != null) {
+            string.append(" : ").append("name=").append(name);
+        }
+
+        if (data != 0) {
+            string.append(" : ").append("data=").append(data);
+        }
+
+        if (amount != 1) {
+            string.append(" : ").append("amount=").append(amount);
+        }
+
+        if (color != null) {
+            string.append(" : ").append("color=").append(color.name());
+        }
+
+        if (glow) {
+            string.append(" : ").append("glow=").append(true);
+        }
+
+        if (enchants != null && !enchants.isEmpty()) {
+            enchants.forEach((enchantment, level) -> {
+                string.append(" : ").append("enchant=").append(enchantment.getName()).append("=").append(level);
+            });
+        }
+
+        for (String s : lore) {
+            string.append(" : ").append("lore-line=").append(s);
+        }
+
+        for (ItemFlag flag : flags) {
+            string.append(" : ").append("flag=").append(flag.name());
+        }
+
+        return string.toString();
+    }
+
+    public static ItemBuilder fromString(String serialized) {
+        String[] split = serialized.split(" : ");
+        ItemBuilder builder = new ItemBuilder(Material.valueOf(split[0]));
+
+        for (int i = 1; i < split.length; i++) {
+            String[] argSplit = split[i].split("=");
+            switch (argSplit[0]) {
+                case "name":
+                    builder.name(argSplit[1]);
+                    break;
+                case "data":
+                    builder.data(Integer.parseInt(argSplit[1]));
+                    break;
+                case "amount":
+                    builder.amount(Integer.parseInt(argSplit[1]));
+                    break;
+                case "color":
+                    builder.color(DyeColor.valueOf(argSplit[1]));
+                    break;
+                case "glow":
+                    builder.glow(Boolean.parseBoolean(argSplit[1]));
+                    break;
+                case "enchant":
+                    builder.addEnchant(Enchantment.getByName(argSplit[1]), Integer.parseInt(argSplit[2]));
+                    break;
+                case "lore-line":
+                    builder.lore(argSplit[1]);
+                    break;
+                case "flag":
+                    builder.addFlag(ItemFlag.valueOf(argSplit[1]));
+                    break;
+            }
+        }
+
+        return builder;
+    }
+
+    public static ItemBuilder fromStack(ItemStack stack) {
+        ItemBuilder builder = new ItemBuilder(stack.getType())
+                .amount(stack.getAmount())
+                .data(stack.getDurability());
+
+        if (!stack.hasItemMeta()) return builder;
+
+        ItemMeta meta = stack.getItemMeta();
+
+        if (meta.hasDisplayName()) {
+            builder.name(meta.getDisplayName());
+        }
+
+        if (meta.hasLore()) {
+            builder.lore(meta.getLore());
+        }
+
+        if (meta.hasEnchants()) {
+            meta.getEnchants().forEach(builder::addEnchant);
+        }
+
+        meta.getItemFlags().forEach(builder::addFlag);
+
+        if (meta instanceof LeatherArmorMeta leatherMeta) {
+            builder.color(DyeColor.getByColor(leatherMeta.getColor()));
+        }
+
+        if (meta instanceof BannerMeta bannerMeta) {
+            builder.baseColor(bannerMeta.getBaseColor());
+
+            for (Pattern pattern : bannerMeta.getPatterns()) {
+                builder.addPattern(pattern);
+            }
+        }
+
+        if (meta.hasLore()) {
+            builder.lore(meta.getLore());
+        }
+
+        return builder;
+    }
+
 }
