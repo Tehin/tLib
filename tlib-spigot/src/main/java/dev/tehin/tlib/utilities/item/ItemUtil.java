@@ -195,4 +195,26 @@ public class ItemUtil {
             builder.add(filler);
         }
     }
+
+    public static int getArmorSlotByMaterial(Material material) {
+        String name = material.name();
+
+        if (name.contains("HELMET")) {
+            return 3;
+        }
+
+        if (name.contains("CHESTPLATE")) {
+            return 2;
+        }
+
+        if (name.contains("LEGGINGS")) {
+            return 1;
+        }
+
+        if (name.contains("BOOTS")) {
+            return 0;
+        }
+
+        return -1;
+    }
 }
