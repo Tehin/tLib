@@ -113,7 +113,13 @@ public class PageableMenuTemplate implements MenuTemplate {
     protected void addOptions(MenuContentBuilder content, int itemCount) {
         content.add(previous());
         content.addEmpty(3);
-        content.add(content.getPresets().getFilter(filter));
+
+        if (menu.isFilterable()) {
+            content.add(content.getPresets().getFilter(filter));
+        } else {
+            content.add(null);
+        }
+
         content.addEmpty(3);
         content.add(next(itemCount));
     }

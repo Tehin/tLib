@@ -194,6 +194,10 @@ public abstract class Menu implements InventoryHolder {
         return (this instanceof PageableMenu) ? new PageableMenuTemplate(this, filter, page) : new EmptyMenuTemplate();
     }
 
+    public boolean isFilterable() {
+        return true;
+    }
+
     public void closeAll() {
         tLib.get().getMenu().getAllOpen().forEach((uuid, menu) -> {
             if (!menu.equals(this)) return;
