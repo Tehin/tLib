@@ -145,6 +145,12 @@ public class MenuContentBuilder {
         }
     }
 
+    public void fill(ItemBuilder filler) {
+        while (size() % 9 != 0) {
+            add(filler);
+        }
+    }
+
     public void addRow(ItemBuilder filler) {
         for (int i = 0; i < 9; i++) {
             add(filler);
