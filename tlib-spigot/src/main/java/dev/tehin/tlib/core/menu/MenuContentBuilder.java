@@ -128,10 +128,28 @@ public class MenuContentBuilder {
         return this;
     }
 
+    public MenuContentBuilder addRaw(ItemStack item) {
+        this.contents.add(item);
+        return this;
+    }
+
+    public MenuContentBuilder setRaw(int index, ItemStack item) {
+        if (size() < index) {
+            while (size() < index) {
+                this.contents.add(null);
+            }
+
+            this.contents.add(item);
+        } else {
+            this.contents.set(index, item);
+        }
+
+        return this;
+    }
+
     public void addAll(List<ItemStack> newItems) {
         this.contents.addAll(newItems);
     }
-
 
     public void addEmpty(int quantity) {
         for (int i = 0; i < quantity; i++) {
