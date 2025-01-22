@@ -14,9 +14,7 @@ public class LangParser {
 
         if (provider == null) return string;
 
-        StringBuilder builder = new StringBuilder();
-
-        Pattern pattern = Pattern.compile("<lang=([A-Za-zÀ-ȕ0-9-_]+)>");
+        Pattern pattern = Pattern.compile("<lang=([A-Za-zÀ-ȕ0-9-_.]+)>");
         Matcher matcher = pattern.matcher(string);
 
         while (matcher.find()) {
@@ -27,10 +25,10 @@ public class LangParser {
                 throw new IllegalStateException("Could not find translation for " + key + " for player " + player.getName());
             }
 
-            matcher.appendReplacement(builder, lang);
+            string = string.replace("<lang=" + key + ">", lang);
         }
 
-        return builder.isEmpty() ? string : builder.toString();
+        return string;
     }
 
 }
