@@ -15,6 +15,10 @@ import java.util.List;
 public class MessageUtil {
 
     public static void send(CommandSender sender, String message) {
+        if (sender instanceof Player) {
+            message = tLib.get().getConfig().langProvider().getLang((Player) sender, message);
+        }
+
         sender.sendMessage(color(message));
     }
 
@@ -30,6 +34,11 @@ public class MessageUtil {
 
 
     public static void send(Player player, TextComponent component) {
+        String text = component.getText();
+
+        String parsed = tLib.get().getConfig().langProvider().getLang(player, text);
+        component.setText(parsed);
+
         player.spigot().sendMessage(component);
     }
 

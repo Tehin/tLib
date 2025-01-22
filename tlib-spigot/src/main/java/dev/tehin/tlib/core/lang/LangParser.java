@@ -12,7 +12,7 @@ public class LangParser {
     public static String parse(Player player, String string) {
         LangProvider provider = tLib.get().getConfig().langProvider();
 
-        if (provider == null || !string.contains("<lang=")) return string;
+        if (provider == null) return string;
 
         StringBuilder builder = new StringBuilder();
 
@@ -23,7 +23,9 @@ public class LangParser {
             String key = matcher.group(1);
             String lang = provider.getLang(player, key);
 
-            if (lang == null) continue;
+            if (lang == null) {
+                throw new IllegalStateException("Could not find translation for " + key + " for player " + player.getName());
+            }
 
             matcher.appendReplacement(builder, lang);
         }
