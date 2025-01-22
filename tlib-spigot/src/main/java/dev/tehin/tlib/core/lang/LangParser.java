@@ -30,7 +30,7 @@ public class LangParser {
             matcher.appendReplacement(builder, lang);
         }
 
-        return builder.toString();
+        return builder.isEmpty() ? string : builder.toString();
     }
 
 }
