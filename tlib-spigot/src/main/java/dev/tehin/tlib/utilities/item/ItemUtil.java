@@ -1,18 +1,21 @@
 package dev.tehin.tlib.utilities.item;
 
+import dev.tehin.tlib.api.lang.LangProvider;
+import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.item.ItemBuilder;
+import dev.tehin.tlib.core.lang.LangParser;
 import dev.tehin.tlib.core.menu.MenuContentBuilder;
+import net.minemora.nms.NMS;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
-import net.minecraft.server.v1_8_R3.NBTTagCompound;
-import net.minecraft.server.v1_8_R3.NBTTagList;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -26,6 +29,10 @@ public class ItemUtil {
         return Arrays.stream(pieces).anyMatch(piece -> material.name().toLowerCase().contains(piece));
     }
 
+    public static boolean isSword(Material material) {
+        return material.name().contains("SWORD");
+    }
+
     public static void addGlow(ItemStack item){
         ItemMeta meta = item.getItemMeta();
         meta.addEnchant(Enchantment.DURABILITY, 1, true);
@@ -35,11 +42,11 @@ public class ItemUtil {
     }
 
     public static ItemStack addTag(ItemStack item, String tag, String content) {
-        return NBTEditor.set(item, content, tag);
+        return NMS.get().getUtil().setNBT(item, tag, content);
     }
 
     public static Optional<String> getTag(ItemStack item, String tag) {
-        return NBTEditor.getString(item, tag);
+        return NMS.get().getUtil().getNBT(item, tag);
     }
 
     public static void addColor(DyeColor color, ItemStack... leatherArmors) {
@@ -59,20 +66,24 @@ public class ItemUtil {
         return item;
     }
 
+    @Deprecated(forRemoval = true)
     public static void fill(List<ItemStack> items) {
         while (items.size() % 9 != 0) {
             items.add(null);
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void addEmptyRow(List<ItemStack> items) {
         for (int i = 1; i <= 9; i++) items.add(null);
     }
 
+    @Deprecated(forRemoval = true)
     public static void addGlassRow(List<ItemStack> items) {
         for (int i = 1; i <= 9; i++) items.add(ItemDefaults.getGlass());
     }
 
+    @Deprecated(forRemoval = true)
     public static void addGlassRowWithMiddle(List<ItemStack> items, ItemStack middle) {
         for (int i = 1; i <= 9; i++) {
             if (i == 5) {
@@ -84,6 +95,7 @@ public class ItemUtil {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void addItemInMiddle(List<ItemStack> items, ItemStack middle) {
         for (int i = 1; i <= 9; i++) {
             if (i == 5) items.add(middle);
@@ -91,6 +103,7 @@ public class ItemUtil {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void addWithSpaces(List<ItemStack> items, ItemStack... toAdd) {
         int length = toAdd.length;
 
@@ -169,13 +182,14 @@ public class ItemUtil {
         return lore;
     }
 
-    // New version
+    @Deprecated(forRemoval = true)
     public static void fillRow(MenuContentBuilder builder, ItemBuilder item) {
         for (int i = 0; i < 9; i++) {
             builder.add(item);
         }
     }
 
+    @Deprecated(forRemoval = true)
     public static void fillRowWithMiddle(MenuContentBuilder builder, ItemBuilder filler, ItemBuilder middle) {
         for (int i = 0; i < 9; i++) {
             if (i == 4) {
@@ -186,4 +200,50 @@ public class ItemUtil {
             builder.add(filler);
         }
     }
+
+    public static int getArmorSlotByMaterial(Material material) {
+        String name = material.name();
+
+        if (name.contains("HELMET")) {
+            return 3;
+        }
+
+        if (name.contains("CHESTPLATE")) {
+            return 2;
+        }
+
+        if (name.contains("LEGGINGS")) {
+            return 1;
+        }
+
+        if (name.contains("BOOTS")) {
+            return 0;
+        }
+
+        return -1;
+    }
+
+    public static void applyLang(ItemStack stack, Player player) {
+        LangProvider provider = tLib.get().getConfig().langProvider();
+        if (provider == null) return;
+
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null) return;
+
+        meta.setDisplayName(LangParser.parse(player, meta.getDisplayName()));
+
+        List<String> oldLore = stack.getItemMeta().getLore();
+        if (oldLore != null) {
+            List<String> newLore = new ArrayList<>();
+
+            for (String loreLine : oldLore) {
+                newLore.add(LangParser.parse(player, loreLine));
+            }
+
+            meta.setLore(newLore);
+        }
+
+        stack.setItemMeta(meta);
+    }
+
 }

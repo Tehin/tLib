@@ -3,12 +3,15 @@ package dev.tehin.tlib.core.menu;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.data.ItemData;
 import dev.tehin.tlib.api.menu.features.PageableMenu;
+import dev.tehin.tlib.api.menu.features.StaticMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
-import dev.tehin.tlib.core.menu.templates.EmptyMenuTemplate;
-import dev.tehin.tlib.core.menu.templates.PageableMenuTemplate;
+import dev.tehin.tlib.utilities.inventory.InventoryCenterer;
+import dev.tehin.tlib.utilities.inventory.ItemBuilderProvider;
 import dev.tehin.tlib.utilities.item.ItemUtil;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -21,8 +24,10 @@ public class MenuContentBuilder {
     private static final int DEFAULT_PAGE_SIZE = 5 * 9;
     private static final int PAGEABLE_INVENTORY_SIZE = 5 * 7;
 
-    private final Menu menu;
     private final List<ItemStack> contents = new ArrayList<>(54);
+
+    private final Menu menu;
+    private final Player player;
 
     private MenuPresets presets;
 
@@ -32,28 +37,17 @@ public class MenuContentBuilder {
         return presets;
     }
 
-    public MenuContentBuilder add(ItemBuilder... builders) {
-        if (builders == null) {
-            this.contents.add(null);
-            return this;
-        }
-
-        for (ItemBuilder builder : builders) {
-            if (builder == null) {
-                this.contents.add(null);
-                continue;
-            }
-
-            ItemStack stack = register(builder);
-
-            this.contents.add(stack);
-        }
-
+    public MenuContentBuilder clear() {
+        this.contents.clear();
         return this;
     }
 
+    public List<ItemStack> getRawItems() {
+        return this.contents;
+    }
+
     public MenuContentBuilder set(int index, ItemBuilder builder) {
-        ItemStack stack = register(builder);
+        ItemStack stack = register(builder, this.player);
 
         if (contents.size() > index) {
             contents.set(index, stack);
@@ -72,9 +66,7 @@ public class MenuContentBuilder {
         return contents.size();
     }
 
-    public List<ItemStack> build(MenuTemplate template, boolean useTemplate) {
-        if (!useTemplate) return contents;
-
+    public List<ItemStack> build(MenuTemplate template) {
         boolean isPageable = menu instanceof PageableMenu;
 
         int currentItems = contents.size();
@@ -87,11 +79,19 @@ public class MenuContentBuilder {
         if (overflowed && !isPageable) throw new IllegalStateException("Menu overflowed, please implement PageableMenu");
 
         // Apply the template to the item list
-        return template.apply(contents);
+        template.apply(this);
+
+        return contents;
     }
 
-    public ItemStack register(ItemBuilder builder) {
-        ItemStack item = builder.build();
+    public ItemStack register(ItemBuilder builder, Player player) {
+        // All the menus that have the player set are designed to
+        // parse lang, so just do it
+        if (this.player != null) {
+            builder.applyLang(true);
+        }
+
+        ItemStack item = builder.build(player);
         MenuAction action = builder.getAction();
 
         if (action == null) return item;
@@ -104,8 +104,11 @@ public class MenuContentBuilder {
         /*
          * We first set the action data, so we can compare it with the already cached ones
          * The ID is set later since it is defined by our cache
+         *
+         * We use the data of the ItemBuilder itself since some items may have lang,
+         * and so we have to get the raw message, not the parsed one
          */
-        ItemData data = ItemData.of(item);
+        ItemData data = ItemData.of(builder);
         action.setData(data);
 
         Optional<MenuAction> cache = menu.getActions().get(data);
@@ -118,4 +121,80 @@ public class MenuContentBuilder {
 
         return ItemUtil.addTag(item, "menu-action", String.valueOf(id));
     }
+
+    public MenuContentBuilder add(ItemBuilder... builders) {
+        if (builders == null) {
+            this.contents.add(null);
+            return this;
+        }
+
+        for (ItemBuilder builder : builders) {
+            if (builder == null) {
+                this.contents.add(null);
+                continue;
+            }
+
+            ItemStack stack = register(builder, this.player);
+
+            this.contents.add(stack);
+        }
+
+        return this;
+    }
+
+    public MenuContentBuilder addRaw(ItemStack item) {
+        this.contents.add(item);
+        return this;
+    }
+
+    public MenuContentBuilder setRaw(int index, ItemStack item) {
+        if (size() < index) {
+            while (size() < index) {
+                this.contents.add(null);
+            }
+
+            this.contents.add(item);
+        } else {
+            this.contents.set(index, item);
+        }
+
+        return this;
+    }
+
+    public void addAll(List<ItemStack> newItems) {
+        this.contents.addAll(newItems);
+    }
+
+    public void addEmpty(int quantity) {
+        for (int i = 0; i < quantity; i++) {
+            add(null);
+        }
+    }
+
+    public void fill() {
+        while (size() % 9 != 0) {
+            add(null);
+        }
+    }
+
+    public void fill(ItemBuilder filler) {
+        while (size() % 9 != 0) {
+            add(filler);
+        }
+    }
+
+    public void addRow(ItemBuilder filler) {
+        for (int i = 0; i < 9; i++) {
+            add(filler);
+        }
+    }
+
+    public void addCentered(ItemBuilderProvider... items) {
+        InventoryCenterer.center(this, items);
+    }
+
+    public <T extends ItemBuilderProvider> void addCentered(List<T> items) {
+        InventoryCenterer.center(this, items);
+    }
+
 }

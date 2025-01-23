@@ -1,6 +1,7 @@
 package dev.tehin.tlib.utilities;
 
 import dev.tehin.tlib.api.tLib;
+import dev.tehin.tlib.core.lang.LangParser;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,6 +16,10 @@ import java.util.List;
 public class MessageUtil {
 
     public static void send(CommandSender sender, String message) {
+        if (sender instanceof Player) {
+            message = LangParser.parse((Player) sender, message);
+        }
+
         sender.sendMessage(color(message));
     }
 
@@ -30,6 +35,11 @@ public class MessageUtil {
 
 
     public static void send(Player player, TextComponent component) {
+        String text = component.getText();
+
+        String parsed = LangParser.parse(player, text);
+        component.setText(parsed);
+
         player.spigot().sendMessage(component);
     }
 

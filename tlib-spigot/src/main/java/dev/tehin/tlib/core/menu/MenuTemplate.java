@@ -5,7 +5,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 
 public interface MenuTemplate {
-    List<ItemStack> apply(List<ItemStack> items);
+
+    void apply(MenuContentBuilder content);
 
     int getMaxRows();
     int getMaxColumns();

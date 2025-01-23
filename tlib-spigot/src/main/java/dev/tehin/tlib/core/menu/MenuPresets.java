@@ -4,6 +4,7 @@ import dev.tehin.tlib.api.menu.action.ActionExecutor;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
 import lombok.RequiredArgsConstructor;
+import net.minemora.nms.NMS;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
@@ -15,11 +16,7 @@ public class MenuPresets {
 
     private final Menu menu;
 
-    public ItemStack getFilter(MenuFilter current) {
-        return menu.createContentBuilder().register(getFilterBuild(current));
-    }
-
-    public ItemBuilder getFilterBuild(MenuFilter current) {
+    public ItemBuilder getFilter(MenuFilter current) {
         List<String> lore = new ArrayList<>();
 
         MenuFilter next = MenuFilter.ALL;
@@ -44,7 +41,7 @@ public class MenuPresets {
         MenuFilter finalNext = next;
         ActionExecutor action = player -> menu.open(player, 0, finalNext);
 
-        return new ItemBuilder(Material.HOPPER)
+        return new ItemBuilder(NMS.Material.HOPPER)
                 .name("&f&lFiltrar")
                 .lore(lore)
                 .glow(current != MenuFilter.ALL)

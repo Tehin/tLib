@@ -46,7 +46,15 @@ public abstract class Menu implements InventoryHolder {
     protected abstract MenuContentBuilder create(Player player, MenuFilter filter);
 
     protected MenuContentBuilder createContentBuilder() {
-        return new MenuContentBuilder(this);
+        return createContentBuilder(null);
+    }
+
+    protected MenuContentBuilder createContentBuilder(Player player) {
+        if (player != null && this instanceof StaticMenu) {
+            throw new IllegalStateException("Cannot set the player for a static menu");
+        }
+
+        return new MenuContentBuilder(this, player);
     }
 
     public void open(Player player) {
@@ -113,7 +121,7 @@ public abstract class Menu implements InventoryHolder {
     }
 
     protected List<ItemStack> get(Player player, int page, MenuFilter filter) {
-        List<ItemStack> items = create(player, filter).build(getTemplate(filter, page), true);
+        List<ItemStack> items = create(player, filter).build(getTemplate(filter, page));
         if (items.size() % 9 != 0) {
             throw new IllegalStateException("Menu size '" + items.size() + "' is not a multiple of 9");
         }
@@ -192,6 +200,10 @@ public abstract class Menu implements InventoryHolder {
 
     public MenuTemplate getTemplate(MenuFilter filter, int page) {
         return (this instanceof PageableMenu) ? new PageableMenuTemplate(this, filter, page) : new EmptyMenuTemplate();
+    }
+
+    public boolean isFilterable() {
+        return true;
     }
 
     public void closeAll() {

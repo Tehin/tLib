@@ -7,6 +7,7 @@ import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import dev.tehin.tlib.utilities.task.TaskSet;
+import net.minemora.nms.NMS;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -34,9 +35,11 @@ public class CoreListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         Optional<Menu> type = menus.getOpenMenu((Player) e.getWhoClicked());
-        if (type.isEmpty() || e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) return;
+        if (type.isEmpty()) return;
 
         e.setCancelled(true);
+
+        if (e.getCurrentItem() == null || e.getCurrentItem().getType() == NMS.Material.AIR) return;
 
         Menu menu = type.get();
         Optional<String> id = ItemUtil.getTag(e.getCurrentItem(), "menu-action");
@@ -55,7 +58,7 @@ public class CoreListener implements Listener {
     @EventHandler
     public void onInteract(PlayerInteractEvent e) {
         ItemStack item = e.getItem();
-        if (item == null || item.getType() == Material.AIR) return;
+        if (item == null || item.getType() == NMS.Material.AIR) return;
 
         Action action = e.getAction();
         if (action != Action.RIGHT_CLICK_AIR && action != Action.RIGHT_CLICK_BLOCK) return;

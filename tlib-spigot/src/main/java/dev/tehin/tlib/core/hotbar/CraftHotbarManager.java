@@ -18,6 +18,11 @@ public class CraftHotbarManager implements HotbarManager {
     }
 
     @Override
+    public Hotbar get(String id) {
+        return hotbars.get(id);
+    }
+
+    @Override
     public void give(Player player, String hotbar) {
         if (!hotbars.containsKey(hotbar)) {
             throw new IllegalArgumentException("Tried to give a hotbar that does not exist: " + hotbar);

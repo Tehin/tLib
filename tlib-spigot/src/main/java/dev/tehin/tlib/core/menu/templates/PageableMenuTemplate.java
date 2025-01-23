@@ -8,11 +8,12 @@ import dev.tehin.tlib.core.menu.MenuTemplate;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
 import dev.tehin.tlib.core.menu.MenuFilter;
 import dev.tehin.tlib.utilities.PaginationUtil;
+import dev.tehin.tlib.utilities.item.ItemDefaults;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.minemora.nms.NMS;
 import org.bukkit.DyeColor;
-import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.block.banner.PatternType;
 import org.bukkit.inventory.ItemStack;
@@ -23,53 +24,44 @@ import java.util.*;
 @Getter(AccessLevel.PROTECTED)
 public class PageableMenuTemplate implements MenuTemplate {
 
-    private static final ItemBuilder PANE = new ItemBuilder(Material.STAINED_GLASS_PANE).name("&7").data(0);
-
     private final Menu menu;
     private final MenuFilter filter;
     private final int currentPage;
 
     @Override
-    public List<ItemStack> apply(List<ItemStack> items) {
-        // Use builder to register actions
-        MenuContentBuilder builder = new MenuContentBuilder(menu);
-        int itemCount = items.size();
+    public void apply(MenuContentBuilder content) {
+        int itemCount = content.size();
 
         final boolean firstPage = currentPage == 0;
 
-        items = paginate(items);
-        boolean isFull = items.size() >= getMaxContent();
+        List<ItemStack> newItems = paginate(content.getRawItems());
+        boolean isFull = newItems.size() >= getMaxContent();
+
+        content.clear();
+        content.addAll(newItems);
 
         // Fill items if not full, try to adjust to the size of items if it's the first and only page
         // If not, fill the whole inventory so the menu does not change suddenly of size
-        if (!isFull) fill(items, !firstPage);
+        if (!isFull) fill(content, !firstPage);
 
-        addSeparator(items);
-        addOptions(items, itemCount, builder);
-
-        return items;
+        addSeparator(content);
+        addOptions(content, itemCount);
     }
 
-    protected void fill(List<ItemStack> items, boolean full) {
+    protected void fill(MenuContentBuilder content, boolean full) {
         if (!full) {
-            while (items.size() % 9 != 0) {
-                items.add(null);
+            while (content.size() % 9 != 0) {
+                content.add(null);
             }
         } else {
-            while (items.size() < getMaxRows() * getMaxColumns()) {
-                items.add(null);
+            while (content.size() < getMaxRows() * getMaxColumns()) {
+                content.add(null);
             }
         }
     }
 
-    protected void addEmpty(List<ItemStack> items, int quantity) {
-        for (int i = 0; i < quantity; i++) {
-            items.add(null);
-        }
-    }
-
-    protected ItemStack previous(MenuContentBuilder builder) {
-        if (currentPage == 0) return new ItemStack(Material.AIR);
+    protected ItemBuilder previous() {
+        if (currentPage == 0) return null;
 
         MenuAction action = new ExecutorAction(player -> {
             menu.open(player, currentPage - 1, filter);
@@ -78,7 +70,7 @@ public class PageableMenuTemplate implements MenuTemplate {
         // Parse since page starts from 0 and not from 1
         final int previousPageParsed = currentPage;
 
-        ItemBuilder item = new ItemBuilder(Material.BANNER)
+        return new ItemBuilder(NMS.Material.BANNER)
                 .baseColor(DyeColor.WHITE)
                 .addPattern(new Pattern(DyeColor.RED, PatternType.RHOMBUS_MIDDLE))
                 .addPattern(new Pattern(DyeColor.WHITE, PatternType.STRIPE_RIGHT))
@@ -87,14 +79,12 @@ public class PageableMenuTemplate implements MenuTemplate {
                 .name("&a&lAnterior &7(Página #" + previousPageParsed + ")")
                 .action(action)
                 .amount(previousPageParsed);
-
-        return builder.register(item);
     }
 
-    protected ItemStack next(int itemCount, MenuContentBuilder builder) {
+    protected ItemBuilder next(int itemCount) {
         int pages = (int) Math.ceil((double) itemCount / getMaxContent());
 
-        if (currentPage == (pages - 1) || pages == 1) return new ItemStack(Material.AIR);
+        if (currentPage == (pages - 1) || pages == 1) return null;
 
         MenuAction action = new ExecutorAction(player -> {
             menu.open(player, currentPage + 1, filter);
@@ -102,7 +92,8 @@ public class PageableMenuTemplate implements MenuTemplate {
 
         // Parse since page starts from 0 and not from 1
         final int nextPageParsed = currentPage + 2;
-        ItemBuilder item = new ItemBuilder(Material.BANNER)
+
+        return new ItemBuilder(NMS.Material.BANNER)
                 .baseColor(DyeColor.WHITE)
                 .addPattern(new Pattern(DyeColor.GREEN, PatternType.RHOMBUS_MIDDLE))
                 .addPattern(new Pattern(DyeColor.WHITE, PatternType.STRIPE_LEFT))
@@ -111,24 +102,26 @@ public class PageableMenuTemplate implements MenuTemplate {
                 .name("&a&lSiguiente &7(Página #" + nextPageParsed + ")")
                 .action(action)
                 .amount(nextPageParsed);
-
-        return builder.register(item);
     }
 
-    protected void addSeparator(List<ItemStack> items) {
-        ItemStack stack = PANE.build();
-
+    protected void addSeparator(MenuContentBuilder content) {
         for (int i = 0; i < 9; i++) {
-            items.add(stack);
+            content.add(ItemDefaults.GLASS);
         }
     }
 
-    protected void addOptions(List<ItemStack> items, int itemCount, MenuContentBuilder builder) {
-        items.add(previous(builder));
-        addEmpty(items, 3);
-        items.add(builder.getPresets().getFilter(filter));
-        addEmpty(items, 3);
-        items.add(next(itemCount, builder));
+    protected void addOptions(MenuContentBuilder content, int itemCount) {
+        content.add(previous());
+        content.addEmpty(3);
+
+        if (menu.isFilterable()) {
+            content.add(content.getPresets().getFilter(filter));
+        } else {
+            content.add(null);
+        }
+
+        content.addEmpty(3);
+        content.add(next(itemCount));
     }
 
     protected List<ItemStack> paginate(List<ItemStack> items) {
