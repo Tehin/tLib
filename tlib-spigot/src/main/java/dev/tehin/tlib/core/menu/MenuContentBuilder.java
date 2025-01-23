@@ -24,19 +24,12 @@ public class MenuContentBuilder {
     private static final int DEFAULT_PAGE_SIZE = 5 * 9;
     private static final int PAGEABLE_INVENTORY_SIZE = 5 * 7;
 
-    private final Menu menu;
     private final List<ItemStack> contents = new ArrayList<>(54);
 
+    private final Menu menu;
+    private final Player player;
+
     private MenuPresets presets;
-
-    private Player player;
-
-    // We can set the player so all the items are parsed correctly if needed
-    public void setPlayer(Player player) {
-        if (menu instanceof StaticMenu) throw new IllegalStateException("Cannot set the player for a static menu");
-
-        this.player = player;
-    }
 
     public MenuPresets getPresets() {
         if (presets == null) presets = new MenuPresets(menu);

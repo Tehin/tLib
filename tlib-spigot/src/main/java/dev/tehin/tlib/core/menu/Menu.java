@@ -46,7 +46,15 @@ public abstract class Menu implements InventoryHolder {
     protected abstract MenuContentBuilder create(Player player, MenuFilter filter);
 
     protected MenuContentBuilder createContentBuilder() {
-        return new MenuContentBuilder(this);
+        return createContentBuilder(null);
+    }
+
+    protected MenuContentBuilder createContentBuilder(Player player) {
+        if (player != null && this instanceof StaticMenu) {
+            throw new IllegalStateException("Cannot set the player for a static menu");
+        }
+
+        return new MenuContentBuilder(this, player);
     }
 
     public void open(Player player) {
