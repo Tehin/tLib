@@ -1,16 +1,21 @@
 package dev.tehin.tlib.utilities.item;
 
+import dev.tehin.tlib.api.lang.LangProvider;
+import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.item.ItemBuilder;
+import dev.tehin.tlib.core.lang.LangParser;
 import dev.tehin.tlib.core.menu.MenuContentBuilder;
 import net.minemora.nms.NMS;
 import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -217,4 +222,28 @@ public class ItemUtil {
 
         return -1;
     }
+
+    public static void applyLang(ItemStack stack, Player player) {
+        LangProvider provider = tLib.get().getConfig().langProvider();
+        if (provider == null) return;
+
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null) return;
+
+        meta.setDisplayName(LangParser.parse(player, meta.getDisplayName()));
+
+        List<String> oldLore = stack.getItemMeta().getLore();
+        if (oldLore != null) {
+            List<String> newLore = new ArrayList<>();
+
+            for (String loreLine : oldLore) {
+                newLore.add(LangParser.parse(player, loreLine));
+            }
+
+            meta.setLore(newLore);
+        }
+
+        stack.setItemMeta(meta);
+    }
+
 }

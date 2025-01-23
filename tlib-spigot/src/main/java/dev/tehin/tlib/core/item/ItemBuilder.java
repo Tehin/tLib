@@ -1,6 +1,7 @@
 package dev.tehin.tlib.core.item;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
+import dev.tehin.tlib.core.lang.LangParser;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.chat.LoreUtil;
 import dev.tehin.tlib.utilities.inventory.ItemBuilderProvider;
@@ -14,6 +15,7 @@ import org.bukkit.DyeColor;
 import org.bukkit.Material;
 import org.bukkit.block.banner.Pattern;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
@@ -36,6 +38,7 @@ public class ItemBuilder implements ItemBuilderProvider {
     private DyeColor color = null;
     private boolean glow = false;
     private MenuAction action = null;
+    private boolean applyLang = false;
 
     @Setter(AccessLevel.NONE)
     private List<ItemFlag> flags = new ArrayList<>();
@@ -49,19 +52,27 @@ public class ItemBuilder implements ItemBuilderProvider {
     private DyeColor baseColor = null;
 
     public ItemStack build() {
+        return build(null);
+    }
+
+    public ItemStack build(Player player) {
         ItemStack base = NMS.get().getItemStackCreator().create(material).getItemStack();
         base.setAmount(amount);
 
-        setProperties(base);
+        setProperties(base, player);
 
         return base;
     }
 
     public void apply(ItemStack found) {
-        setProperties(found);
+        setProperties(found, null);
     }
 
-    private void setProperties(ItemStack item) {
+    public void apply(ItemStack found, Player player) {
+        setProperties(found, player);
+    }
+
+    private void setProperties(ItemStack item, Player player) {
         NMS.get().getUtil().setItemStackData(item, (short) data);
 
         ItemMeta meta = item.getItemMeta();
@@ -86,11 +97,24 @@ public class ItemBuilder implements ItemBuilderProvider {
         }
 
         if (name != null) {
-            meta.setDisplayName(MessageUtil.color(name));
+            String itemName = MessageUtil.color(name);
+            if (applyLang && player != null) itemName = LangParser.parse(player, itemName);
+
+            meta.setDisplayName(itemName);
         }
 
         if (!lore.isEmpty()) {
-            meta.setLore(lore.stream().map(MessageUtil::color).collect(Collectors.toList()));
+            List<String> itemLore = new ArrayList<>();
+
+            for (String loreLine : lore) {
+                if (applyLang && player != null) {
+                    itemLore.add(LangParser.parse(player, MessageUtil.color(loreLine)));
+                } else {
+                    itemLore.add(MessageUtil.color(loreLine));
+                }
+            }
+
+            meta.setLore(itemLore);
         }
 
         if (color != null && material.name().toUpperCase().contains("LEATHER")) {

@@ -15,8 +15,6 @@ public class InteractableItem {
     private final ItemBuilder builder;
     private final ActionExecutor action;
 
-    private ItemStack result;
-
     public InteractableItem(String id, ItemBuilder builder, ActionExecutor action) {
         this.id = id;
         this.builder = builder;
@@ -29,24 +27,19 @@ public class InteractableItem {
         this.action = player -> tLib.get().getMenu().open(player, menu);
     }
 
-    private void create() {
-        ItemStack built = builder.build();
-
-        result = ItemUtil.addTag(built, "hotbar-action", id);
-    }
-
     public void handle(Player player) {
         action.execute(player);
     }
 
     public void give(Player player, int slot) {
-        if (result == null) create();
+        ItemStack item = builder.build(player);
+        item = ItemUtil.addTag(item, "hotbar-action", id);
 
         if (slot == -1) {
-            player.getInventory().addItem(result);
+            player.getInventory().addItem(item);
             return;
         }
 
-        player.getInventory().setItem(slot, result);
+        player.getInventory().setItem(slot, item);
     }
 }
