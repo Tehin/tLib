@@ -3,12 +3,15 @@ package dev.tehin.tlib.core.menu;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.api.menu.action.data.ItemData;
 import dev.tehin.tlib.api.menu.features.PageableMenu;
+import dev.tehin.tlib.api.menu.features.StaticMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.utilities.inventory.InventoryCenterer;
 import dev.tehin.tlib.utilities.inventory.ItemBuilderProvider;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
@@ -26,6 +29,15 @@ public class MenuContentBuilder {
 
     private MenuPresets presets;
 
+    private Player player;
+
+    // We can set the player so all the items are parsed correctly if needed
+    public void setPlayer(Player player) {
+        if (menu instanceof StaticMenu) throw new IllegalStateException("Cannot set the player for a static menu");
+
+        this.player = player;
+    }
+
     public MenuPresets getPresets() {
         if (presets == null) presets = new MenuPresets(menu);
 
@@ -42,7 +54,7 @@ public class MenuContentBuilder {
     }
 
     public MenuContentBuilder set(int index, ItemBuilder builder) {
-        ItemStack stack = register(builder);
+        ItemStack stack = register(builder, this.player);
 
         if (contents.size() > index) {
             contents.set(index, stack);
@@ -79,8 +91,14 @@ public class MenuContentBuilder {
         return contents;
     }
 
-    public ItemStack register(ItemBuilder builder) {
-        ItemStack item = builder.build();
+    public ItemStack register(ItemBuilder builder, Player player) {
+        // All the menus that have the player set are designed to
+        // parse lang, so just do it
+        if (this.player != null) {
+            builder.applyLang(true);
+        }
+
+        ItemStack item = builder.build(player);
         MenuAction action = builder.getAction();
 
         if (action == null) return item;
@@ -93,8 +111,11 @@ public class MenuContentBuilder {
         /*
          * We first set the action data, so we can compare it with the already cached ones
          * The ID is set later since it is defined by our cache
+         *
+         * We use the data of the ItemBuilder itself since some items may have lang,
+         * and so we have to get the raw message, not the parsed one
          */
-        ItemData data = ItemData.of(item);
+        ItemData data = ItemData.of(builder);
         action.setData(data);
 
         Optional<MenuAction> cache = menu.getActions().get(data);
@@ -120,7 +141,7 @@ public class MenuContentBuilder {
                 continue;
             }
 
-            ItemStack stack = register(builder);
+            ItemStack stack = register(builder, this.player);
 
             this.contents.add(stack);
         }
