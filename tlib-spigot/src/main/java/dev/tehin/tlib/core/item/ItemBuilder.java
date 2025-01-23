@@ -77,6 +77,19 @@ public class ItemBuilder implements ItemBuilderProvider {
 
         ItemMeta meta = item.getItemMeta();
 
+        if (meta instanceof BannerMeta bannerMeta) {
+            if (baseColor != null) {
+                NMS.get().getItemStackCreator().fromStack(item).setBaseColor(baseColor);
+
+                // Reload meta since this updates the meta internally from the "item"
+                meta = item.getItemMeta();
+            }
+
+            if (patterns != null) {
+                patterns.forEach(bannerMeta::addPattern);
+            }
+        }
+
         if (enchants != null) {
             // If we are adding enchants to an enchanted book, we need to use the EnchantmentStorageMeta
             if (meta instanceof EnchantmentStorageMeta enchantMeta) {
@@ -88,12 +101,6 @@ public class ItemBuilder implements ItemBuilderProvider {
                     meta.addEnchant(entry.getKey(), entry.getValue(), true);
                 }
             }
-        }
-
-        if (meta instanceof BannerMeta bannerMeta) {
-            if (baseColor != null) NMS.get().getItemStackCreator().fromStack(item).setBaseColor(baseColor);
-
-            if (patterns != null) patterns.forEach(bannerMeta::addPattern);
         }
 
         if (name != null) {
