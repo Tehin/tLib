@@ -6,6 +6,7 @@ import dev.tehin.tlib.api.menu.features.PageableMenu;
 import dev.tehin.tlib.api.menu.features.StaticMenu;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.item.ItemBuilder;
+import dev.tehin.tlib.core.lang.LangParser;
 import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import dev.tehin.tlib.core.menu.options.MenuOptions;
 import dev.tehin.tlib.core.menu.templates.EmptyMenuTemplate;
@@ -87,7 +88,7 @@ public abstract class Menu implements InventoryHolder {
         // We avoid checking this in the first if statement to improve performance since
         // we don't want to create items that will not be used on a static inventory
         if (isStatic) {
-            this.inventory = createInventory(items);
+            this.inventory = createInventory(player, items);
             player.openInventory(getInventory());
             registerOpen(player);
             return;
@@ -100,7 +101,7 @@ public abstract class Menu implements InventoryHolder {
         // TODO: Allow updates of different size inventories through spigot directly
         if (menu.isEmpty() || menu.get() instanceof StaticMenu || open.getSize() != items.size()) {
             player.closeInventory();
-            player.openInventory(createInventory(items));
+            player.openInventory(createInventory(player, items));
             registerOpen(player);
             return;
         }
@@ -109,7 +110,7 @@ public abstract class Menu implements InventoryHolder {
         open.setContents(items.toArray(new ItemStack[0]));
 
         // After setting the contents, update the title using packets, updating the size
-        InventoryUtil.update(player, display, items.size());
+        InventoryUtil.update(player, LangParser.parse(player, MessageUtil.color(display)), items.size());
         registerOpen(player);
     }
 
@@ -129,8 +130,10 @@ public abstract class Menu implements InventoryHolder {
         return items;
     }
 
-    private Inventory createInventory(List<ItemStack> items) {
-        Inventory inventory = Bukkit.createInventory(this, items.size(), MessageUtil.color(display));
+    private Inventory createInventory(Player player, List<ItemStack> items) {
+        String title = LangParser.parse(player, MessageUtil.color(display));
+
+        Inventory inventory = Bukkit.createInventory(this, items.size(), title);
         inventory.setContents(items.toArray(new ItemStack[0]));
 
         return inventory;

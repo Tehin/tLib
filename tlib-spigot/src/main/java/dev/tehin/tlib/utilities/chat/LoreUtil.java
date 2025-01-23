@@ -1,5 +1,8 @@
 package dev.tehin.tlib.utilities.chat;
 
+import dev.tehin.tlib.core.menu.MenuFilter;
+import dev.tehin.tlib.utilities.MessageUtil;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +24,7 @@ public class LoreUtil {
         for (String word : words) {
             if (lines.size() < (maxLines - 1)) {
                 if (currentLine.length() + word.length() > maxChars) {
-                    lines.add(color + currentLine.toString().trim());
+                    lines.add(MessageUtil.color(color + currentLine.toString().trim()));
                     currentLine = new StringBuilder();
                 }
                 if (currentLine.length() + word.length() == maxChars) {
@@ -40,10 +43,27 @@ public class LoreUtil {
                 System.out.println("El string '" + input + "' supera el límite máximo de caracteres.");
                 lastLine = lastLine.substring(0, 40);
             }
-            lines.add(color + lastLine);
+            lines.add(MessageUtil.color(color + lastLine));
         }
 
         return lines;
+    }
+
+    public static List<String> getDropdown(List<String> options, int currentIndex) {
+        List<String> lore = new ArrayList<>();
+
+        int index = 0;
+        for (String value : options) {
+            if (index == currentIndex) {
+                lore.add("&a▶ &f" + value);
+            } else {
+                lore.add("&f▶ &7" + value);
+            }
+
+            index++;
+        }
+
+        return lore;
     }
 
 }
