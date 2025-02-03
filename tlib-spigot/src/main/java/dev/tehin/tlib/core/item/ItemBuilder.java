@@ -2,6 +2,7 @@ package dev.tehin.tlib.core.item;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.core.lang.LangParser;
+import dev.tehin.tlib.utilities.DyeUtil;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.chat.LoreUtil;
 import dev.tehin.tlib.utilities.inventory.ItemBuilderProvider;
@@ -38,6 +39,7 @@ public class ItemBuilder implements ItemBuilderProvider {
     private DyeColor color = null;
     private boolean glow = false;
     private MenuAction action = null;
+    private boolean unbreakable = false;
     private boolean applyLang = false;
 
     @Setter(AccessLevel.NONE)
@@ -127,10 +129,13 @@ public class ItemBuilder implements ItemBuilderProvider {
 
         if (color != null && material.name().toUpperCase().contains("LEATHER")) {
             LeatherArmorMeta leather = (LeatherArmorMeta) meta;
-            leather.setColor(color.getColor());
+            leather.setColor(DyeUtil.toColor(color));
         }
 
         if (!flags.isEmpty()) meta.addItemFlags(flags.toArray(new ItemFlag[0]));
+
+        if (unbreakable) meta.spigot().setUnbreakable(true);
+
         item.setItemMeta(meta);
 
         if (glow) ItemUtil.addGlow(item);
@@ -278,6 +283,10 @@ public class ItemBuilder implements ItemBuilderProvider {
             string.append(" : ").append("flag=").append(flag.name());
         }
 
+        if (unbreakable) {
+            string.append(" : ").append("unbreakable=").append(true);
+        }
+
         return string.toString();
     }
 
@@ -311,6 +320,9 @@ public class ItemBuilder implements ItemBuilderProvider {
                     break;
                 case "flag":
                     builder.addFlag(ItemFlag.valueOf(argSplit[1]));
+                    break;
+                case "unbreakable":
+                    builder.unbreakable(Boolean.parseBoolean(argSplit[1]));
                     break;
             }
         }
