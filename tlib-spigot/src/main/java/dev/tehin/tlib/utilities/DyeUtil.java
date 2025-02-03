@@ -30,8 +30,17 @@ public class DyeUtil {
         put(ChatColor.YELLOW, NMS.DyeColor.YELLOW);
     }};
 
+    private static final Map<DyeColor, Color> dyeToColor = new HashMap<DyeColor, Color>() {{
+        put(DyeColor.GREEN, Color.fromRGB(42, 222, 54));
+    }};
+
     public static DyeColor fromChat(ChatColor color) {
         return chatToDye.get(color);
+    }
+
+    // Use this instead of color.getColor() because they are ugly as fuck
+    public static Color toColor(DyeColor color) {
+        return dyeToColor.getOrDefault(color, color.getColor());
     }
 
 }
