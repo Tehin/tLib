@@ -47,17 +47,8 @@ public class MenuContentBuilder {
     }
 
     public MenuContentBuilder set(int index, ItemBuilder builder) {
-        ItemStack stack = register(builder, this.player);
-
-        if (contents.size() > index) {
-            contents.set(index, stack);
-        } else {
-            while (contents.size() < index) {
-                contents.add(null);
-            }
-
-            contents.add(stack);
-        }
+        ItemStack stack = builder != null ? register(builder, this.player) : null;
+        setRaw(index, stack);
 
         return this;
     }
@@ -148,7 +139,7 @@ public class MenuContentBuilder {
     }
 
     public MenuContentBuilder setRaw(int index, ItemStack item) {
-        if (size() < index) {
+        if (size() <= index) {
             while (size() < index) {
                 this.contents.add(null);
             }
