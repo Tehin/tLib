@@ -7,8 +7,6 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.HashMap;
 import java.util.Optional;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 @Getter
@@ -60,12 +58,16 @@ public class TaskTimer {
      * Schedules the task to be async.
      * <br/>
      * Be aware of the thread-safety if working with Bukkit.
+     *
+     * @return The task id
      */
-    public void runAsync() {
+    public int runAsync() {
         Plugin owner = tLib.get().getOwner();
 
         bukkitReference = owner.getServer().getScheduler()
                         .runTaskTimerAsynchronously(owner, this::play, 0, delay / 50);
+
+        return bukkitReference.getTaskId();
     }
 
     /**
@@ -73,14 +75,18 @@ public class TaskTimer {
      * <br/>
      * Be aware of tick overloads, if that is the case, increase the ticks so
      * the job takes less tick time.
+     *
+     * @return The task id
      */
-    public void runSync() {
+    public int runSync() {
         sync = true;
 
         Plugin owner = tLib.get().getOwner();
 
         bukkitReference = owner.getServer().getScheduler()
                 .runTaskTimer(owner, this::play, 0, delay / 50);
+
+        return bukkitReference.getTaskId();
     }
 
     private void play() {

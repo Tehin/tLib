@@ -16,14 +16,14 @@ public class Hotbar {
     private final String id;
     private final List<HotbarItem> items = new ArrayList<>();
 
-    public void add(HotbarAlignment slot, String item, HotbarItemCondition condition) {
+    public void add(HotbarAlignment alignment, String item, HotbarItemCondition condition) {
         Optional<InteractableItem> interactable = tLib.get().getItem().get(item);
 
         if (interactable.isEmpty()) {
             throw new IllegalArgumentException("Tried to add an item that does not exist: " + item);
         }
 
-        this.items.add(new HotbarItem(item, slot, interactable.get(), condition));
+        this.items.add(new HotbarItem(item, alignment, interactable.get(), condition));
     }
 
     public void give(Player player) {

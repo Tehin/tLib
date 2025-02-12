@@ -118,7 +118,13 @@ public class ItemBuilder implements ItemBuilderProvider {
             for (String loreLine : lore) {
                 if (applyLang && player != null) {
                     String parsed = LangParser.parse(player, loreLine);
-                    itemLore.addAll(LoreUtil.split(parsed));
+
+                    // Only split if the lang changed
+                    if (!parsed.equals(loreLine)) {
+                        itemLore.addAll(LoreUtil.split(parsed));
+                    } else {
+                        itemLore.add(MessageUtil.color(parsed));
+                    }
                 } else {
                     itemLore.add(MessageUtil.color(loreLine));
                 }
