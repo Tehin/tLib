@@ -145,6 +145,8 @@ public class ItemBuilder implements ItemBuilderProvider {
         item.setItemMeta(meta);
 
         if (glow) ItemUtil.addGlow(item);
+
+        NMS.get().getUtil().setItemStackData(item, (short) data);
     }
 
     public ItemBuilder addEnchant(Enchantment enchantment, int level) {
