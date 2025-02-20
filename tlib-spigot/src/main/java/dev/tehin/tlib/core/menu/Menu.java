@@ -89,28 +89,15 @@ public abstract class Menu implements InventoryHolder {
         // we don't want to create items that will not be used on a static inventory
         if (isStatic) {
             this.inventory = createInventory(player, items);
+
+            // Open using the cached inventory
             player.openInventory(getInventory());
             registerOpen(player);
             return;
         }
 
-        Inventory open = player.getOpenInventory().getTopInventory();
-        Optional<Menu> menu = tLib.get().getMenu().getOpenMenu(player);
-
-        // Close the inventory and open ours if it's a static menu, or it's not a menu of our property
-        // TODO: Allow updates of different size inventories through spigot directly
-        if (menu.isEmpty() || menu.get() instanceof StaticMenu || open.getSize() != items.size()) {
-            player.closeInventory();
-            player.openInventory(createInventory(player, items));
-            registerOpen(player);
-            return;
-        }
-
-        // If it's not a static menu, replace the contents for a smooth transition
-        open.setContents(items.toArray(new ItemStack[0]));
-
-        // After setting the contents, update the title using packets, updating the size
-        InventoryUtil.update(player, LangParser.parse(player, MessageUtil.color(display)), items.size());
+        // Open without closing the last inventory
+        player.openInventory(createInventory(player, items));
         registerOpen(player);
     }
 

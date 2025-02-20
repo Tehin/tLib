@@ -44,7 +44,10 @@ public class ConfirmationMenu extends Menu {
                 .name("&a&lCONFIRMAR")
                 .action(new ExecutorAction(onConfirm));
 
-        content.add(null, no, null, null, info, null, null, yes, null);
+        content.addEmpty(9);
+        content.addCentered(no, info, yes);
+        content.addEmpty(9);
+
         return content;
     }
 }
