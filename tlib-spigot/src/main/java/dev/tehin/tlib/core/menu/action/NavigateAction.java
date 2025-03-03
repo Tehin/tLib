@@ -12,9 +12,13 @@ import org.bukkit.event.inventory.ClickType;
 @Getter
 public class NavigateAction extends CraftMenuAction implements NavigationAction {
 
-    private final Class<? extends Menu> navigation;
+    private final Menu navigation;
 
     public NavigateAction(Class<? extends Menu> navigation) {
+        this(tLib.get().getMenu().getMenu(navigation));
+    }
+
+    public NavigateAction(Menu navigation) {
         super(ClickType.LEFT, null);
 
         this.navigation = navigation;
@@ -22,13 +26,14 @@ public class NavigateAction extends CraftMenuAction implements NavigationAction 
 
     @Override
     public void execute(MenuManager manager, Player player) {
-        tLib.get().getMenu().open(player, navigation);
+        navigation.open(player);
     }
 
     @Override
     public boolean equals(MenuAction equals) {
         if (!(equals instanceof NavigateAction)) return false;
-        return ((NavigateAction) equals).getNavigation() == this.navigation;
+
+        return ((NavigateAction) equals).getNavigation().equals(this.navigation);
     }
 
 }
