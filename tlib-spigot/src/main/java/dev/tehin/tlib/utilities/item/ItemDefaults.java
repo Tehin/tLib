@@ -3,6 +3,7 @@ package dev.tehin.tlib.utilities.item;
 import dev.tehin.tlib.api.tLib;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.Menu;
+import dev.tehin.tlib.core.menu.action.ErrorAction;
 import dev.tehin.tlib.core.menu.action.ExecutorAction;
 import dev.tehin.tlib.utilities.chat.LoreUtil;
 import net.minemora.nms.NMS;
@@ -27,6 +28,10 @@ public class ItemDefaults {
     public static ItemBuilder BACK(Class<? extends Menu> back) {
         return BACK(tLib.get().getMenu().getMenu(back));
     }
+
+    public static ItemBuilder BLOCKED = new ItemBuilder(NMS.Material.BARRIER)
+            .name("&8&l???")
+            .action(new ErrorAction());
 
     public static ItemStack getGlass() {
         return new ItemBuilder(NMS.Material.STAINED_GLASS_PANE).name("&7").data(7).build();
