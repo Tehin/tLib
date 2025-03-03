@@ -10,7 +10,7 @@ public class ErrorAction extends CraftMenuAction {
 
     public ErrorAction() {
         super(ClickType.LEFT, (clicker) -> {
-            int volume = 1;
+            float volume = 1.3f;
             float pitch = 0.7f;
             Location location = clicker.getLocation();
 
