@@ -79,6 +79,6 @@ public class CoreListener implements Listener {
     @EventHandler
     public void onLeave(PlayerQuitEvent event) {
         menus.registerClose(event.getPlayer());
-        TaskSet.stop(event.getPlayer());
+        TaskSet.stopAll(event.getPlayer());
     }
 }
