@@ -11,10 +11,8 @@ import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import dev.tehin.tlib.core.menu.options.MenuOptions;
 import dev.tehin.tlib.core.menu.templates.EmptyMenuTemplate;
 import dev.tehin.tlib.core.menu.templates.PageableMenuTemplate;
-import dev.tehin.tlib.utilities.InventoryUtil;
 import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
-import dev.tehin.tlib.utilities.task.TaskUtil;
 import lombok.Getter;
 import lombok.Setter;
 import org.bukkit.Bukkit;
@@ -37,6 +35,8 @@ public abstract class Menu implements InventoryHolder {
     private @Setter @Getter String noPermissionMessage = PermissionUtil.getDefaultMessage();
 
     private @Getter final MenuOptions options = new MenuOptions();
+
+    @Getter
     private Inventory inventory;
 
     protected Menu(String display, String permission) {
@@ -67,7 +67,7 @@ public abstract class Menu implements InventoryHolder {
             throw new IllegalStateException("Not pageable menus cannot be opened with a page greater than 1, please implement PageableMenu");
         }
 
-        TaskUtil.runSyncLater(() -> player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f), 2);
+        player.playSound(player.getLocation(), getOptions().soundOnOpen(), 0.5f, 1f);
 
         boolean isPageable = this instanceof PageableMenu;
         boolean isStatic = this instanceof StaticMenu;
@@ -123,11 +123,6 @@ public abstract class Menu implements InventoryHolder {
         Inventory inventory = Bukkit.createInventory(this, items.size(), title);
         inventory.setContents(items.toArray(new ItemStack[0]));
 
-        return inventory;
-    }
-
-    @Override
-    public Inventory getInventory() {
         return inventory;
     }
 

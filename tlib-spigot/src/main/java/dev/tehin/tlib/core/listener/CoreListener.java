@@ -5,9 +5,11 @@ import dev.tehin.tlib.core.item.InteractableItem;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.core.menu.action.ErrorAction;
+import dev.tehin.tlib.core.menu.defaults.InputMenu;
 import dev.tehin.tlib.core.menu.manager.CraftMenuManager;
 import dev.tehin.tlib.utilities.item.ItemUtil;
 import dev.tehin.tlib.utilities.task.TaskSet;
+import dev.tehin.tlib.utilities.task.TaskUtil;
 import net.minemora.nms.NMS;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -36,11 +38,25 @@ public class CoreListener implements Listener {
         Optional<Menu> type = menus.getOpenMenu((Player) e.getWhoClicked());
         if (type.isEmpty()) return;
 
+        Menu menu = type.get();
+
+        int slot = e.getSlot();
+
+        /*
+         * Do not cancel the interaction or execute any action if
+         * the menu requires an input, meaning the player can modify the slot
+         * with any type of item
+         */
+        if (menu instanceof InputMenu inputMenu && inputMenu.isInputSlot(slot)) {
+            // Update the items the tick after the transaction was completed
+            TaskUtil.runSyncLater(inputMenu::updateInputItems, 1);
+            return;
+        }
+
         e.setCancelled(true);
 
         if (e.getCurrentItem() == null || e.getCurrentItem().getType() == NMS.Material.AIR) return;
 
-        Menu menu = type.get();
         Optional<String> id = ItemUtil.getTag(e.getCurrentItem(), "menu-action");
 
         if (id.isEmpty()) return;

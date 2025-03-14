@@ -46,6 +46,10 @@ public class MenuContentBuilder {
         return this.contents;
     }
 
+    public ItemStack getRawItem(int index) {
+        return this.contents.get(index);
+    }
+
     public MenuContentBuilder set(int index, ItemBuilder builder) {
         ItemStack stack = builder != null ? register(builder, this.player) : null;
         setRaw(index, stack);
