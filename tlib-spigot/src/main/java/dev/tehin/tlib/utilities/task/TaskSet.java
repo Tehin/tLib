@@ -124,7 +124,7 @@ public class TaskSet {
 
             @Override
             public void run() {
-                if (timeLeft <= 0) {
+                if (timeLeft < 0) {
                     end();
                     return;
                 }
