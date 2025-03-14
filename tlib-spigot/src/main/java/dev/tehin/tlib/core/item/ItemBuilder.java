@@ -49,6 +49,9 @@ public class ItemBuilder implements ItemBuilderProvider {
     private Map<Enchantment, Integer> enchants = null;
 
     @Setter(AccessLevel.NONE)
+    private Map<String, Object> nbts = null;
+
+    @Setter(AccessLevel.NONE)
     private List<Pattern> patterns = null;
 
     private DyeColor baseColor = null;
@@ -146,6 +149,12 @@ public class ItemBuilder implements ItemBuilderProvider {
 
         if (glow) ItemUtil.addGlow(item);
 
+        if (nbts != null && !nbts.isEmpty()) {
+            for (Map.Entry<String, Object> entry : nbts.entrySet()) {
+                item = NMS.get().getUtil().setNBT(item, entry.getKey(), entry.getValue().toString());
+            }
+        }
+
         NMS.get().getUtil().setItemStackData(item, (short) data);
     }
 
@@ -153,6 +162,13 @@ public class ItemBuilder implements ItemBuilderProvider {
         if (enchants == null) enchants = new HashMap<>();
 
         enchants.put(enchantment, level);
+        return this;
+    }
+
+    public ItemBuilder addNBT(String key, Object value) {
+        if (nbts == null) nbts = new HashMap<>();
+
+        nbts.put(key, value);
         return this;
     }
 
@@ -245,6 +261,10 @@ public class ItemBuilder implements ItemBuilderProvider {
             flags.forEach(item::addFlag);
         }
 
+        if (nbts != null) {
+            nbts.forEach(item::addNBT);
+        }
+
         return item;
     }
 
@@ -280,6 +300,18 @@ public class ItemBuilder implements ItemBuilderProvider {
         if (enchants != null && !enchants.isEmpty()) {
             enchants.forEach((enchantment, level) -> {
                 string.append(" : ").append("enchant=").append(enchantment.getName()).append("=").append(level);
+            });
+        }
+
+        if (patterns != null && !patterns.isEmpty()) {
+            patterns.forEach(pattern -> {
+                string.append(" : ").append("pattern=").append(pattern.toString());
+            });
+        }
+
+        if (nbts != null && !nbts.isEmpty()) {
+            nbts.forEach((key, value) -> {
+                string.append(" : ").append("nbt=").append(key).append("=").append(value.toString());
             });
         }
 
@@ -322,6 +354,9 @@ public class ItemBuilder implements ItemBuilderProvider {
                     break;
                 case "enchant":
                     builder.addEnchant(Enchantment.getByName(argSplit[1]), Integer.parseInt(argSplit[2]));
+                    break;
+                case "nbt":
+                    builder.addNBT(argSplit[1], argSplit[2]);
                     break;
                 case "lore-line":
                     builder.lore(argSplit[1]);
