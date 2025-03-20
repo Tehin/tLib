@@ -12,7 +12,11 @@ import java.util.stream.Collectors;
 public record ItemData(String name, List<String> lore) {
 
     public static ItemData of(ItemBuilder builder) {
-        return new ItemData(builder.getName(), builder.getLore());
+        List<String> lore = builder.getLore().stream()
+                .map(MessageUtil::color)
+                .toList();
+
+        return new ItemData(MessageUtil.color(builder.getName()), lore);
     }
 
     public static ItemData of(ItemStack item) {

@@ -75,4 +75,8 @@ public class MessageUtil {
         broadcast(prefix + " " + message);
     }
 
+    public static String convertToOwnColorCode(String message) {
+        return message.replace("§", "&");
+    }
+
 }
