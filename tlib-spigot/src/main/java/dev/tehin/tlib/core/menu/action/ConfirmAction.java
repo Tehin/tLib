@@ -1,49 +1,21 @@
-package dev.tehin.tlib.core.menu.defaults;
+package dev.tehin.tlib.core.menu.action;
 
 import dev.tehin.tlib.api.menu.action.ActionExecutor;
+import dev.tehin.tlib.api.menu.action.MenuAction;
 import dev.tehin.tlib.core.item.ItemBuilder;
-import dev.tehin.tlib.core.menu.Menu;
-import dev.tehin.tlib.core.menu.MenuContentBuilder;
-import dev.tehin.tlib.core.menu.MenuFilter;
-import dev.tehin.tlib.core.menu.action.ConfirmAction;
-import dev.tehin.tlib.core.menu.action.ExecutorAction;
+import dev.tehin.tlib.core.menu.defaults.ConfirmationMenu;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import net.minemora.nms.NMS;
 import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 
-public class ConfirmationMenu extends Menu {
+public class ConfirmAction extends ExecutorAction {
 
-    private final String description;
-
-    private final ItemBuilder cancelItem, confirmItem;
-
-    public ConfirmationMenu(String display, String description, ItemBuilder confirmItem, ItemBuilder cancelItem) {
-        super(display, null);
-
-        this.description = description;
-
-        this.confirmItem = confirmItem;
-        this.cancelItem = cancelItem;
+    private ConfirmAction(String display, String description, ItemBuilder confirmItem, ItemBuilder cancelItem) {
+        super((clicker) -> {
+            new ConfirmationMenu(display, description, confirmItem, cancelItem).open(clicker);
+        });
     }
 
-    @Override
-    protected MenuContentBuilder create(Player player, MenuFilter filter) {
-        MenuContentBuilder content = createContentBuilder();
-
-        ItemBuilder info = new ItemBuilder(NMS.Material.PAPER)
-                .name("&7")
-                .lore(description);
-
-        content.addEmpty(9);
-        content.addCentered(cancelItem, info, confirmItem);
-        content.addEmpty(9);
-
-        return content;
-    }
-
-    @Setter
     public static class Builder {
 
         private final String display;
@@ -95,8 +67,8 @@ public class ConfirmationMenu extends Menu {
             return this;
         }
 
-        public ConfirmationMenu build() {
-            return new ConfirmationMenu(display, description, confirmItem, cancelItem);
+        public ConfirmAction build() {
+            return new ConfirmAction(display, description, confirmItem, cancelItem);
         }
 
     }
