@@ -39,6 +39,10 @@ public class CoreListener implements Listener {
         if (type.isEmpty()) return;
 
         Menu menu = type.get();
+        menu.onClick(e);
+
+        // Ignore if the event was cancelled by the onClick
+        if (e.isCancelled()) return;
 
         int slot = e.getSlot();
 
@@ -47,10 +51,23 @@ public class CoreListener implements Listener {
          * the menu requires an input, meaning the player can modify the slot
          * with any type of item
          */
-        if (menu instanceof InputMenu inputMenu && inputMenu.isInputSlot(slot)) {
-            // Update the items the tick after the transaction was completed
-            TaskUtil.runSyncLater(inputMenu::updateInputItems, 1);
-            return;
+        if (menu instanceof InputMenu inputMenu && e.getClickedInventory() != null) {
+            boolean isPlayerInv = NMS.get().getUtil().isPlayerInventory(e.getClickedInventory());
+
+            // Prevent the use of SHIFT + ITEM to add items outside the
+            // input slots, but allow the use of SHIFT + ITEM inside the own inventory
+            if (e.getClick().isShiftClick() && isPlayerInv && inputMenu.isFull()) {
+                e.setCancelled(true);
+                return;
+            }
+
+            // Allow the player to click anywhere in their inventory or in the input slots
+            if (inputMenu.isInputSlot(slot) || isPlayerInv) {
+                // Update the items the tick after the transaction was completed
+                // since the event has not been completed yet here
+                TaskUtil.runSyncLater(inputMenu::updateInputItems, 1);
+                return;
+            }
         }
 
         e.setCancelled(true);

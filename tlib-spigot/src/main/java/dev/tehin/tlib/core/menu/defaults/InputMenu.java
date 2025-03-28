@@ -6,14 +6,13 @@ import dev.tehin.tlib.core.menu.MenuContentBuilder;
 import dev.tehin.tlib.core.menu.MenuFilter;
 import lombok.AccessLevel;
 import lombok.Getter;
+import net.minemora.nms.NMS;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public abstract class InputMenu extends Menu implements StaticMenu {
 
@@ -75,8 +74,25 @@ public abstract class InputMenu extends Menu implements StaticMenu {
             }
 
             ItemStack item = inventory.getItem(inputSlot);
+
             inputItems.add(item);
         }
     }
 
+    @Override
+    public void reload() {
+        super.reload();
+
+        this.inputItems.clear();
+    }
+
+    public boolean isFull() {
+        for (int inputSlot : inputSlots) {
+            ItemStack item = getInventory().getItem(inputSlot);
+
+            if (item == null || item.getType() == NMS.Material.AIR) return false;
+        }
+
+        return true;
+    }
 }
