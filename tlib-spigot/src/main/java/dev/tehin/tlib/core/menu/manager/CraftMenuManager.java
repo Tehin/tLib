@@ -10,10 +10,7 @@ import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.SneakyThrows;
 import org.bukkit.entity.Player;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 public class CraftMenuManager implements MenuManager {
 
@@ -75,10 +72,27 @@ public class CraftMenuManager implements MenuManager {
 
     public void registerOpen(Player player, Menu menu) {
         opened.put(player.getUniqueId(), menu);
+
+        menu.onOpen(player);
     }
 
     public void registerClose(Player player) {
-        opened.remove(player.getUniqueId());
+        Menu removed = opened.remove(player.getUniqueId());
+        if (removed == null) return;
+
+        removed.onClose(player);
+    }
+
+    public List<UUID> getPlayersOpened(Menu menu) {
+        List<UUID> uuids = new ArrayList<>();
+
+        for (Map.Entry<UUID, Menu> entry : opened.entrySet()) {
+            if (entry.getValue().equals(menu)) {
+                uuids.add(entry.getKey());
+            }
+        }
+
+        return uuids;
     }
 
 }
