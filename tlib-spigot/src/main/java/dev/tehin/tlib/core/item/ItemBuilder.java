@@ -25,6 +25,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -41,6 +42,7 @@ public class ItemBuilder implements ItemBuilderProvider {
     private MenuAction action = null;
     private boolean unbreakable = false;
     private boolean applyLang = false;
+    private Consumer<ItemMeta> applyToMeta = null;
 
     @Setter(AccessLevel.NONE)
     private List<ItemFlag> flags = new ArrayList<>();
@@ -144,6 +146,10 @@ public class ItemBuilder implements ItemBuilderProvider {
         if (!flags.isEmpty()) meta.addItemFlags(flags.toArray(new ItemFlag[0]));
 
         if (unbreakable) meta.spigot().setUnbreakable(true);
+
+        if (applyToMeta != null) {
+            applyToMeta.accept(meta);
+        }
 
         item.setItemMeta(meta);
 
