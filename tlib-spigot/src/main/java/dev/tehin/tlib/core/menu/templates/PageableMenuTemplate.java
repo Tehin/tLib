@@ -1,6 +1,7 @@
 package dev.tehin.tlib.core.menu.templates;
 
 import dev.tehin.tlib.api.menu.action.MenuAction;
+import dev.tehin.tlib.api.menu.features.PageableMenu;
 import dev.tehin.tlib.core.item.ItemBuilder;
 import dev.tehin.tlib.core.menu.Menu;
 import dev.tehin.tlib.core.menu.MenuContentBuilder;
@@ -77,17 +78,18 @@ public class PageableMenuTemplate implements MenuTemplate {
                 .addPattern(new Pattern(DyeColor.WHITE, PatternType.SQUARE_TOP_RIGHT))
                 .addPattern(new Pattern(DyeColor.WHITE, PatternType.SQUARE_BOTTOM_RIGHT))
                 .name("&a&lAnterior &7(Página #" + previousPageParsed + ")")
+                .addNBT("filter", filter) // Add an NBT so the action is created by every filter, not only the first time
                 .action(action)
                 .amount(previousPageParsed);
     }
 
-    protected ItemBuilder next(int itemCount) {
+    protected ItemBuilder next(int itemCount, MenuFilter currentFilter) {
         int pages = (int) Math.ceil((double) itemCount / getMaxContent());
 
         if (currentPage == (pages - 1) || pages == 1) return null;
 
         MenuAction action = new ExecutorAction(player -> {
-            menu.open(player, currentPage + 1, filter);
+            menu.open(player, currentPage + 1, currentFilter);
         });
 
         // Parse since page starts from 0 and not from 1
@@ -100,6 +102,7 @@ public class PageableMenuTemplate implements MenuTemplate {
                 .addPattern(new Pattern(DyeColor.WHITE, PatternType.SQUARE_TOP_LEFT))
                 .addPattern(new Pattern(DyeColor.WHITE, PatternType.SQUARE_BOTTOM_LEFT))
                 .name("&a&lSiguiente &7(Página #" + nextPageParsed + ")")
+                .addNBT("filter", filter) // Add an NBT so the action is created by every filter, not only the first time
                 .action(action)
                 .amount(nextPageParsed);
     }
@@ -111,17 +114,28 @@ public class PageableMenuTemplate implements MenuTemplate {
     }
 
     protected void addOptions(MenuContentBuilder content, int itemCount) {
-        content.add(previous());
-        content.addEmpty(3);
+        PageableMenu pageable = (PageableMenu) menu;
 
-        if (menu.isFilterable()) {
+        if (pageable.getBackMenu() != null) {
+            content.add(ItemDefaults.BACK(pageable.getBackMenu()));
+        } else {
+            content.add(null);
+        }
+
+        content.add(null);
+        content.add(null);
+        content.add(previous());
+
+        if (pageable.isFilterable()) {
             content.add(content.getPresets().getFilter(filter));
         } else {
             content.add(null);
         }
 
-        content.addEmpty(3);
-        content.add(next(itemCount));
+        content.add(next(itemCount, filter));
+        content.add(null);
+        content.add(null);
+        content.add(null);
     }
 
     protected List<ItemStack> paginate(List<ItemStack> items) {

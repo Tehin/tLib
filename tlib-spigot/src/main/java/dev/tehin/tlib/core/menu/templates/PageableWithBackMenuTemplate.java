@@ -28,7 +28,7 @@ public class PageableWithBackMenuTemplate extends PageableMenuTemplate {
         content.addEmpty(1);
         content.add(content.getPresets().getFilter(getFilter()));
         content.addEmpty(1);
-        content.add(next(itemCount));
+        content.add(next(itemCount, getFilter()));
         content.addEmpty(2);
     }
 
