@@ -15,6 +15,7 @@ import dev.tehin.tlib.utilities.MessageUtil;
 import dev.tehin.tlib.utilities.PermissionUtil;
 import lombok.Getter;
 import lombok.Setter;
+import net.minemora.nms.NMS;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -24,7 +25,6 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 public abstract class Menu implements InventoryHolder {
 
@@ -156,24 +156,29 @@ public abstract class Menu implements InventoryHolder {
             return false;
         }
 
-        ItemStack found = getInventory().getItem(position);
-        if (found == null) {
+        ItemStack foundItem = getInventory().getItem(position);
+        if (foundItem == null) {
             System.out.println("Item could not be updated due to position being off");
             return false;
         }
 
-        ItemData data = new ItemData(found.getItemMeta().getDisplayName(), found.getItemMeta().getLore());
+        Optional<String> actionId = NMS.get().getUtil().getNBT(foundItem, "menu-action");
+        if (actionId.isEmpty()) {
+            System.out.println("Item could not be updated due to action NBT (Current: null)");
+            return false;
+        }
 
-        // Get id based on our item properties
-        Optional<MenuAction> action = getActions().get(data);
-        if (action.isEmpty()) {
-            System.out.println("Item could not be updated due to action not being found");
+        MenuAction action = getActions().get(Integer.parseInt(actionId.get()));
+        if (action == null) {
+            System.out.println("Item could not be updated due to action not being found (Current: " + actionId + ")");
             return false;
         }
 
         // Set the item properties
-        builder.apply(found);
-        action.get().setData(new ItemData(found.getItemMeta().getDisplayName(), found.getItemMeta().getLore()));
+        builder.apply(foundItem);
+
+        // Apply the data of new item to the action so we can compare it later
+        action.setData(ItemData.of(foundItem));
 
         return true;
     }
@@ -190,10 +195,6 @@ public abstract class Menu implements InventoryHolder {
 
     public MenuTemplate getTemplate(MenuFilter filter, int page) {
         return (this instanceof PageableMenu) ? new PageableMenuTemplate(this, filter, page) : new EmptyMenuTemplate();
-    }
-
-    public boolean isFilterable() {
-        return true;
     }
 
     public void closeAll() {

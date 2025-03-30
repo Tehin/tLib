@@ -51,7 +51,7 @@ public class ItemBuilder implements ItemBuilderProvider {
     private Map<Enchantment, Integer> enchants = null;
 
     @Setter(AccessLevel.NONE)
-    private Map<String, Object> nbts = null;
+    private Map<String, String> nbts = null;
 
     @Setter(AccessLevel.NONE)
     private List<Pattern> patterns = null;
@@ -156,8 +156,8 @@ public class ItemBuilder implements ItemBuilderProvider {
         if (glow) ItemUtil.addGlow(item);
 
         if (nbts != null && !nbts.isEmpty()) {
-            for (Map.Entry<String, Object> entry : nbts.entrySet()) {
-                item = NMS.get().getUtil().setNBT(item, entry.getKey(), entry.getValue().toString());
+            for (Map.Entry<String, String> entry : nbts.entrySet()) {
+                item = NMS.get().getUtil().setNBT(item, entry.getKey(), entry.getValue());
             }
         }
 
@@ -174,7 +174,7 @@ public class ItemBuilder implements ItemBuilderProvider {
     public ItemBuilder addNBT(String key, Object value) {
         if (nbts == null) nbts = new HashMap<>();
 
-        nbts.put(key, value);
+        nbts.put(key, value.toString());
         return this;
     }
 
@@ -419,6 +419,10 @@ public class ItemBuilder implements ItemBuilderProvider {
         }
 
         return builder;
+    }
+
+    public Map<String, String> getNBTs() {
+        return nbts;
     }
 
 }
