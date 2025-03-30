@@ -12,12 +12,13 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.ClickType;
 
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.Map;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 class CraftMenuAction implements MenuAction {
+
     private final ClickType type;
     private final ActionExecutor action;
 
@@ -38,19 +39,40 @@ class CraftMenuAction implements MenuAction {
     }
 
     @Override
-    public boolean equals(ItemData equals) {
-        if (equals == null) return false;
-        if (equals.name() == null || getData() == null) return false;
+    public boolean equals(ItemData otherData) {
+        if (otherData == null) return false;
+        if (otherData.name() == null || getData() == null) return false;
 
-        boolean name = getData().name().equals(equals.name());
-        boolean lore = compareLore(equals);
+        boolean name = getData().name().equals(otherData.name());
+        boolean lore = compareLore(otherData);
+        boolean nbt = compareNbt(otherData);
 
-        return lore && name;
+        return lore && name && nbt;
     }
 
     @Override
     public boolean equals(MenuAction equals) {
         return equals(equals.getData());
+    }
+
+    private boolean compareNbt(ItemData otherData) {
+        ItemData ownData = getData();
+
+        // If both null, they are equal
+        if (otherData.nbts() == null && ownData.nbts() == null) return true;
+
+        // If one of them is null, they are not equal
+        if (otherData.nbts() == null || ownData.nbts() == null) return false;
+
+        for (Map.Entry<String, String> entry : otherData.nbts().entrySet()) {
+            String key = entry.getKey();
+            String value = entry.getValue();
+
+            String ownValue = ownData.nbts().get(key);
+            if (ownValue == null || !ownValue.equals(value)) return false;
+        }
+
+        return true;
     }
 
     private boolean compareLore(ItemData equals) {
