@@ -9,6 +9,14 @@ import java.util.concurrent.*;
 
 public class TaskUtil {
 
+    public static void run(boolean async, Runnable task) {
+        if (async) {
+            runAsync(task);
+        } else {
+            runSync(task);
+        }
+    }
+
     /**
      * Runs the task inside the main thread.
      * <br/><br/>
@@ -29,11 +37,19 @@ public class TaskUtil {
 
     /**
      * Instantly run the task outside the main thread
+     * <br><br>
+     * If we are already outside the main thread, we run the task
+     * in the current thread
      *
      * @param task The task to be executed
      */
     public static void runAsync(Runnable task) {
         Plugin owner = tLib.get().getOwner();
+
+        if (!owner.getServer().isPrimaryThread()) {
+            task.run();
+            return;
+        }
 
         Bukkit.getScheduler().runTaskAsynchronously(owner, task);
     }

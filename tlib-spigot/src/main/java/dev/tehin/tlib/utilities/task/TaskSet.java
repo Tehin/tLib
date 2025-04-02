@@ -158,7 +158,16 @@ public class TaskSet {
 
         if (player == null) return;
 
-        QUEUES.get(player).remove(this);
+        Set<TaskSet> queue = QUEUES.get(player);
+
+        /*
+         * The queue could be null since we might call this end after
+         * a stopAll, which removes the player from the QUEUES, only
+         * remove if it's one
+         */
+        if (queue != null) {
+            queue.remove(this);
+        }
     }
 
     private Runnable injectCancelOnRunnable(Runnable entry) {
